@@ -1,0 +1,1238 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>IGN Academy — 3v3 League</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:ital,wght@0,400;0,600;0,700;0,800;0,900;1,800;1,900&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#f8f9fa;
+  --surface:#ffffff;
+  --surface2:#f1f5f9;
+  --surface3:#e2e8f0;
+  --orange:#f97316;
+  --orange-dim:#ea6b0a;
+  --orange-glow:rgba(249,115,22,.10);
+  --green:#16a34a;
+  --green-light:#dcfce7;
+  --red:#dc2626;
+  --yellow:#ca8a04;
+  --blue:#2563eb;
+  --text:#111827;
+  --text2:#4b5563;
+  --text3:#9ca3af;
+  --border:#e5e7eb;
+  --border-dark:#d1d5db;
+  --shadow:0 1px 3px rgba(0,0,0,.08),0 1px 2px rgba(0,0,0,.05);
+  --shadow-md:0 4px 6px -1px rgba(0,0,0,.07),0 2px 4px -1px rgba(0,0,0,.05);
+  --font-display:'Barlow Condensed',Impact,sans-serif;
+  --font-body:'Inter',system-ui,sans-serif;
+  --radius:8px;
+}
+html{font-size:14px;scroll-behavior:smooth}
+body{font-family:var(--font-body);background:var(--bg);color:var(--text);min-height:100vh;overflow-x:hidden}
+h1,h2,h3,h4{font-family:var(--font-display);text-transform:uppercase;letter-spacing:.02em}
+
+/* ─── TOP BAR ─── */
+.topbar{
+  background:var(--surface);
+  border-bottom:1px solid var(--border);
+  display:flex;align-items:center;justify-content:space-between;
+  padding:.7rem 1.5rem;
+  position:sticky;top:0;z-index:100;
+  box-shadow:var(--shadow);
+}
+.topbar .logo{
+  display:flex;align-items:center;gap:.5rem;
+  font-family:var(--font-display);font-weight:900;font-size:1.4rem;
+  color:var(--text);letter-spacing:.04em;
+}
+.topbar .logo .logo-box{
+  background:var(--orange);color:#fff;
+  padding:.15rem .45rem;border-radius:4px;
+  font-size:1.1rem;font-weight:900;letter-spacing:.02em;
+}
+.topbar .logo .league-tag{
+  font-size:.8rem;font-weight:600;color:var(--text3);
+  font-family:var(--font-body);text-transform:none;letter-spacing:0;
+  margin-left:.25rem;
+}
+.mode-toggle{display:flex;gap:.25rem;background:var(--surface2);border-radius:6px;padding:3px;border:1px solid var(--border)}
+.mode-toggle button{
+  font-family:var(--font-display);font-weight:700;font-size:.82rem;
+  padding:.35rem .9rem;border:none;border-radius:4px;cursor:pointer;
+  color:var(--text3);background:transparent;text-transform:uppercase;letter-spacing:.05em;transition:all .15s;
+}
+.mode-toggle button.active{background:var(--orange);color:#fff;box-shadow:0 1px 3px rgba(249,115,22,.3)}
+
+/* ─── ORANGE DIVIDER BAR ─── */
+.orange-bar{height:4px;background:var(--orange)}
+
+/* ─── LAYOUT ─── */
+.app-body{display:flex;min-height:calc(100vh - 62px)}
+.sidebar{
+  width:220px;background:var(--surface);
+  border-right:1px solid var(--border);
+  padding:1rem 0;flex-shrink:0;overflow-y:auto;
+}
+.sidebar a{
+  display:flex;align-items:center;gap:.6rem;
+  padding:.55rem 1.2rem;color:var(--text2);
+  text-decoration:none;font-weight:500;font-size:.85rem;
+  border-left:3px solid transparent;transition:all .12s;
+}
+.sidebar a:hover{color:var(--text);background:var(--surface2)}
+.sidebar a.active{color:var(--orange);border-left-color:var(--orange);background:var(--orange-glow);font-weight:600}
+.sidebar .section-label{
+  font-family:var(--font-display);font-size:.68rem;color:var(--text3);
+  padding:.8rem 1.2rem .3rem;text-transform:uppercase;letter-spacing:.1em;
+}
+.main{flex:1;padding:1.5rem;overflow-y:auto;max-width:1200px}
+
+/* ─── HERO SECTION ─── */
+.pub-hero{
+  background:var(--bg);
+  padding:2.5rem 0 2rem;
+  text-align:center;
+  margin-bottom:0;
+  border-bottom:4px solid var(--orange);
+}
+.pub-hero h1{
+  font-family:var(--font-display);font-weight:900;
+  font-size:2.8rem;color:var(--text);
+  text-transform:uppercase;letter-spacing:.04em;
+  margin-bottom:.5rem;
+}
+.pub-hero p{color:var(--text2);font-size:1rem;font-weight:400}
+
+/* ─── CARDS ─── */
+.card{
+  background:var(--surface);
+  border:1px solid var(--border);
+  border-radius:var(--radius);
+  padding:1.4rem;
+  margin-bottom:1rem;
+  box-shadow:var(--shadow);
+}
+.card-header{
+  font-family:var(--font-display);font-weight:800;
+  font-size:1.2rem;color:var(--text);
+  margin-bottom:1rem;
+  display:flex;align-items:center;gap:.6rem;
+  border-bottom:2px solid var(--orange);
+  padding-bottom:.6rem;
+  text-transform:uppercase;letter-spacing:.03em;
+}
+.card-header .accent{width:4px;height:20px;background:var(--orange);border-radius:2px}
+
+/* ─── BUTTONS ─── */
+.btn{
+  font-family:var(--font-display);font-weight:700;font-size:.82rem;
+  padding:.5rem 1.1rem;border:none;border-radius:var(--radius);
+  cursor:pointer;text-transform:uppercase;letter-spacing:.04em;
+  transition:all .12s;display:inline-flex;align-items:center;gap:.4rem;
+}
+.btn-primary{background:var(--orange);color:#fff}
+.btn-primary:hover{background:var(--orange-dim);transform:translateY(-1px)}
+.btn-secondary{background:var(--surface2);color:var(--text);border:1px solid var(--border)}
+.btn-secondary:hover{background:var(--surface3)}
+.btn-sm{font-size:.72rem;padding:.3rem .7rem}
+.btn-danger{background:var(--red);color:#fff}.btn-danger:hover{background:#b91c1c}
+.btn-success{background:var(--green);color:#fff}
+
+/* ─── FORMS ─── */
+select,input[type="text"],input[type="number"],input[type="email"]{
+  font-family:var(--font-body);font-size:.82rem;padding:.45rem .65rem;
+  background:var(--surface);border:1px solid var(--border-dark);
+  border-radius:var(--radius);color:var(--text);outline:none;transition:border .15s;
+}
+select:focus,input:focus{border-color:var(--orange);box-shadow:0 0 0 3px var(--orange-glow)}
+select{cursor:pointer}
+label{font-size:.75rem;color:var(--text2);font-weight:600;display:block;margin-bottom:.3rem;text-transform:uppercase;letter-spacing:.04em}
+.form-row{display:flex;gap:.8rem;flex-wrap:wrap;margin-bottom:.8rem}
+.form-group{display:flex;flex-direction:column;flex:1;min-width:140px}
+
+/* ─── TABS ─── */
+.tabs{display:flex;gap:0;margin-bottom:1rem;border-bottom:2px solid var(--border);flex-wrap:wrap}
+.tabs button{
+  font-family:var(--font-display);font-weight:700;font-size:.82rem;
+  padding:.55rem 1rem;border:none;border-bottom:3px solid transparent;
+  cursor:pointer;color:var(--text3);background:transparent;
+  text-transform:uppercase;letter-spacing:.04em;transition:all .12s;
+  white-space:nowrap;margin-bottom:-2px;
+}
+.tabs button.active{color:var(--orange);border-bottom-color:var(--orange)}
+.tabs button:hover:not(.active){color:var(--text)}
+
+/* ─── SCHEDULE GRID ─── */
+.sched-grid{
+  display:grid;grid-template-columns:90px repeat(4,1fr);
+  gap:1px;background:var(--border);
+  border-radius:var(--radius);overflow:hidden;
+  font-size:.78rem;border:1px solid var(--border);
+}
+.sched-grid .hdr{
+  background:var(--surface2);
+  font-family:var(--font-display);font-weight:800;
+  text-align:center;padding:.55rem .3rem;
+  color:var(--text);font-size:.88rem;
+  text-transform:uppercase;letter-spacing:.03em;
+}
+.sched-grid .time-label{
+  background:var(--surface2);font-family:var(--font-display);font-weight:700;
+  display:flex;align-items:center;justify-content:center;
+  padding:.4rem;color:var(--text2);font-size:.82rem;
+}
+.sched-grid .cell{
+  background:var(--surface);min-height:68px;padding:.4rem;
+  display:flex;flex-direction:column;align-items:center;
+  justify-content:center;text-align:center;transition:background .12s;position:relative;
+}
+.sched-grid .cell.drop-hover{background:var(--orange-glow);outline:2px dashed var(--orange)}
+.sched-grid .cell .game-chip{
+  background:var(--surface2);border:1px solid var(--border);
+  border-radius:6px;padding:.3rem .45rem;
+  font-size:.72rem;width:100%;cursor:grab;position:relative;line-height:1.35;
+}
+.sched-grid .cell .game-chip.bracket-chip{border-color:var(--orange);background:var(--orange-glow)}
+.sched-grid .cell .game-chip .remove-btn{
+  position:absolute;top:-5px;right:-5px;
+  width:16px;height:16px;background:var(--red);color:#fff;
+  border:none;border-radius:50%;font-size:10px;cursor:pointer;
+  display:flex;align-items:center;justify-content:center;
+  opacity:0;transition:opacity .12s;
+}
+.sched-grid .cell .game-chip:hover .remove-btn{opacity:1}
+.sched-grid .cell .game-chip .div-tag{font-size:.6rem;color:var(--orange);font-weight:700}
+
+/* ─── MATCHUP POOL ─── */
+.matchup-pool{max-height:400px;overflow-y:auto;display:flex;flex-wrap:wrap;gap:.4rem;padding:.5rem}
+.matchup-pool .chip{
+  background:var(--surface2);border:1px solid var(--border);
+  border-radius:6px;padding:.3rem .5rem;font-size:.72rem;cursor:grab;
+  white-space:nowrap;transition:all .12s;color:var(--text);
+}
+.matchup-pool .chip:hover{border-color:var(--orange);background:var(--orange-glow)}
+.matchup-pool .chip.scheduled{opacity:.35;pointer-events:none;text-decoration:line-through}
+
+/* ─── STANDINGS TABLE ─── */
+.standings-table{width:100%;border-collapse:collapse;font-size:.82rem}
+.standings-table th{
+  font-family:var(--font-display);font-weight:800;color:var(--text);
+  text-transform:uppercase;letter-spacing:.04em;text-align:left;
+  padding:.55rem .7rem;border-bottom:2px solid var(--orange);font-size:.78rem;
+  background:var(--surface2);
+}
+.standings-table td{padding:.5rem .7rem;border-bottom:1px solid var(--border)}
+.standings-table tr:hover td{background:var(--surface2)}
+.standings-table .rank{font-family:var(--font-display);font-weight:800;color:var(--orange);font-size:1rem}
+
+/* ─── BRACKET ─── */
+.bracket-container{overflow-x:auto;padding:1rem 0}
+.bracket-round{display:inline-flex;flex-direction:column;justify-content:space-around;min-width:200px;margin-right:2rem}
+.bracket-round .round-title{
+  font-family:var(--font-display);font-weight:800;color:var(--orange);
+  text-align:center;margin-bottom:.8rem;font-size:.9rem;text-transform:uppercase;
+}
+.bracket-game{
+  background:var(--surface);border:1px solid var(--border);
+  border-radius:var(--radius);margin-bottom:1rem;overflow:hidden;
+  box-shadow:var(--shadow);
+}
+.bracket-game .team-row{
+  display:flex;justify-content:space-between;
+  padding:.45rem .7rem;font-size:.78rem;border-bottom:1px solid var(--border);
+}
+.bracket-game .team-row:last-child{border-bottom:none}
+.bracket-game .team-row.winner{background:var(--orange-glow);font-weight:700;color:var(--orange)}
+.bracket-game .seed{color:var(--text3);font-size:.7rem;margin-right:.4rem}
+.bracket-game .score{font-weight:700;color:var(--orange)}
+
+/* ─── DIVISION CARDS ─── */
+.division-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:.8rem}
+.division-card{
+  background:var(--surface);border:1px solid var(--border);
+  border-radius:var(--radius);padding:1rem;
+  border-left:4px solid var(--orange);
+  box-shadow:var(--shadow);transition:box-shadow .15s;
+}
+.division-card:hover{box-shadow:var(--shadow-md)}
+.division-card-title{
+  font-family:var(--font-display);font-weight:800;
+  font-size:1.05rem;color:var(--text);text-transform:uppercase;
+  margin-bottom:.4rem;
+}
+
+/* ─── SCORE ENTRY ─── */
+.score-row{
+  display:flex;align-items:center;gap:.6rem;
+  padding:.55rem .7rem;border-bottom:1px solid var(--border);font-size:.82rem;
+}
+.score-row:hover{background:var(--surface2)}
+.score-row .teams{flex:1}
+.score-row input[type="number"]{width:55px;text-align:center}
+.score-row .vs{color:var(--text3);font-weight:600;font-size:.72rem}
+.score-row .result-badge{font-size:.68rem;font-weight:700;padding:.2rem .5rem;border-radius:4px}
+.score-row .result-badge.saved{background:var(--green-light);color:var(--green)}
+
+/* ─── BADGES ─── */
+.badge{font-size:.65rem;font-weight:700;padding:.2rem .5rem;border-radius:4px;text-transform:uppercase;letter-spacing:.03em}
+.badge-mon{background:#dbeafe;color:#1d4ed8}
+.badge-tue{background:#ede9fe;color:#7c3aed}
+.badge-boys{background:#dbeafe;color:#1d4ed8}
+.badge-girls{background:#fce7f3;color:#be185d}
+.badge-open{background:#dcfce7;color:#15803d}
+
+/* ─── MISC ─── */
+.empty-state{text-align:center;padding:2.5rem;color:var(--text3);font-style:italic;font-size:.85rem}
+.conflict-warn{color:var(--red);font-size:.72rem;font-weight:600;margin-top:.2rem}
+.division-color-dot{width:10px;height:10px;border-radius:50%;display:inline-block;margin-right:.3rem;flex-shrink:0}
+.toast{
+  position:fixed;bottom:1.5rem;right:1.5rem;
+  background:var(--green);color:#fff;
+  padding:.65rem 1.3rem;border-radius:var(--radius);
+  font-weight:600;font-size:.82rem;z-index:999;
+  opacity:0;transform:translateY(10px);
+  transition:all .2s;pointer-events:none;
+  box-shadow:var(--shadow-md);
+}
+.toast.show{opacity:1;transform:translateY(0)}
+.toast.error{background:var(--red)}
+::-webkit-scrollbar{width:6px;height:6px}
+::-webkit-scrollbar-track{background:var(--surface2)}
+::-webkit-scrollbar-thumb{background:var(--border-dark);border-radius:3px}
+.mobile-nav{display:none;gap:2px;padding:.5rem;overflow-x:auto;background:var(--surface);border-bottom:1px solid var(--border)}
+.mobile-nav button{
+  font-family:var(--font-display);font-weight:700;font-size:.72rem;
+  padding:.35rem .7rem;border:1px solid var(--border);border-radius:6px;
+  cursor:pointer;color:var(--text2);background:var(--surface2);
+  text-transform:uppercase;white-space:nowrap;
+}
+.mobile-nav button.active{background:var(--orange);color:#fff;border-color:var(--orange)}
+@media(max-width:900px){.mobile-nav{display:flex}}
+
+/* ─── RESPONSIVE ─── */
+@media(max-width:900px){
+  .sidebar{display:none}
+  .app-body{flex-direction:column}
+  .main{padding:1rem}
+  .sched-grid{font-size:.7rem}
+  .sched-grid .hdr,.sched-grid .time-label{font-size:.72rem;padding:.35rem .2rem}
+}
+@media(max-width:600px){
+  .topbar{padding:.5rem .8rem}
+  .pub-hero h1{font-size:1.8rem}
+  .sched-grid{grid-template-columns:60px repeat(4,1fr)}
+  .form-row{flex-direction:column}
+}
+</style>
+</head>
+<body>
+
+<!-- TOP NAV -->
+<div class="topbar">
+  <div class="logo">
+    <div class="logo-box">IGN</div>
+    ACADEMY
+    <span class="league-tag">3v3 League</span>
+  </div>
+  <div class="mode-toggle">
+    <button class="active" onclick="setMode('admin')">Admin</button>
+    <button onclick="setMode('public')">Public</button>
+  </div>
+</div>
+<div class="orange-bar"></div>
+
+<div class="mobile-nav" id="mobileNav"></div>
+
+<div class="app-body">
+  <div class="sidebar" id="sidebar"></div>
+  <div class="main" id="main"></div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+// ══════════════════════════════════════════════════════════════
+// IGN ACADEMY 3v3 LEAGUE MANAGEMENT APP
+// ══════════════════════════════════════════════════════════════
+
+const DIV_COLORS = ['#2563eb','#7c3aed','#db2777','#16a34a','#d97706','#dc2626','#0891b2','#f97316'];
+
+const DEFAULT_DIVISIONS = [
+  {id:'d1',name:'5th-6th Boys',night:'Monday',ageGroup:'5th-6th',gender:'Boys',color:DIV_COLORS[0]},
+  {id:'d2',name:'5th-6th Girls',night:'Monday',ageGroup:'5th-6th',gender:'Girls',color:DIV_COLORS[1]},
+  {id:'d3',name:'7th-8th Boys',night:'Monday',ageGroup:'7th-8th',gender:'Boys',color:DIV_COLORS[2]},
+  {id:'d4',name:'7th-8th Girls',night:'Monday',ageGroup:'7th-8th',gender:'Girls',color:DIV_COLORS[3]},
+  {id:'d5',name:'3rd-4th Boys',night:'Tuesday',ageGroup:'3rd-4th',gender:'Boys',color:DIV_COLORS[4]},
+  {id:'d6',name:'3rd-4th Girls',night:'Tuesday',ageGroup:'3rd-4th',gender:'Girls',color:DIV_COLORS[5]},
+  {id:'d7',name:'9th-12th Boys',night:'Tuesday',ageGroup:'9th-12th',gender:'Boys',color:DIV_COLORS[6]},
+  {id:'d8',name:'9th-12th Girls',night:'Tuesday',ageGroup:'9th-12th',gender:'Girls',color:DIV_COLORS[7]},
+];
+
+const TIME_SLOTS = ['5:30 PM','5:50 PM','6:10 PM','6:30 PM','6:50 PM','7:10 PM','7:30 PM'];
+const COURTS = ['A','B','C','D'];
+const WEEKS = [1,2,3,4,5];
+
+// ─── STATE ───
+let state = loadState();
+let mode = 'admin';
+let adminPage = 'divisions';
+let publicPage = 'schedule';
+let selectedDivision = state.divisions[0]?.id || 'd1';
+let schedNight = 'Monday';
+let schedWeek = 1;
+let dragData = null;
+
+function defaultState() {
+  return {
+    divisions: JSON.parse(JSON.stringify(DEFAULT_DIVISIONS)),
+    teams: {},
+    matchups: {},
+    schedule: {},
+    scores: {},
+    brackets: {},
+    settings: { bracketStartWeek: 4 }
+  };
+}
+
+function loadState() {
+  try {
+    const raw = localStorage.getItem('ign3v3');
+    if (raw) {
+      const s = JSON.parse(raw);
+      const def = defaultState();
+      for (const k of Object.keys(def)) { if (!(k in s)) s[k] = def[k]; }
+      return s;
+    }
+  } catch(e) { console.error('Load error', e); }
+  return defaultState();
+}
+
+function save() { localStorage.setItem('ign3v3', JSON.stringify(state)); }
+
+function toast(msg, isError) {
+  const el = document.getElementById('toast');
+  el.textContent = msg;
+  el.className = 'toast show' + (isError ? ' error' : '');
+  setTimeout(() => el.className = 'toast', 2200);
+}
+
+let _uid = Date.now();
+function uid() { return 'id' + (++_uid).toString(36); }
+
+function render() {
+  if (mode === 'admin') renderAdmin();
+  else renderPublic();
+  renderMobileNav();
+}
+
+function setMode(m) {
+  mode = m;
+  document.querySelectorAll('.mode-toggle button').forEach(b => b.classList.toggle('active', b.textContent.trim().toLowerCase() === m));
+  render();
+}
+
+function renderMobileNav() {
+  const nav = document.getElementById('mobileNav');
+  if (mode === 'admin') {
+    const pages = [['divisions','Divisions'],['teams','Teams'],['schedule','Schedule'],['scores','Scores'],['brackets','Brackets']];
+    nav.innerHTML = pages.map(([k,l]) => `<button class="${adminPage===k?'active':''}" onclick="adminPage='${k}';render()">${l}</button>`).join('');
+  } else {
+    const pages = [['schedule','Schedule'],['standings','Standings'],['brackets','Brackets']];
+    nav.innerHTML = pages.map(([k,l]) => `<button class="${publicPage===k?'active':''}" onclick="publicPage='${k}';render()">${l}</button>`).join('');
+  }
+}
+
+// ══════════════════════════════════════════════════════════
+// ADMIN VIEWS
+// ══════════════════════════════════════════════════════════
+
+function renderAdmin() {
+  const sb = document.getElementById('sidebar');
+  sb.innerHTML = `
+    <div class="section-label">League Admin</div>
+    <a href="#" class="${adminPage==='divisions'?'active':''}" onclick="adminPage='divisions';render();return false">&#9632; Divisions</a>
+    <a href="#" class="${adminPage==='teams'?'active':''}" onclick="adminPage='teams';render();return false">&#9632; Teams &amp; Coaches</a>
+    <a href="#" class="${adminPage==='schedule'?'active':''}" onclick="adminPage='schedule';render();return false">&#9632; Schedule</a>
+    <a href="#" class="${adminPage==='scores'?'active':''}" onclick="adminPage='scores';render();return false">&#9632; Score Entry</a>
+    <a href="#" class="${adminPage==='brackets'?'active':''}" onclick="adminPage='brackets';render();return false">&#9632; Brackets</a>
+    <div class="section-label" style="margin-top:1.5rem">Data</div>
+    <a href="#" onclick="exportData();return false">&#8681; Export JSON</a>
+    <a href="#" onclick="if(confirm('Reset ALL data?')){localStorage.removeItem('ign3v3');state=defaultState();save();render();toast('Data reset')}return false" style="color:var(--red)">&#10005; Reset Data</a>
+  `;
+  const main = document.getElementById('main');
+  switch(adminPage) {
+    case 'divisions': main.innerHTML = adminDivisions(); break;
+    case 'teams': main.innerHTML = adminTeams(); break;
+    case 'schedule': main.innerHTML = adminSchedule(); attachScheduleDragDrop(); break;
+    case 'scores': main.innerHTML = adminScores(); break;
+    case 'brackets': main.innerHTML = adminBrackets(); break;
+  }
+}
+
+// ─── DIVISIONS PAGE ───
+function adminDivisions() {
+  let html = `<div class="card"><div class="card-header"><div class="accent"></div>League Divisions</div>
+    <p style="color:var(--text2);font-size:.85rem;margin-bottom:1.2rem">Eight divisions across two nights. Each division runs independently with 4–10 teams.</p>
+    <div class="division-grid">`;
+  for (const d of state.divisions) {
+    const teams = (state.teams[d.id] || []);
+    html += `<div class="division-card" style="border-left-color:${d.color}">
+      <div class="division-card-title">${d.name}</div>
+      <div style="display:flex;gap:.3rem;margin:.4rem 0">
+        <span class="badge ${d.night==='Monday'?'badge-mon':'badge-tue'}">${d.night}</span>
+        <span class="badge ${d.gender==='Boys'?'badge-boys':'badge-girls'}">${d.gender}</span>
+      </div>
+      <div style="color:var(--text2);font-size:.78rem;margin-top:.3rem">${teams.length} team${teams.length!==1?'s':''} registered</div>
+    </div>`;
+  }
+  html += `</div></div>
+  <div class="card"><div class="card-header"><div class="accent"></div>League Settings</div>
+    <div class="form-row">
+      <div class="form-group">
+        <label>Bracket Play Starts Week</label>
+        <select onchange="state.settings.bracketStartWeek=+this.value;save()">
+          ${WEEKS.map(w=>`<option value="${w}" ${state.settings.bracketStartWeek===w?'selected':''}>Week ${w}</option>`).join('')}
+        </select>
+      </div>
+    </div>
+  </div>`;
+  return html;
+}
+
+// ─── TEAMS & COACHES PAGE ───
+function adminTeams() {
+  const div = state.divisions.find(d=>d.id===selectedDivision) || state.divisions[0];
+  const teams = state.teams[div.id] || [];
+
+  let teamRows = '';
+  for (let i = 0; i < teams.length; i++) {
+    const t = teams[i];
+    teamRows += `<tr>
+      <td style="font-weight:600">${t.name}</td>
+      <td>${t.coach || '—'}</td>
+      <td style="color:var(--text3)">${t.coachEmail || '—'}</td>
+      <td><button class="btn btn-danger btn-sm" onclick="removeTeam('${div.id}',${i})">Remove</button></td>
+    </tr>`;
+  }
+
+  return `<div class="card"><div class="card-header"><div class="accent"></div>Teams &amp; Coaches</div>
+    <div class="form-row" style="margin-bottom:1rem">
+      <div class="form-group">
+        <label>Select Division</label>
+        <select onchange="selectedDivision=this.value;render()">
+          ${state.divisions.map(d=>`<option value="${d.id}" ${d.id===div.id?'selected':''}>${d.name} (${d.night})</option>`).join('')}
+        </select>
+      </div>
+    </div>
+    <div style="border-left:4px solid ${div.color};padding-left:1rem;margin-bottom:1rem">
+      <span style="font-family:var(--font-display);font-weight:800;font-size:1.1rem;text-transform:uppercase">${div.name}</span>
+      <span class="badge ${div.night==='Monday'?'badge-mon':'badge-tue'}" style="margin-left:.5rem">${div.night}</span>
+      <span style="color:var(--text3);font-size:.78rem;margin-left:.5rem">${teams.length}/10 teams</span>
+    </div>
+    ${teams.length > 0 ? `<table class="standings-table" style="margin-bottom:1rem">
+      <thead><tr><th>Team Name</th><th>Coach</th><th>Email</th><th></th></tr></thead>
+      <tbody>${teamRows}</tbody>
+    </table>` : '<div class="empty-state">No teams added yet</div>'}
+    ${teams.length < 10 ? `
+    <div style="margin-top:1rem;padding-top:1rem;border-top:1px solid var(--border)">
+      <div style="font-family:var(--font-display);font-weight:700;font-size:1rem;text-transform:uppercase;margin-bottom:.6rem">Add Team</div>
+      <div class="form-row">
+        <div class="form-group"><label>Team Name</label><input type="text" id="newTeamName" placeholder="e.g. Thunder"></div>
+        <div class="form-group"><label>Coach Name</label><input type="text" id="newCoachName" placeholder="Coach name"></div>
+        <div class="form-group"><label>Coach Email</label><input type="email" id="newCoachEmail" placeholder="email@example.com"></div>
+      </div>
+      <button class="btn btn-primary" onclick="addTeam('${div.id}')">+ Add Team</button>
+    </div>` : ''}
+  </div>`;
+}
+
+function addTeam(divId) {
+  const name = document.getElementById('newTeamName').value.trim();
+  const coach = document.getElementById('newCoachName').value.trim();
+  const email = document.getElementById('newCoachEmail').value.trim();
+  if (!name) { toast('Enter a team name', true); return; }
+  if (!state.teams[divId]) state.teams[divId] = [];
+  if (state.teams[divId].length >= 10) { toast('Max 10 teams per division', true); return; }
+  state.teams[divId].push({ id: uid(), name, coach, coachEmail: email });
+  save();
+  toast('Team added');
+  render();
+}
+
+function removeTeam(divId, idx) {
+  if (!confirm('Remove this team? This will also clear matchups.')) return;
+  state.teams[divId].splice(idx, 1);
+  delete state.matchups[divId];
+  save();
+  toast('Team removed');
+  render();
+}
+
+// ─── MATCHUP GENERATION ───
+function generateMatchups(divId) {
+  const teams = state.teams[divId] || [];
+  if (teams.length < 2) { toast('Need at least 2 teams', true); return; }
+  const pairs = [];
+  for (let i = 0; i < teams.length; i++) {
+    for (let j = i + 1; j < teams.length; j++) {
+      pairs.push({ id: uid(), t1: teams[i].id, t2: teams[j].id, divId });
+    }
+  }
+  const gamesPerTeam = 10;
+  const totalGameSlots = (gamesPerTeam * teams.length) / 2;
+  let matchups = [...pairs];
+  while (matchups.length < totalGameSlots) {
+    for (const p of pairs) {
+      if (matchups.length >= totalGameSlots) break;
+      matchups.push({ id: uid(), t1: p.t1, t2: p.t2, divId });
+    }
+  }
+  matchups = matchups.slice(0, totalGameSlots);
+  state.matchups[divId] = matchups;
+  save();
+  toast(`Generated ${matchups.length} matchups`);
+  render();
+}
+
+// ─── SCHEDULE PAGE ───
+function adminSchedule() {
+  const nightDivs = state.divisions.filter(d => d.night === schedNight);
+  const schedKey = `${schedNight}-${schedWeek}`;
+  if (!state.schedule[schedKey]) state.schedule[schedKey] = {};
+  const sched = state.schedule[schedKey];
+
+  let gridHTML = `<div class="sched-grid" id="schedGrid">
+    <div class="hdr">Time</div>${COURTS.map(c=>`<div class="hdr">Court ${c}</div>`).join('')}`;
+
+  for (const slot of TIME_SLOTS) {
+    gridHTML += `<div class="time-label">${slot}</div>`;
+    for (const court of COURTS) {
+      const key = `${slot}-${court}`;
+      const entry = sched[key];
+      let content = '';
+      if (entry) {
+        const matchup = findMatchup(entry.matchupId, entry.divId);
+        const div = state.divisions.find(d=>d.id===entry.divId);
+        if (matchup) {
+          const t1 = getTeamName(entry.divId, matchup.t1);
+          const t2 = getTeamName(entry.divId, matchup.t2);
+          const isBracket = entry.type === 'bracket';
+          content = `<div class="game-chip ${isBracket?'bracket-chip':''}" draggable="true" ondragstart="dragFromGrid(event,'${schedKey}','${key}')">
+            <div class="div-tag" style="color:${div?.color||'var(--orange)'}">${div?.name||''}</div>
+            <div style="font-weight:600">${t1}</div><div style="color:var(--text3);font-size:.6rem">vs</div><div style="font-weight:600">${t2}</div>
+            ${isBracket?'<div style="font-size:.58rem;color:var(--orange);font-weight:700">BRACKET</div>':''}
+            <button class="remove-btn" onclick="removeFromSchedule('${schedKey}','${key}')">×</button>
+          </div>`;
+        }
+      }
+      gridHTML += `<div class="cell" data-key="${key}" ondragover="dragOver(event)" ondragleave="dragLeave(event)" ondrop="dropOnGrid(event,'${schedKey}','${key}')">${content}</div>`;
+    }
+  }
+  gridHTML += '</div>';
+
+  let poolHTML = '';
+  for (const div of nightDivs) {
+    const matchups = state.matchups[div.id] || [];
+    const teams = state.teams[div.id] || [];
+    if (teams.length < 2) {
+      poolHTML += `<div style="margin-bottom:.8rem"><div style="display:flex;align-items:center;gap:.4rem;margin-bottom:.3rem">
+        <span class="division-color-dot" style="background:${div.color}"></span>
+        <strong style="font-size:.82rem">${div.name}</strong></div>
+        <div class="empty-state" style="padding:.5rem;font-size:.75rem">Add teams first</div></div>`;
+      continue;
+    }
+    if (matchups.length === 0) {
+      poolHTML += `<div style="margin-bottom:.8rem"><div style="display:flex;align-items:center;gap:.4rem;margin-bottom:.3rem">
+        <span class="division-color-dot" style="background:${div.color}"></span>
+        <strong style="font-size:.82rem">${div.name}</strong></div>
+        <button class="btn btn-primary btn-sm" onclick="generateMatchups('${div.id}')">Generate Matchups</button></div>`;
+      continue;
+    }
+    const scheduled = getScheduledMatchupIds(div.id);
+    const chips = matchups.map((m, i) => {
+      const t1 = getTeamName(div.id, m.t1);
+      const t2 = getTeamName(div.id, m.t2);
+      const isSched = scheduled.has(m.id);
+      return `<div class="chip ${isSched?'scheduled':''}" draggable="${!isSched}" ondragstart="dragFromPool(event,'${div.id}','${m.id}')" title="${t1} vs ${t2}">${t1} vs ${t2}</div>`;
+    }).join('');
+    const unschedCount = matchups.filter(m => !scheduled.has(m.id)).length;
+    poolHTML += `<div style="margin-bottom:.8rem"><div style="display:flex;align-items:center;gap:.4rem;margin-bottom:.3rem">
+      <span class="division-color-dot" style="background:${div.color}"></span>
+      <strong style="font-size:.82rem">${div.name}</strong>
+      <span style="font-size:.72rem;color:var(--text3)">${unschedCount} unscheduled</span>
+      <button class="btn btn-secondary btn-sm" style="margin-left:auto" onclick="if(confirm('Regenerate matchups for ${div.name}?')){generateMatchups('${div.id}')}">Regen</button>
+    </div><div class="matchup-pool">${chips}</div></div>`;
+  }
+
+  let bracketPoolHTML = '';
+  for (const div of nightDivs) {
+    const bracket = state.brackets[div.id];
+    if (!bracket || !bracket.generated) continue;
+    const allGames = [...(bracket.winners||[]),...(bracket.consolation||[]),...(bracket.ninthPlace||[])];
+    const scheduledBracketIds = getScheduledBracketIds(div.id);
+    const unschedGames = allGames.filter(g => !scheduledBracketIds.has(g.id));
+    if (unschedGames.length === 0) continue;
+    bracketPoolHTML += `<div style="margin-bottom:.8rem"><div style="display:flex;align-items:center;gap:.4rem;margin-bottom:.3rem">
+      <span class="division-color-dot" style="background:${div.color}"></span>
+      <strong style="font-size:.82rem">${div.name} — Bracket Games</strong></div><div class="matchup-pool">`;
+    for (const g of unschedGames) {
+      const t1 = g.t1 ? getTeamName(div.id, g.t1) : `Seed #${g.seed1}`;
+      const t2 = g.t2 ? getTeamName(div.id, g.t2) : `Seed #${g.seed2}`;
+      bracketPoolHTML += `<div class="chip" style="border-color:var(--orange)" draggable="true" ondragstart="dragBracketGame(event,'${div.id}','${g.id}')">${g.label}: ${t1} vs ${t2}</div>`;
+    }
+    bracketPoolHTML += '</div></div>';
+  }
+
+  return `<div class="card"><div class="card-header"><div class="accent"></div>Schedule Grid</div>
+    <div class="form-row" style="margin-bottom:1rem">
+      <div class="form-group" style="max-width:160px">
+        <label>Night</label>
+        <select onchange="schedNight=this.value;render()">
+          <option ${schedNight==='Monday'?'selected':''}>Monday</option>
+          <option ${schedNight==='Tuesday'?'selected':''}>Tuesday</option>
+        </select>
+      </div>
+      <div class="form-group" style="max-width:160px">
+        <label>Week</label>
+        <select onchange="schedWeek=+this.value;render()">
+          ${WEEKS.map(w=>`<option value="${w}" ${schedWeek===w?'selected':''}>Week ${w}</option>`).join('')}
+        </select>
+      </div>
+    </div>
+    ${gridHTML}
+  </div>
+  <div class="card"><div class="card-header"><div class="accent"></div>Matchup Pool — Drag into Grid</div>
+    <p style="color:var(--text2);font-size:.78rem;margin-bottom:.8rem">Drag matchups onto the schedule grid above. Grayed out chips are already scheduled.</p>
+    ${poolHTML}
+    ${bracketPoolHTML ? '<div style="margin-top:.5rem;padding-top:.5rem;border-top:1px solid var(--border)"><div style="font-family:var(--font-display);font-weight:700;color:var(--orange);font-size:.9rem;text-transform:uppercase;margin-bottom:.5rem">Bracket Games</div>' + bracketPoolHTML + '</div>' : ''}
+  </div>`;
+}
+
+// ─── DRAG & DROP ───
+function dragFromPool(e, divId, matchupId) {
+  dragData = { source: 'pool', divId, matchupId };
+  e.dataTransfer.effectAllowed = 'move';
+  e.dataTransfer.setData('text/plain', matchupId);
+}
+function dragFromGrid(e, schedKey, cellKey) {
+  dragData = { source: 'grid', schedKey, cellKey };
+  e.dataTransfer.effectAllowed = 'move';
+  e.dataTransfer.setData('text/plain', cellKey);
+}
+function dragBracketGame(e, divId, gameId) {
+  dragData = { source: 'bracket', divId, gameId };
+  e.dataTransfer.effectAllowed = 'move';
+  e.dataTransfer.setData('text/plain', gameId);
+}
+function dragOver(e) { e.preventDefault(); e.currentTarget.classList.add('drop-hover'); }
+function dragLeave(e) { e.currentTarget.classList.remove('drop-hover'); }
+function dropOnGrid(e, schedKey, cellKey) {
+  e.preventDefault();
+  e.currentTarget.classList.remove('drop-hover');
+  if (!dragData) return;
+  if (!state.schedule[schedKey]) state.schedule[schedKey] = {};
+  if (state.schedule[schedKey][cellKey]) { toast('Slot occupied — remove first', true); dragData = null; return; }
+  if (dragData.source === 'pool') {
+    const conflict = checkCoachConflict(schedKey, cellKey, dragData.divId, dragData.matchupId);
+    if (conflict) { toast(`Coach conflict: ${conflict}`, true); dragData = null; return; }
+    state.schedule[schedKey][cellKey] = { matchupId: dragData.matchupId, divId: dragData.divId, type: 'regular' };
+  } else if (dragData.source === 'grid') {
+    const old = state.schedule[dragData.schedKey][dragData.cellKey];
+    if (old) {
+      const conflict = checkCoachConflict(schedKey, cellKey, old.divId, old.matchupId, dragData.cellKey);
+      if (conflict) { toast(`Coach conflict: ${conflict}`, true); dragData = null; return; }
+      state.schedule[schedKey][cellKey] = old;
+      delete state.schedule[dragData.schedKey][dragData.cellKey];
+    }
+  } else if (dragData.source === 'bracket') {
+    const bracket = state.brackets[dragData.divId];
+    const allGames = [...(bracket.winners||[]),...(bracket.consolation||[]),...(bracket.ninthPlace||[])];
+    const game = allGames.find(g => g.id === dragData.gameId);
+    if (game) state.schedule[schedKey][cellKey] = { matchupId: dragData.gameId, divId: dragData.divId, type: 'bracket', bracketGameId: dragData.gameId };
+  }
+  save(); dragData = null; render();
+}
+function removeFromSchedule(schedKey, cellKey) {
+  if (state.schedule[schedKey]) { delete state.schedule[schedKey][cellKey]; save(); render(); }
+}
+function attachScheduleDragDrop() {}
+
+function checkCoachConflict(schedKey, targetCellKey, divId, matchupId, excludeCellKey) {
+  const sched = state.schedule[schedKey] || {};
+  const matchup = findMatchup(matchupId, divId);
+  if (!matchup) return null;
+  const coaches = getCoachesForMatchup(divId, matchup);
+  const targetTime = targetCellKey.substring(0, targetCellKey.indexOf(' PM') + 3);
+  for (const [key, entry] of Object.entries(sched)) {
+    if (key === targetCellKey || key === excludeCellKey) continue;
+    const entryTime = key.substring(0, key.indexOf(' PM') + 3);
+    if (entryTime !== targetTime) continue;
+    const otherMatchup = findMatchup(entry.matchupId, entry.divId);
+    if (!otherMatchup) continue;
+    const otherCoaches = getCoachesForMatchup(entry.divId, otherMatchup);
+    for (const c of coaches) { if (c && otherCoaches.includes(c)) return c; }
+  }
+  return null;
+}
+function getCoachesForMatchup(divId, matchup) {
+  const teams = state.teams[divId] || [];
+  const t1 = teams.find(t => t.id === matchup.t1);
+  const t2 = teams.find(t => t.id === matchup.t2);
+  return [t1?.coach, t2?.coach].filter(Boolean);
+}
+
+// ─── SCORE ENTRY ───
+function adminScores() {
+  const div = state.divisions.find(d=>d.id===selectedDivision) || state.divisions[0];
+  const matchups = state.matchups[div.id] || [];
+  const weekGames = {};
+  for (const [schedKey, slots] of Object.entries(state.schedule)) {
+    for (const [cellKey, entry] of Object.entries(slots)) {
+      if (entry.divId === div.id && entry.type === 'regular') {
+        const week = parseInt(schedKey.split('-')[1]);
+        if (!weekGames[week]) weekGames[week] = [];
+        const m = findMatchup(entry.matchupId, entry.divId);
+        if (m) weekGames[week].push({ ...m, cellKey, schedKey });
+      }
+    }
+  }
+  const bracketGames = {};
+  for (const [schedKey, slots] of Object.entries(state.schedule)) {
+    for (const [cellKey, entry] of Object.entries(slots)) {
+      if (entry.divId === div.id && entry.type === 'bracket') {
+        const week = parseInt(schedKey.split('-')[1]);
+        if (!bracketGames[week]) bracketGames[week] = [];
+        const bracket = state.brackets[div.id];
+        if (bracket) {
+          const allGames = [...(bracket.winners||[]),...(bracket.consolation||[]),...(bracket.ninthPlace||[])];
+          const g = allGames.find(bg => bg.id === entry.bracketGameId);
+          if (g) bracketGames[week].push({ ...g, cellKey, schedKey, isBracket: true });
+        }
+      }
+    }
+  }
+  let scoresHTML = '';
+  for (const w of WEEKS) {
+    const games = weekGames[w] || [];
+    const bGames = bracketGames[w] || [];
+    if (games.length === 0 && bGames.length === 0) continue;
+    scoresHTML += `<div style="margin-bottom:1rem"><div style="font-family:var(--font-display);font-weight:800;font-size:1rem;color:var(--orange);margin-bottom:.5rem;text-transform:uppercase">Week ${w}</div>`;
+    for (const m of games) {
+      const t1 = getTeamName(div.id, m.t1);
+      const t2 = getTeamName(div.id, m.t2);
+      const score = state.scores[m.id];
+      scoresHTML += `<div class="score-row">
+        <div class="teams"><strong>${t1}</strong> <span class="vs">vs</span> <strong>${t2}</strong></div>
+        <input type="number" min="0" id="s1_${m.id}" value="${score?.s1??''}" placeholder="—">
+        <span class="vs">—</span>
+        <input type="number" min="0" id="s2_${m.id}" value="${score?.s2??''}" placeholder="—">
+        <button class="btn btn-primary btn-sm" onclick="saveScore('${m.id}','${div.id}',false)">Save</button>
+        ${score ? '<span class="result-badge saved">Saved</span>' : ''}
+      </div>`;
+    }
+    for (const g of bGames) {
+      const t1 = g.t1 ? getTeamName(div.id, g.t1) : 'TBD';
+      const t2 = g.t2 ? getTeamName(div.id, g.t2) : 'TBD';
+      const bracket = state.brackets[div.id];
+      const bScore = bracket?.bracketScores?.[g.id];
+      scoresHTML += `<div class="score-row" style="border-left:3px solid var(--orange);margin-left:.3rem">
+        <div class="teams"><strong>${t1}</strong> <span class="vs">vs</span> <strong>${t2}</strong> <span style="font-size:.68rem;color:var(--orange);font-weight:700">[${g.label}]</span></div>
+        <input type="number" min="0" id="bs1_${g.id}" value="${bScore?.s1??''}" placeholder="—">
+        <span class="vs">—</span>
+        <input type="number" min="0" id="bs2_${g.id}" value="${bScore?.s2??''}" placeholder="—">
+        <button class="btn btn-primary btn-sm" onclick="saveBracketScore('${g.id}','${div.id}')">Save</button>
+        ${bScore ? '<span class="result-badge saved">Saved</span>' : ''}
+      </div>`;
+    }
+    scoresHTML += '</div>';
+  }
+  if (!scoresHTML) scoresHTML = '<div class="empty-state">No games scheduled for this division yet</div>';
+  return `<div class="card"><div class="card-header"><div class="accent"></div>Score Entry</div>
+    <div class="form-row" style="margin-bottom:1rem">
+      <div class="form-group">
+        <label>Division</label>
+        <select onchange="selectedDivision=this.value;render()">
+          ${state.divisions.map(d=>`<option value="${d.id}" ${d.id===div.id?'selected':''}>${d.name} (${d.night})</option>`).join('')}
+        </select>
+      </div>
+    </div>
+    <p style="color:var(--text2);font-size:.78rem;margin-bottom:.8rem">Enter final scores only. Scores update standings and do not display on the public schedule.</p>
+    ${scoresHTML}
+  </div>`;
+}
+
+function saveScore(matchupId, divId, isBracket) {
+  const s1 = parseInt(document.getElementById('s1_' + matchupId)?.value);
+  const s2 = parseInt(document.getElementById('s2_' + matchupId)?.value);
+  if (isNaN(s1) || isNaN(s2)) { toast('Enter both scores', true); return; }
+  state.scores[matchupId] = { s1, s2 };
+  save(); toast('Score saved'); render();
+}
+
+function saveBracketScore(gameId, divId) {
+  const s1 = parseInt(document.getElementById('bs1_' + gameId)?.value);
+  const s2 = parseInt(document.getElementById('bs2_' + gameId)?.value);
+  if (isNaN(s1) || isNaN(s2)) { toast('Enter both scores', true); return; }
+  const bracket = state.brackets[divId];
+  if (!bracket) return;
+  if (!bracket.bracketScores) bracket.bracketScores = {};
+  bracket.bracketScores[gameId] = { s1, s2 };
+  advanceBracketWinner(divId, gameId, s1, s2);
+  save(); toast('Bracket score saved'); render();
+}
+
+function advanceBracketWinner(divId, gameId, s1, s2) {
+  const bracket = state.brackets[divId];
+  const allArrays = [bracket.winners, bracket.consolation, bracket.ninthPlace];
+  for (const arr of allArrays) {
+    if (!arr) continue;
+    const game = arr.find(g => g.id === gameId);
+    if (!game) continue;
+    const winnerId = s1 > s2 ? game.t1 : game.t2;
+    const loserId = s1 > s2 ? game.t2 : game.t1;
+    for (const nextGame of arr) {
+      if (nextGame.from1 === gameId) nextGame.t1 = winnerId;
+      if (nextGame.from2 === gameId) nextGame.t2 = winnerId;
+      if (nextGame.loserFrom1 === gameId) nextGame.t1 = loserId;
+      if (nextGame.loserFrom2 === gameId) nextGame.t2 = loserId;
+    }
+  }
+}
+
+// ─── STANDINGS ───
+function getStandings(divId) {
+  const teams = state.teams[divId] || [];
+  const matchups = state.matchups[divId] || [];
+  const standings = {};
+  for (const t of teams) standings[t.id] = { id: t.id, name: t.name, w: 0, l: 0, pf: 0, pa: 0 };
+  for (const m of matchups) {
+    const score = state.scores[m.id];
+    if (!score) continue;
+    const { s1, s2 } = score;
+    if (standings[m.t1]) { standings[m.t1].pf += s1; standings[m.t1].pa += s2; if (s1 > s2) standings[m.t1].w++; else standings[m.t1].l++; }
+    if (standings[m.t2]) { standings[m.t2].pf += s2; standings[m.t2].pa += s1; if (s2 > s1) standings[m.t2].w++; else standings[m.t2].l++; }
+  }
+  return Object.values(standings).sort((a, b) => {
+    const aWP = a.w + a.l > 0 ? a.w / (a.w + a.l) : 0;
+    const bWP = b.w + b.l > 0 ? b.w / (b.w + b.l) : 0;
+    if (bWP !== aWP) return bWP - aWP;
+    return (b.pf - b.pa) - (a.pf - a.pa);
+  });
+}
+
+// ─── BRACKETS ADMIN ───
+function adminBrackets() {
+  const div = state.divisions.find(d=>d.id===selectedDivision) || state.divisions[0];
+  const standings = getStandings(div.id);
+  const bracket = state.brackets[div.id];
+  let standingsPreview = '';
+  if (standings.length > 0) {
+    standingsPreview = `<table class="standings-table" style="margin-bottom:1rem">
+      <thead><tr><th>Seed</th><th>Team</th><th>Record</th><th>+/−</th></tr></thead><tbody>`;
+    standings.forEach((s, i) => {
+      standingsPreview += `<tr><td class="rank">${i+1}</td><td>${s.name}</td><td>${s.w}-${s.l}</td><td>${s.pf - s.pa > 0 ? '+' : ''}${s.pf - s.pa}</td></tr>`;
+    });
+    standingsPreview += '</tbody></table>';
+  }
+  let bracketHTML = '';
+  if (bracket && bracket.generated) {
+    bracketHTML = `<div style="margin-top:1rem">
+      <div style="font-family:var(--font-display);font-weight:800;color:var(--green);margin-bottom:.5rem;font-size:1rem;text-transform:uppercase">✓ Bracket Generated</div>
+      ${renderBracketVisual(div.id)}
+      <button class="btn btn-danger btn-sm" style="margin-top:.5rem" onclick="if(confirm('Reset bracket?')){delete state.brackets['${div.id}'];save();render()}">Reset Bracket</button>
+    </div>`;
+  }
+  return `<div class="card"><div class="card-header"><div class="accent"></div>Bracket Play</div>
+    <div class="form-row" style="margin-bottom:1rem">
+      <div class="form-group">
+        <label>Division</label>
+        <select onchange="selectedDivision=this.value;render()">
+          ${state.divisions.map(d=>`<option value="${d.id}" ${d.id===div.id?'selected':''}>${d.name} (${d.night})</option>`).join('')}
+        </select>
+      </div>
+    </div>
+    <div style="font-family:var(--font-display);font-weight:700;font-size:.9rem;text-transform:uppercase;margin-bottom:.5rem">Seed Preview</div>
+    ${standingsPreview || '<div class="empty-state">No standings yet</div>'}
+    ${standings.length >= 4 && (!bracket || !bracket.generated) ?
+      `<button class="btn btn-primary" onclick="generateBracket('${div.id}')">Generate Bracket from Standings →</button>` : ''}
+    ${bracketHTML}
+  </div>`;
+}
+
+function generateBracket(divId) {
+  const standings = getStandings(divId);
+  if (standings.length < 4) { toast('Need at least 4 teams', true); return; }
+  const seeds = standings.map((s, i) => ({ seed: i + 1, teamId: s.id, name: s.name }));
+  const n = seeds.length;
+  const winners = [];
+  const wSemi1 = { id: uid(), t1: seeds[0].teamId, t2: seeds[3].teamId, seed1: 1, seed2: 4, label: 'W Semi 1', round: 1 };
+  const wSemi2 = { id: uid(), t1: seeds[1].teamId, t2: seeds[2].teamId, seed1: 2, seed2: 3, label: 'W Semi 2', round: 1 };
+  const wFinal = { id: uid(), t1: null, t2: null, label: 'Championship', round: 2, from1: wSemi1.id, from2: wSemi2.id };
+  const w3rd = { id: uid(), t1: null, t2: null, label: '3rd Place', round: 2, loserFrom1: wSemi1.id, loserFrom2: wSemi2.id };
+  winners.push(wSemi1, wSemi2, wFinal, w3rd);
+  const consolation = [];
+  if (n >= 5) {
+    const cTeams = seeds.slice(4, 8);
+    if (cTeams.length >= 4) {
+      const cSemi1 = { id: uid(), t1: cTeams[0].teamId, t2: cTeams[3].teamId, seed1: 5, seed2: 8, label: 'C Semi 1', round: 1 };
+      const cSemi2 = { id: uid(), t1: cTeams[1].teamId, t2: cTeams[2].teamId, seed1: 6, seed2: 7, label: 'C Semi 2', round: 1 };
+      const cFinal = { id: uid(), t1: null, t2: null, label: '5th Place', round: 2, from1: cSemi1.id, from2: cSemi2.id };
+      const c7th = { id: uid(), t1: null, t2: null, label: '7th Place', round: 2, loserFrom1: cSemi1.id, loserFrom2: cSemi2.id };
+      consolation.push(cSemi1, cSemi2, cFinal, c7th);
+    } else if (cTeams.length === 2) {
+      consolation.push({ id: uid(), t1: cTeams[0].teamId, t2: cTeams[1].teamId, seed1: 5, seed2: 6, label: '5th Place', round: 1 });
+    }
+  }
+  const ninthPlace = [];
+  if (n >= 9) {
+    ninthPlace.push({ id: uid(), t1: seeds[8].teamId, t2: n >= 10 ? seeds[9].teamId : null, seed1: 9, seed2: n >= 10 ? 10 : null, label: '9th Place', round: 1 });
+  }
+  state.brackets[divId] = { generated: true, seeds, winners, consolation, ninthPlace, bracketScores: {} };
+  save(); toast('Bracket generated'); render();
+}
+
+function renderBracketVisual(divId) {
+  const bracket = state.brackets[divId];
+  if (!bracket) return '';
+  let html = '';
+  if (bracket.winners.length > 0) {
+    html += `<div style="margin-bottom:1.5rem"><div style="font-family:var(--font-display);font-weight:800;font-size:1rem;color:var(--orange);margin-bottom:.8rem;text-transform:uppercase">Winners Bracket</div>`;
+    html += renderBracketRounds(divId, bracket.winners, bracket.bracketScores || {});
+    html += '</div>';
+  }
+  if (bracket.consolation.length > 0) {
+    html += `<div style="margin-bottom:1.5rem"><div style="font-family:var(--font-display);font-weight:800;font-size:1rem;color:var(--blue);margin-bottom:.8rem;text-transform:uppercase">Consolation Bracket</div>`;
+    html += renderBracketRounds(divId, bracket.consolation, bracket.bracketScores || {});
+    html += '</div>';
+  }
+  if (bracket.ninthPlace.length > 0) {
+    html += `<div><div style="font-family:var(--font-display);font-weight:800;font-size:1rem;color:var(--text3);margin-bottom:.8rem;text-transform:uppercase">9th Place</div>`;
+    html += renderBracketRounds(divId, bracket.ninthPlace, bracket.bracketScores || {});
+    html += '</div>';
+  }
+  return html;
+}
+
+function renderBracketRounds(divId, games, scores) {
+  const rounds = {};
+  for (const g of games) { if (!rounds[g.round]) rounds[g.round] = []; rounds[g.round].push(g); }
+  let html = '<div class="bracket-container" style="display:flex;align-items:flex-start">';
+  for (const round of Object.keys(rounds).sort()) {
+    html += `<div class="bracket-round"><div class="round-title">Round ${round}</div>`;
+    for (const g of rounds[round]) {
+      const t1 = g.t1 ? getTeamName(divId, g.t1) : 'TBD';
+      const t2 = g.t2 ? getTeamName(divId, g.t2) : 'TBD';
+      const score = scores[g.id];
+      const w = score ? (score.s1 > score.s2 ? 't1' : 't2') : null;
+      html += `<div class="bracket-game">
+        <div style="text-align:center;font-size:.65rem;color:var(--orange);padding:.25rem;font-weight:700;background:var(--surface2);text-transform:uppercase">${g.label}</div>
+        <div class="team-row ${w==='t1'?'winner':''}">
+          <span>${g.seed1 ? '<span class="seed">#'+g.seed1+'</span>' : ''}${t1}</span>
+          ${score ? '<span class="score">'+score.s1+'</span>' : ''}
+        </div>
+        <div class="team-row ${w==='t2'?'winner':''}">
+          <span>${g.seed2 ? '<span class="seed">#'+g.seed2+'</span>' : ''}${t2}</span>
+          ${score ? '<span class="score">'+score.s2+'</span>' : ''}
+        </div>
+      </div>`;
+    }
+    html += '</div>';
+  }
+  html += '</div>';
+  return html;
+}
+
+// ══════════════════════════════════════════════════════════
+// PUBLIC VIEW
+// ══════════════════════════════════════════════════════════
+
+function renderPublic() {
+  document.getElementById('sidebar').innerHTML = `
+    <div class="section-label">View</div>
+    <a href="#" class="${publicPage==='schedule'?'active':''}" onclick="publicPage='schedule';render();return false">&#9632; Schedule</a>
+    <a href="#" class="${publicPage==='standings'?'active':''}" onclick="publicPage='standings';render();return false">&#9632; Standings</a>
+    <a href="#" class="${publicPage==='brackets'?'active':''}" onclick="publicPage='brackets';render();return false">&#9632; Brackets</a>
+  `;
+  const main = document.getElementById('main');
+  let html = `<div class="pub-hero">
+    <h1>IGN Academy 3v3 League</h1>
+    <p>Schedule, standings, and playoff brackets</p>
+  </div>
+  <div style="padding:1.5rem 0 0">`;
+
+  switch (publicPage) {
+    case 'schedule': html += publicSchedule(); break;
+    case 'standings': html += publicStandings(); break;
+    case 'brackets': html += publicBrackets(); break;
+  }
+  html += '</div>';
+  main.innerHTML = html;
+}
+
+function publicSchedule() {
+  let divOpts = state.divisions.map(d => `<option value="${d.id}" ${d.id===selectedDivision?'selected':''}>${d.name} (${d.night})</option>`).join('');
+  const div = state.divisions.find(d=>d.id===selectedDivision);
+  let weekTabs = WEEKS.map(w => `<button class="${schedWeek===w?'active':''}" onclick="schedWeek=${w};render()">Week ${w}${w >= state.settings.bracketStartWeek ? ' ★' : ''}</button>`).join('');
+  const night = div?.night || 'Monday';
+  const schedKey = `${night}-${schedWeek}`;
+  const sched = state.schedule[schedKey] || {};
+  let gridHTML = `<div class="sched-grid">
+    <div class="hdr">Time</div>${COURTS.map(c=>`<div class="hdr">Court ${c}</div>`).join('')}`;
+  for (const slot of TIME_SLOTS) {
+    gridHTML += `<div class="time-label">${slot}</div>`;
+    for (const court of COURTS) {
+      const key = `${slot}-${court}`;
+      const entry = sched[key];
+      let content = '';
+      if (entry && entry.divId === selectedDivision) {
+        let t1, t2, result = '';
+        if (entry.type === 'bracket') {
+          const bracket = state.brackets[entry.divId];
+          const allGames = bracket ? [...(bracket.winners||[]),...(bracket.consolation||[]),...(bracket.ninthPlace||[])] : [];
+          const game = allGames.find(g => g.id === entry.bracketGameId);
+          if (game) {
+            t1 = game.t1 ? getTeamName(entry.divId, game.t1) : 'TBD';
+            t2 = game.t2 ? getTeamName(entry.divId, game.t2) : 'TBD';
+            const bScore = bracket?.bracketScores?.[game.id];
+            if (bScore) result = `<div style="color:var(--green);font-weight:700;font-size:.65rem">${bScore.s1 > bScore.s2 ? t1 : t2}: W</div>`;
+            content = `<div style="font-size:.72rem;line-height:1.35;text-align:center">
+              <div style="color:var(--orange);font-size:.6rem;font-weight:700;text-transform:uppercase">Playoff</div>
+              <div style="font-weight:600">${t1}</div><div style="color:var(--text3);font-size:.6rem">vs</div><div style="font-weight:600">${t2}</div>${result}</div>`;
+          }
+        } else {
+          const matchup = findMatchup(entry.matchupId, entry.divId);
+          if (matchup) {
+            t1 = getTeamName(entry.divId, matchup.t1);
+            t2 = getTeamName(entry.divId, matchup.t2);
+            const score = state.scores[matchup.id];
+            if (score) result = `<div style="color:var(--green);font-weight:700;font-size:.65rem">${score.s1 > score.s2 ? t1 : t2}: W</div>`;
+            content = `<div style="font-size:.72rem;line-height:1.35;text-align:center">
+              <div style="font-weight:600">${t1}</div><div style="color:var(--text3);font-size:.6rem">vs</div><div style="font-weight:600">${t2}</div>${result}</div>`;
+          }
+        }
+      } else if (entry) {
+        const otherDiv = state.divisions.find(d=>d.id===entry.divId);
+        const matchup = findMatchup(entry.matchupId, entry.divId);
+        if (matchup) content = `<div style="font-size:.65rem;text-align:center;opacity:.35">
+          <div style="color:${otherDiv?.color||'var(--text3)'};font-size:.58rem;font-weight:700">${otherDiv?.name||''}</div>
+          <div>${getTeamName(entry.divId,matchup.t1)} vs ${getTeamName(entry.divId,matchup.t2)}</div></div>`;
+      }
+      gridHTML += `<div class="cell">${content}</div>`;
+    }
+  }
+  gridHTML += '</div>';
+  return `<div class="card">
+    <div class="card-header"><div class="accent"></div>Game Schedule</div>
+    <div class="form-row" style="margin-bottom:1rem">
+      <div class="form-group">
+        <label>Division</label>
+        <select onchange="selectedDivision=this.value;render()">${divOpts}</select>
+      </div>
+    </div>
+    <div class="tabs">${weekTabs}</div>
+    ${gridHTML}
+  </div>`;
+}
+
+function publicStandings() {
+  let html = '<div class="card"><div class="card-header"><div class="accent"></div>League Standings</div>';
+  html += `<p style="color:var(--text2);font-size:.82rem;margin-bottom:1rem">Tiebreaker: Record, then Point Differential (PF − PA)</p>`;
+  html += '<div class="tabs" style="margin-bottom:1rem">' +
+    state.divisions.map(d => `<button class="${selectedDivision===d.id?'active':''}" onclick="selectedDivision='${d.id}';render()">${d.name}</button>`).join('') + '</div>';
+  const div = state.divisions.find(d=>d.id===selectedDivision);
+  const standings = getStandings(selectedDivision);
+  if (standings.length === 0) {
+    html += '<div class="empty-state">No teams in this division yet</div>';
+  } else {
+    html += `<div style="border-left:4px solid ${div?.color||'var(--orange)'};padding-left:1rem;margin-bottom:1rem">
+      <span style="font-family:var(--font-display);font-weight:800;font-size:1.1rem;text-transform:uppercase">${div?.name||''}</span>
+      <span class="badge ${div?.night==='Monday'?'badge-mon':'badge-tue'}" style="margin-left:.5rem">${div?.night}</span>
+    </div>`;
+    html += `<table class="standings-table"><thead><tr>
+      <th style="width:40px">Rank</th><th>Team</th><th>W</th><th>L</th><th>PF</th><th>PA</th><th>+/−</th>
+    </tr></thead><tbody>`;
+    standings.forEach((s, i) => {
+      const diff = s.pf - s.pa;
+      html += `<tr>
+        <td class="rank">${i+1}</td>
+        <td style="font-weight:600">${s.name}</td>
+        <td style="color:var(--green);font-weight:700">${s.w}</td>
+        <td style="color:var(--red);font-weight:700">${s.l}</td>
+        <td>${s.pf}</td><td>${s.pa}</td>
+        <td style="font-weight:700;color:${diff>0?'var(--green)':diff<0?'var(--red)':'var(--text3)'}">${diff>0?'+':''}${diff}</td>
+      </tr>`;
+    });
+    html += '</tbody></table>';
+  }
+  html += '</div>';
+  return html;
+}
+
+function publicBrackets() {
+  let html = '<div class="card"><div class="card-header"><div class="accent"></div>Playoff Brackets</div>';
+  html += '<div class="tabs" style="margin-bottom:1rem">' +
+    state.divisions.map(d => `<button class="${selectedDivision===d.id?'active':''}" onclick="selectedDivision='${d.id}';render()">${d.name}</button>`).join('') + '</div>';
+  const bracket = state.brackets[selectedDivision];
+  if (!bracket || !bracket.generated) {
+    html += '<div class="empty-state">Brackets not yet generated for this division</div>';
+  } else {
+    html += renderBracketVisual(selectedDivision);
+  }
+  html += '</div>';
+  return html;
+}
+
+// ─── HELPERS ───
+function getTeamName(divId, teamId) {
+  const teams = state.teams[divId] || [];
+  const t = teams.find(t => t.id === teamId);
+  return t ? t.name : '???';
+}
+function findMatchup(matchupId, divId) {
+  const matchups = state.matchups[divId] || [];
+  let m = matchups.find(m => m.id === matchupId);
+  if (m) return m;
+  const bracket = state.brackets[divId];
+  if (bracket) {
+    const allGames = [...(bracket.winners||[]),...(bracket.consolation||[]),...(bracket.ninthPlace||[])];
+    m = allGames.find(g => g.id === matchupId);
+    if (m) return m;
+  }
+  return null;
+}
+function getScheduledMatchupIds(divId) {
+  const ids = new Set();
+  for (const [key, slots] of Object.entries(state.schedule)) {
+    for (const [cell, entry] of Object.entries(slots)) {
+      if (entry.divId === divId && entry.type === 'regular') ids.add(entry.matchupId);
+    }
+  }
+  return ids;
+}
+function getScheduledBracketIds(divId) {
+  const ids = new Set();
+  for (const [key, slots] of Object.entries(state.schedule)) {
+    for (const [cell, entry] of Object.entries(slots)) {
+      if (entry.divId === divId && entry.type === 'bracket') ids.add(entry.bracketGameId);
+    }
+  }
+  return ids;
+}
+function exportData() {
+  const blob = new Blob([JSON.stringify(state, null, 2)], { type: 'application/json' });
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = 'ign-league-data.json';
+  a.click();
+}
+
+// ─── INIT ───
+render();
+</script>
+</body>
+</html>
