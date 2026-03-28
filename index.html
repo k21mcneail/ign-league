@@ -3,9 +3,11 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>IGN Academy â 3v3 League</title>
+<title>IGN Academy — 3v3 League</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:ital,wght@0,400;0,600;0,700;0,800;0,900;1,800;1,900&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
 <style>
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
 :root{
@@ -35,8 +37,7 @@
 html{font-size:14px;scroll-behavior:smooth}
 body{font-family:var(--font-body);background:var(--bg);color:var(--text);min-height:100vh;overflow-x:hidden}
 h1,h2,h3,h4{font-family:var(--font-display);text-transform:uppercase;letter-spacing:.02em}
-
-/* âââ TOP BAR âââ */
+/* ─── TOP BAR ─── */
 .topbar{
   background:var(--surface);
   border-bottom:1px solid var(--border);
@@ -67,11 +68,9 @@ h1,h2,h3,h4{font-family:var(--font-display);text-transform:uppercase;letter-spac
   color:var(--text3);background:transparent;text-transform:uppercase;letter-spacing:.05em;transition:all .15s;
 }
 .mode-toggle button.active{background:var(--orange);color:#fff;box-shadow:0 1px 3px rgba(249,115,22,.3)}
-
-/* âââ ORANGE DIVIDER BAR âââ */
+/* ─── ORANGE DIVIDER BAR ─── */
 .orange-bar{height:4px;background:var(--orange)}
-
-/* âââ LAYOUT âââ */
+/* ─── LAYOUT ─── */
 .app-body{display:flex;min-height:calc(100vh - 62px)}
 .sidebar{
   width:220px;background:var(--surface);
@@ -91,8 +90,7 @@ h1,h2,h3,h4{font-family:var(--font-display);text-transform:uppercase;letter-spac
   padding:.8rem 1.2rem .3rem;text-transform:uppercase;letter-spacing:.1em;
 }
 .main{flex:1;padding:1.5rem;overflow-y:auto;max-width:1200px}
-
-/* âââ HERO SECTION âââ */
+/* ─── HERO SECTION ─── */
 .pub-hero{
   background:var(--bg);
   padding:2.5rem 0 2rem;
@@ -107,8 +105,7 @@ h1,h2,h3,h4{font-family:var(--font-display);text-transform:uppercase;letter-spac
   margin-bottom:.5rem;
 }
 .pub-hero p{color:var(--text2);font-size:1rem;font-weight:400}
-
-/* âââ CARDS âââ */
+/* ─── CARDS ─── */
 .card{
   background:var(--surface);
   border:1px solid var(--border);
@@ -127,8 +124,7 @@ h1,h2,h3,h4{font-family:var(--font-display);text-transform:uppercase;letter-spac
   text-transform:uppercase;letter-spacing:.03em;
 }
 .card-header .accent{width:4px;height:20px;background:var(--orange);border-radius:2px}
-
-/* âââ BUTTONS âââ */
+/* ─── BUTTONS ─── */
 .btn{
   font-family:var(--font-display);font-weight:700;font-size:.82rem;
   padding:.5rem 1.1rem;border:none;border-radius:var(--radius);
@@ -142,8 +138,7 @@ h1,h2,h3,h4{font-family:var(--font-display);text-transform:uppercase;letter-spac
 .btn-sm{font-size:.72rem;padding:.3rem .7rem}
 .btn-danger{background:var(--red);color:#fff}.btn-danger:hover{background:#b91c1c}
 .btn-success{background:var(--green);color:#fff}
-
-/* âââ FORMS âââ */
+/* ─── FORMS ─── */
 select,input[type="text"],input[type="number"],input[type="email"]{
   font-family:var(--font-body);font-size:.82rem;padding:.45rem .65rem;
   background:var(--surface);border:1px solid var(--border-dark);
@@ -154,8 +149,7 @@ select{cursor:pointer}
 label{font-size:.75rem;color:var(--text2);font-weight:600;display:block;margin-bottom:.3rem;text-transform:uppercase;letter-spacing:.04em}
 .form-row{display:flex;gap:.8rem;flex-wrap:wrap;margin-bottom:.8rem}
 .form-group{display:flex;flex-direction:column;flex:1;min-width:140px}
-
-/* âââ TABS âââ */
+/* ─── TABS ─── */
 .tabs{display:flex;gap:0;margin-bottom:1rem;border-bottom:2px solid var(--border);flex-wrap:wrap}
 .tabs button{
   font-family:var(--font-display);font-weight:700;font-size:.82rem;
@@ -166,8 +160,7 @@ label{font-size:.75rem;color:var(--text2);font-weight:600;display:block;margin-b
 }
 .tabs button.active{color:var(--orange);border-bottom-color:var(--orange)}
 .tabs button:hover:not(.active){color:var(--text)}
-
-/* âââ SCHEDULE GRID âââ */
+/* ─── SCHEDULE GRID ─── */
 .sched-grid{
   display:grid;grid-template-columns:90px repeat(4,1fr);
   gap:1px;background:var(--border);
@@ -206,19 +199,28 @@ label{font-size:.75rem;color:var(--text2);font-weight:600;display:block;margin-b
   opacity:0;transition:opacity .12s;
 }
 .sched-grid .cell .game-chip:hover .remove-btn{opacity:1}
+.sched-grid .cell .game-chip.selected{outline:2px solid var(--orange);outline-offset:1px;box-shadow:0 0 6px rgba(249,115,22,.3)}
 .sched-grid .cell .game-chip .div-tag{font-size:.6rem;color:var(--orange);font-weight:700}
-
-/* âââ MATCHUP POOL âââ */
+/* ─── MATCHUP POOL ─── */
 .matchup-pool{max-height:400px;overflow-y:auto;display:flex;flex-wrap:wrap;gap:.4rem;padding:.5rem}
+.pool-dropdown{margin-bottom:.5rem;border:1px solid var(--border);border-radius:8px;overflow:hidden;background:var(--surface)}
+.pool-dropdown summary{display:flex;align-items:center;gap:.4rem;padding:.5rem .7rem;cursor:pointer;list-style:none;user-select:none;font-size:.82rem;font-weight:600;background:var(--surface2);transition:background .15s}
+.pool-dropdown summary:hover{background:var(--surface3)}
+.pool-dropdown summary::-webkit-details-marker{display:none}
+.pool-dropdown summary::before{content:'▶';font-size:.6rem;color:var(--text3);transition:transform .15s;display:inline-block;width:1rem;text-align:center}
+.pool-dropdown[open] summary::before{transform:rotate(90deg)}
+.pool-dropdown .matchup-pool{border-top:1px solid var(--border)}
 .matchup-pool .chip{
   background:var(--surface2);border:1px solid var(--border);
-  border-radius:6px;padding:.3rem .5rem;font-size:.72rem;cursor:grab;
+  border-radius:6px;padding:.3rem .5rem;font-size:.72rem;cursor:pointer;
   white-space:nowrap;transition:all .12s;color:var(--text);
 }
 .matchup-pool .chip:hover{border-color:var(--orange);background:var(--orange-glow)}
 .matchup-pool .chip.scheduled{opacity:.35;pointer-events:none;text-decoration:line-through}
-
-/* âââ STANDINGS TABLE âââ */
+.matchup-pool .chip.selected{border-color:var(--orange);background:var(--orange-glow);box-shadow:0 0 0 2px var(--orange);font-weight:600}
+.sched-grid .cell.click-target{background:var(--orange-glow);border-color:var(--orange);cursor:pointer;animation:pulse-cell .8s infinite alternate}
+@keyframes pulse-cell{from{box-shadow:inset 0 0 0 1px var(--orange)}to{box-shadow:inset 0 0 8px rgba(249,115,22,.25)}}
+/* ─── STANDINGS TABLE ─── */
 .standings-table{width:100%;border-collapse:collapse;font-size:.82rem}
 .standings-table th{
   font-family:var(--font-display);font-weight:800;color:var(--text);
@@ -229,8 +231,7 @@ label{font-size:.75rem;color:var(--text2);font-weight:600;display:block;margin-b
 .standings-table td{padding:.5rem .7rem;border-bottom:1px solid var(--border)}
 .standings-table tr:hover td{background:var(--surface2)}
 .standings-table .rank{font-family:var(--font-display);font-weight:800;color:var(--orange);font-size:1rem}
-
-/* âââ BRACKET âââ */
+/* ─── BRACKET ─── */
 .bracket-container{overflow-x:auto;padding:1rem 0}
 .bracket-round{display:inline-flex;flex-direction:column;justify-content:space-around;min-width:200px;margin-right:2rem}
 .bracket-round .round-title{
@@ -250,8 +251,7 @@ label{font-size:.75rem;color:var(--text2);font-weight:600;display:block;margin-b
 .bracket-game .team-row.winner{background:var(--orange-glow);font-weight:700;color:var(--orange)}
 .bracket-game .seed{color:var(--text3);font-size:.7rem;margin-right:.4rem}
 .bracket-game .score{font-weight:700;color:var(--orange)}
-
-/* âââ DIVISION CARDS âââ */
+/* ─── DIVISION CARDS ─── */
 .division-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:.8rem}
 .division-card{
   background:var(--surface);border:1px solid var(--border);
@@ -265,8 +265,7 @@ label{font-size:.75rem;color:var(--text2);font-weight:600;display:block;margin-b
   font-size:1.05rem;color:var(--text);text-transform:uppercase;
   margin-bottom:.4rem;
 }
-
-/* âââ SCORE ENTRY âââ */
+/* ─── SCORE ENTRY ─── */
 .score-row{
   display:flex;align-items:center;gap:.6rem;
   padding:.55rem .7rem;border-bottom:1px solid var(--border);font-size:.82rem;
@@ -277,17 +276,54 @@ label{font-size:.75rem;color:var(--text2);font-weight:600;display:block;margin-b
 .score-row .vs{color:var(--text3);font-weight:600;font-size:.72rem}
 .score-row .result-badge{font-size:.68rem;font-weight:700;padding:.2rem .5rem;border-radius:4px}
 .score-row .result-badge.saved{background:var(--green-light);color:var(--green)}
-
-/* âââ BADGES âââ */
+/* ─── BADGES ─── */
 .badge{font-size:.65rem;font-weight:700;padding:.2rem .5rem;border-radius:4px;text-transform:uppercase;letter-spacing:.03em}
 .badge-mon{background:#dbeafe;color:#1d4ed8}
 .badge-tue{background:#ede9fe;color:#7c3aed}
 .badge-boys{background:#dbeafe;color:#1d4ed8}
 .badge-girls{background:#fce7f3;color:#be185d}
 .badge-open{background:#dcfce7;color:#15803d}
-
-/* âââ MISC âââ */
+/* ─── MISC ─── */
 .empty-state{text-align:center;padding:2.5rem;color:var(--text3);font-style:italic;font-size:.85rem}
+/* ─── LOGIN OVERLAY ─── */
+.login-overlay{
+  position:fixed;inset:0;z-index:200;
+  background:rgba(0,0,0,.45);backdrop-filter:blur(4px);
+  display:flex;align-items:center;justify-content:center;
+}
+.login-overlay.hidden{display:none}
+.login-box{
+  background:var(--surface);border-radius:12px;
+  padding:2.5rem 2rem;width:340px;max-width:90vw;
+  box-shadow:0 20px 60px rgba(0,0,0,.15);
+  text-align:center;
+}
+.login-box .login-logo{
+  font-family:var(--font-display);font-weight:900;font-size:1.8rem;
+  color:var(--text);margin-bottom:.3rem;display:flex;align-items:center;
+  justify-content:center;gap:.5rem;
+}
+.login-box .login-logo .logo-box{
+  background:var(--orange);color:#fff;
+  padding:.1rem .4rem;border-radius:4px;font-size:1.3rem;
+}
+.login-box .login-subtitle{
+  color:var(--text3);font-size:.85rem;margin-bottom:1.5rem;
+}
+.login-box input[type="password"]{
+  width:100%;padding:.6rem .8rem;font-size:.9rem;
+  margin-bottom:.6rem;text-align:center;
+}
+.login-box .login-btn{
+  width:100%;padding:.65rem;font-size:.9rem;margin-top:.3rem;
+}
+.login-box .login-error{
+  color:var(--red);font-size:.78rem;font-weight:600;
+  margin-bottom:.5rem;min-height:1.2em;
+}
+.login-box .logout-hint{
+  color:var(--text3);font-size:.72rem;margin-top:1rem;
+}
 .conflict-warn{color:var(--red);font-size:.72rem;font-weight:600;margin-top:.2rem}
 .division-color-dot{width:10px;height:10px;border-radius:50%;display:inline-block;margin-right:.3rem;flex-shrink:0}
 .toast{
@@ -313,8 +349,7 @@ label{font-size:.75rem;color:var(--text2);font-weight:600;display:block;margin-b
 }
 .mobile-nav button.active{background:var(--orange);color:#fff;border-color:var(--orange)}
 @media(max-width:900px){.mobile-nav{display:flex}}
-
-/* âââ RESPONSIVE âââ */
+/* ─── RESPONSIVE ─── */
 @media(max-width:900px){
   .sidebar{display:none}
   .app-body{flex-direction:column}
@@ -331,7 +366,6 @@ label{font-size:.75rem;color:var(--text2);font-weight:600;display:block;margin-b
 </style>
 </head>
 <body>
-
 <!-- TOP NAV -->
 <div class="topbar">
   <div class="logo">
@@ -339,29 +373,55 @@ label{font-size:.75rem;color:var(--text2);font-weight:600;display:block;margin-b
     ACADEMY
     <span class="league-tag">3v3 League</span>
   </div>
-  <div class="mode-toggle">
-    <button class="active" onclick="setMode('admin')">Admin</button>
-    <button onclick="setMode('public')">Public</button>
+  <div style="display:flex;align-items:center;gap:.5rem">
+    <div class="mode-toggle">
+      <button class="active" onclick="setMode('admin')">Admin</button>
+      <button onclick="setMode('public')">Public</button>
+    </div>
+    <button class="btn btn-secondary btn-sm" id="logoutBtn" style="display:none" onclick="adminLogout()">Logout</button>
   </div>
 </div>
 <div class="orange-bar"></div>
-
 <div class="mobile-nav" id="mobileNav"></div>
-
 <div class="app-body">
   <div class="sidebar" id="sidebar"></div>
   <div class="main" id="main"></div>
 </div>
-
+<!-- LOGIN OVERLAY -->
+<div class="login-overlay hidden" id="loginOverlay">
+  <div class="login-box">
+    <div class="login-logo"><div class="logo-box">IGN</div> ACADEMY</div>
+    <div class="login-subtitle">Admin Login</div>
+    <div class="login-error" id="loginError"></div>
+    <input type="password" id="loginPassword" placeholder="Enter admin password" onkeydown="if(event.key==='Enter')attemptLogin()">
+    <button class="btn btn-primary login-btn" onclick="attemptLogin()">Sign In</button>
+    <div class="logout-hint">Contact your league administrator for access</div>
+  </div>
+</div>
 <div class="toast" id="toast"></div>
-
 <script>
-// ââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââ
+// ══════════════════════════════════════════════════════════════
 // IGN ACADEMY 3v3 LEAGUE MANAGEMENT APP
-// ââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââ
+// ══════════════════════════════════════════════════════════════
+
+// ─── FIREBASE CONFIG ───
+const firebaseConfig = {
+  apiKey: "AIzaSyDTdWqAhqEfNHpSp9MqOtJZq8ZzB555V_U",
+  authDomain: "v3-league.firebaseapp.com",
+  databaseURL: "https://v3-league-default-rtdb.firebaseio.com",
+  projectId: "v3-league",
+  storageBucket: "v3-league.firebasestorage.app",
+  messagingSenderId: "540632108704",
+  appId: "1:540632108704:web:16100b4de4441feb6b03c5"
+};
+firebase.initializeApp(firebaseConfig);
+const db = firebase.database();
+const dbRef = db.ref('leagueData');
+const backupRef = db.ref('backups/latest');
+let firebaseReady = false;
+let savePending = false;
 
 const DIV_COLORS = ['#2563eb','#7c3aed','#db2777','#16a34a','#d97706','#dc2626','#0891b2','#f97316'];
-
 const DEFAULT_DIVISIONS = [
   {id:'d1',name:'5th-6th Boys',night:'Monday',ageGroup:'5th-6th',gender:'Boys',color:DIV_COLORS[0]},
   {id:'d2',name:'5th-6th Girls',night:'Monday',ageGroup:'5th-6th',gender:'Girls',color:DIV_COLORS[1]},
@@ -372,20 +432,53 @@ const DEFAULT_DIVISIONS = [
   {id:'d7',name:'9th-12th Boys',night:'Tuesday',ageGroup:'9th-12th',gender:'Boys',color:DIV_COLORS[6]},
   {id:'d8',name:'9th-12th Girls',night:'Tuesday',ageGroup:'9th-12th',gender:'Girls',color:DIV_COLORS[7]},
 ];
-
-const TIME_SLOTS = ['5:30 PM','5:50 PM','6:10 PM','6:30 PM','6:50 PM','7:10 PM','7:30 PM'];
+const TIME_SLOTS = ['5:30 PM','6:00 PM','6:30 PM','7:00 PM','7:30 PM','8:00 PM','8:30 PM'];
 const COURTS = ['A','B','C','D'];
 const WEEKS = [1,2,3,4,5];
+// ─── STATE ───
+// ─── ADMIN AUTH ───
+function hashPass(p){let h=0;for(let i=0;i<p.length;i++){h=((h<<5)-h)+p.charCodeAt(i);h|=0;}return Math.abs(h).toString(16).padStart(8,'0').slice(0,16);}
+const CORRECT_HASH = '6cce6432';
+let isAdminAuthed = sessionStorage.getItem('ign3v3_admin') === 'true';
 
-// âââ STATE âââ
-let state = loadState();
-let mode = 'admin';
-let adminPage = 'divisions';
-let publicPage = 'schedule';
-let selectedDivision = state.divisions[0]?.id || 'd1';
-let schedNight = 'Monday';
-let schedWeek = 1;
-let dragData = null;
+function attemptLogin(){
+  const pw = document.getElementById('loginPassword').value;
+  if(hashPass(pw) === CORRECT_HASH){
+    isAdminAuthed = true;
+    sessionStorage.setItem('ign3v3_admin','true');
+    document.getElementById('loginOverlay').classList.add('hidden');
+    document.getElementById('loginError').textContent = '';
+    document.getElementById('loginPassword').value = '';
+    updateLogoutBtn();
+    render();
+  } else {
+    document.getElementById('loginError').textContent = 'Incorrect password';
+    document.getElementById('loginPassword').value = '';
+    document.getElementById('loginPassword').focus();
+  }
+}
+
+function adminLogout(){
+  isAdminAuthed = false;
+  sessionStorage.removeItem('ign3v3_admin');
+  mode = 'public';
+  updateLogoutBtn();
+  render();
+  document.querySelectorAll('.mode-toggle button').forEach(b => b.classList.toggle('active', b.textContent.trim().toLowerCase() === 'public'));
+  toast('Logged out');
+}
+
+function requireAdmin(){
+  if(isAdminAuthed) return true;
+  document.getElementById('loginOverlay').classList.remove('hidden');
+  setTimeout(()=>document.getElementById('loginPassword').focus(), 100);
+  return false;
+}
+
+function updateLogoutBtn(){
+  const btn = document.getElementById('logoutBtn');
+  if(btn) btn.style.display = isAdminAuthed ? 'inline-flex' : 'none';
+}
 
 function defaultState() {
   return {
@@ -399,7 +492,8 @@ function defaultState() {
   };
 }
 
-function loadState() {
+// Load from localStorage first (instant), then Firebase overwrites
+function loadStateLocal() {
   try {
     const raw = localStorage.getItem('ign3v3');
     if (raw) {
@@ -412,7 +506,74 @@ function loadState() {
   return defaultState();
 }
 
-function save() { localStorage.setItem('ign3v3', JSON.stringify(state)); }
+let state = loadStateLocal();
+let mode = isAdminAuthed ? 'admin' : 'public';
+let adminPage = 'divisions';
+let publicPage = 'schedule';
+let selectedDivision = state.divisions[0]?.id || 'd1';
+let schedNight = 'Monday';
+let schedWeek = 1;
+let dragData = null;
+
+// ─── FIREBASE SYNC ───
+function save() {
+  // Save locally for instant feedback
+  localStorage.setItem('ign3v3', JSON.stringify(state));
+  // Push to Firebase
+  dbRef.set(state).catch(err => {
+    console.error('Firebase save error:', err);
+    toast('Sync error — saved locally', true);
+  });
+}
+
+// Listen for real-time changes from Firebase (other devices)
+dbRef.on('value', (snapshot) => {
+  const data = snapshot.val();
+  if (data) {
+    // Merge with defaults to ensure all keys exist
+    const def = defaultState();
+    for (const k of Object.keys(def)) { if (!(k in data)) data[k] = def[k]; }
+    state = data;
+    localStorage.setItem('ign3v3', JSON.stringify(state));
+    if (firebaseReady) {
+      render(); // Re-render on changes from other devices
+    }
+  }
+  if (!firebaseReady) {
+    firebaseReady = true;
+    render(); // Initial render once Firebase data arrives
+  }
+});
+// ─── BACKUP & RESTORE ───
+function createBackup() {
+  if (!confirm('Save a backup of the current league data? This will overwrite any previous backup.')) return;
+  const backupData = { data: JSON.parse(JSON.stringify(state)), timestamp: Date.now(), label: new Date().toLocaleString() };
+  backupRef.set(backupData).then(() => {
+    toast('Backup saved successfully!');
+    if (adminPage === 'backup') render();
+  }).catch(err => { console.error(err); toast('Backup failed', true); });
+}
+function restoreBackup() {
+  if (!confirm('Restore from backup? This will OVERWRITE all current data (scores, brackets, etc.) with the backed-up version.')) return;
+  backupRef.once('value').then(snap => {
+    const backup = snap.val();
+    if (!backup || !backup.data) { toast('No backup found', true); return; }
+    const def = defaultState();
+    const restored = backup.data;
+    for (const k of Object.keys(def)) { if (!(k in restored)) restored[k] = def[k]; }
+    state = restored;
+    save();
+    toast('Data restored from backup (' + backup.label + ')');
+    render();
+  }).catch(err => { console.error(err); toast('Restore failed', true); });
+}
+function checkBackupStatus() {
+  return backupRef.once('value').then(snap => {
+    const backup = snap.val();
+    if (!backup) return null;
+    return { label: backup.label, timestamp: backup.timestamp };
+  });
+}
 
 function toast(msg, isError) {
   const el = document.getElementById('toast');
@@ -420,37 +581,33 @@ function toast(msg, isError) {
   el.className = 'toast show' + (isError ? ' error' : '');
   setTimeout(() => el.className = 'toast', 2200);
 }
-
 let _uid = Date.now();
 function uid() { return 'id' + (++_uid).toString(36); }
-
 function render() {
   if (mode === 'admin') renderAdmin();
   else renderPublic();
   renderMobileNav();
 }
-
 function setMode(m) {
+  if (m === 'admin' && !requireAdmin()) return;
   mode = m;
   document.querySelectorAll('.mode-toggle button').forEach(b => b.classList.toggle('active', b.textContent.trim().toLowerCase() === m));
+  updateLogoutBtn();
   render();
 }
-
 function renderMobileNav() {
   const nav = document.getElementById('mobileNav');
   if (mode === 'admin') {
-    const pages = [['divisions','Divisions'],['teams','Teams'],['schedule','Schedule'],['scores','Scores'],['brackets','Brackets']];
+    const pages = [['divisions','Divisions'],['teams','Teams'],['schedule','Schedule'],['coaches','Coaches'],['teamSched','Team Sched'],['scores','Scores'],['brackets','Brackets']];
     nav.innerHTML = pages.map(([k,l]) => `<button class="${adminPage===k?'active':''}" onclick="adminPage='${k}';render()">${l}</button>`).join('');
   } else {
     const pages = [['schedule','Schedule'],['standings','Standings'],['coaches','Coaches'],['teamSched','Teams'],['brackets','Brackets']];
     nav.innerHTML = pages.map(([k,l]) => `<button class="${publicPage===k?'active':''}" onclick="publicPage='${k}';render()">${l}</button>`).join('');
   }
 }
-
-// ââââââââââââââââââââââââââââââââââââââââââââââââââââââââââ
+// ══════════════════════════════════════════════════════════
 // ADMIN VIEWS
-// ââââââââââââââââââââââââââââââââââââââââââââââââââââââââââ
-
+// ══════════════════════════════════════════════════════════
 function renderAdmin() {
   const sb = document.getElementById('sidebar');
   sb.innerHTML = `
@@ -458,9 +615,12 @@ function renderAdmin() {
     <a href="#" class="${adminPage==='divisions'?'active':''}" onclick="adminPage='divisions';render();return false">&#9632; Divisions</a>
     <a href="#" class="${adminPage==='teams'?'active':''}" onclick="adminPage='teams';render();return false">&#9632; Teams &amp; Coaches</a>
     <a href="#" class="${adminPage==='schedule'?'active':''}" onclick="adminPage='schedule';render();return false">&#9632; Schedule</a>
+    <a href="#" class="${adminPage==='coaches'?'active':''}" onclick="adminPage='coaches';render();return false">&#9632; Coach Schedules</a>
+    <a href="#" class="${adminPage==='teamSched'?'active':''}" onclick="adminPage='teamSched';render();return false">&#9632; Team Schedules</a>
     <a href="#" class="${adminPage==='scores'?'active':''}" onclick="adminPage='scores';render();return false">&#9632; Score Entry</a>
     <a href="#" class="${adminPage==='brackets'?'active':''}" onclick="adminPage='brackets';render();return false">&#9632; Brackets</a>
     <div class="section-label" style="margin-top:1.5rem">Data</div>
+    <a href="#" class="${adminPage==='backup'?'active':''}" onclick="adminPage='backup';render();return false">&#128190; Backup & Restore</a>
     <a href="#" onclick="exportData();return false">&#8681; Export JSON</a>
     <a href="#" onclick="if(confirm('Reset ALL data?')){localStorage.removeItem('ign3v3');state=defaultState();save();render();toast('Data reset')}return false" style="color:var(--red)">&#10005; Reset Data</a>
   `;
@@ -469,15 +629,45 @@ function renderAdmin() {
     case 'divisions': main.innerHTML = adminDivisions(); break;
     case 'teams': main.innerHTML = adminTeams(); break;
     case 'schedule': main.innerHTML = adminSchedule(); attachScheduleDragDrop(); break;
+    case 'coaches': main.innerHTML = adminCoachSchedules(); break;
+    case 'teamSched': main.innerHTML = adminTeamSchedules(); break;
     case 'scores': main.innerHTML = adminScores(); break;
     case 'brackets': main.innerHTML = adminBrackets(); break;
+    case 'backup': renderBackupPage(main); break;
   }
 }
-
-// âââ DIVISIONS PAGE âââ
+// ─── BACKUP & RESTORE PAGE ───
+function renderBackupPage(main) {
+  main.innerHTML = `<div class="card"><div class="card-header"><div class="accent"></div>Backup & Restore</div>
+    <p style="color:var(--text2);font-size:.85rem;margin-bottom:1.2rem">Save a snapshot of your league data before testing. You can restore it at any time to undo changes.</p>
+    <div style="display:flex;gap:1rem;flex-wrap:wrap;margin-bottom:1.5rem">
+      <button class="btn btn-primary" onclick="createBackup()" style="font-size:.9rem;padding:.6rem 1.5rem">&#128190; Save Backup Now</button>
+      <button class="btn btn-secondary" onclick="restoreBackup()" style="font-size:.9rem;padding:.6rem 1.5rem">&#8635; Restore from Backup</button>
+    </div>
+    <div id="backupStatus" style="padding:1rem;background:var(--surface2);border-radius:var(--radius);font-size:.85rem;color:var(--text2)">Checking backup status...</div>
+  </div>
+  <div class="card" style="margin-top:1rem"><div class="card-header"><div class="accent"></div>How It Works</div>
+    <div style="color:var(--text2);font-size:.85rem;line-height:1.6">
+      <p style="margin-bottom:.5rem"><strong>Save Backup:</strong> Takes a snapshot of all league data (teams, schedules, scores, standings, brackets) and stores it in the cloud.</p>
+      <p style="margin-bottom:.5rem"><strong>Restore:</strong> Overwrites current data with the saved backup. Use this after testing to go back to your saved state.</p>
+      <p><strong>Tip:</strong> Save a backup before testing scores or brackets. When you're done testing, hit Restore to go back to the clean state.</p>
+    </div>
+  </div>`;
+  // Load backup status
+  checkBackupStatus().then(info => {
+    const el = document.getElementById('backupStatus');
+    if (!el) return;
+    if (info) {
+      el.innerHTML = '<span style="color:var(--green);font-weight:600">&#10003; Backup available</span> — Saved on ' + info.label;
+    } else {
+      el.innerHTML = '<span style="color:var(--yellow);font-weight:600">&#9888; No backup found</span> — Save a backup before testing.';
+    }
+  });
+}
+// ─── DIVISIONS PAGE ───
 function adminDivisions() {
   let html = `<div class="card"><div class="card-header"><div class="accent"></div>League Divisions</div>
-    <p style="color:var(--text2);font-size:.85rem;margin-bottom:1.2rem">Eight divisions across two nights. Each division runs independently with 4â10 teams.</p>
+    <p style="color:var(--text2);font-size:.85rem;margin-bottom:1.2rem">Eight divisions across two nights. Each division runs independently with 4–10 teams.</p>
     <div class="division-grid">`;
   for (const d of state.divisions) {
     const teams = (state.teams[d.id] || []);
@@ -503,23 +693,41 @@ function adminDivisions() {
   </div>`;
   return html;
 }
-
-// âââ TEAMS & COACHES PAGE âââ
+// ─── TEAMS & COACHES PAGE ───
 function adminTeams() {
   const div = state.divisions.find(d=>d.id===selectedDivision) || state.divisions[0];
   const teams = state.teams[div.id] || [];
-
   let teamRows = '';
+  const editingId = window._editingTeamId || null;
   for (let i = 0; i < teams.length; i++) {
     const t = teams[i];
-    teamRows += `<tr>
-      <td style="font-weight:600">${t.name}</td>
-      <td>${t.coach || 'â'}</td>
-      <td style="color:var(--text3)">${t.coachEmail || 'â'}</td>
-      <td><button class="btn btn-danger btn-sm" onclick="removeTeam('${div.id}',${i})">Remove</button></td>
-    </tr>`;
+    const isEditing = editingId === t.id;
+    const ignCheck = t.isIGN ? '✓ IGN' : '';
+    const ignColor = t.isIGN ? 'var(--orange)' : 'var(--text3)';
+    if (isEditing) {
+      teamRows += `<tr style="background:var(--orange-glow)">
+        <td><input type="text" id="editName_${t.id}" value="${t.name}" style="width:100%;padding:.25rem .4rem;font-size:.82rem;border:1px solid var(--orange);border-radius:4px"></td>
+        <td><input type="text" id="editCoach_${t.id}" value="${t.coach||''}" style="width:100%;padding:.25rem .4rem;font-size:.82rem;border:1px solid var(--border);border-radius:4px"></td>
+        <td><input type="email" id="editEmail_${t.id}" value="${t.coachEmail||''}" style="width:100%;padding:.25rem .4rem;font-size:.82rem;border:1px solid var(--border);border-radius:4px"></td>
+        <td style="text-align:center"><label style="display:flex;align-items:center;gap:.3rem;font-size:.75rem;cursor:pointer;white-space:nowrap"><input type="checkbox" id="editIGN_${t.id}" ${t.isIGN?'checked':''}> IGN</label></td>
+        <td style="white-space:nowrap">
+          <button class="btn btn-primary btn-sm" onclick="saveTeamEdit('${div.id}','${t.id}')">Save</button>
+          <button class="btn btn-secondary btn-sm" onclick="window._editingTeamId=null;render()">Cancel</button>
+        </td>
+      </tr>`;
+    } else {
+      teamRows += `<tr>
+        <td style="font-weight:600">${t.name}${t.isIGN?'<span style="color:var(--orange);font-size:.65rem;font-weight:700;margin-left:.4rem;vertical-align:middle">IGN</span>':''}</td>
+        <td>${t.coach || '—'}</td>
+        <td style="color:var(--text3)">${t.coachEmail || '—'}</td>
+        <td style="text-align:center"><span style="color:${ignColor};font-size:.72rem">${ignCheck}</span></td>
+        <td style="white-space:nowrap">
+          <button class="btn btn-secondary btn-sm" onclick="window._editingTeamId='${t.id}';render()">Edit</button>
+          <button class="btn btn-danger btn-sm" onclick="removeTeam('${div.id}',${i})">Remove</button>
+        </td>
+      </tr>`;
+    }
   }
-
   return `<div class="card"><div class="card-header"><div class="accent"></div>Teams &amp; Coaches</div>
     <div class="form-row" style="margin-bottom:1rem">
       <div class="form-group">
@@ -535,7 +743,7 @@ function adminTeams() {
       <span style="color:var(--text3);font-size:.78rem;margin-left:.5rem">${teams.length}/10 teams</span>
     </div>
     ${teams.length > 0 ? `<table class="standings-table" style="margin-bottom:1rem">
-      <thead><tr><th>Team Name</th><th>Coach</th><th>Email</th><th></th></tr></thead>
+      <thead><tr><th>Team Name</th><th>Coach</th><th>Email</th><th style="text-align:center">IGN</th><th></th></tr></thead>
       <tbody>${teamRows}</tbody>
     </table>` : '<div class="empty-state">No teams added yet</div>'}
     ${teams.length < 10 ? `
@@ -546,24 +754,39 @@ function adminTeams() {
         <div class="form-group"><label>Coach Name</label><input type="text" id="newCoachName" placeholder="Coach name"></div>
         <div class="form-group"><label>Coach Email</label><input type="email" id="newCoachEmail" placeholder="email@example.com"></div>
       </div>
+      <label style="display:flex;align-items:center;gap:.4rem;margin-bottom:.8rem;font-size:.85rem;cursor:pointer"><input type="checkbox" id="newTeamIGN"> IGN Academy Team</label>
       <button class="btn btn-primary" onclick="addTeam('${div.id}')">+ Add Team</button>
     </div>` : ''}
   </div>`;
 }
-
 function addTeam(divId) {
   const name = document.getElementById('newTeamName').value.trim();
   const coach = document.getElementById('newCoachName').value.trim();
   const email = document.getElementById('newCoachEmail').value.trim();
+  const isIGN = document.getElementById('newTeamIGN').checked;
   if (!name) { toast('Enter a team name', true); return; }
   if (!state.teams[divId]) state.teams[divId] = [];
   if (state.teams[divId].length >= 10) { toast('Max 10 teams per division', true); return; }
-  state.teams[divId].push({ id: uid(), name, coach, coachEmail: email });
+  state.teams[divId].push({ id: uid(), name, coach, coachEmail: email, isIGN });
   save();
   toast('Team added');
   render();
 }
-
+function saveTeamEdit(divId, teamId) {
+  const teams = state.teams[divId] || [];
+  const t = teams.find(t => t.id === teamId);
+  if (!t) return;
+  const name = document.getElementById('editName_' + teamId).value.trim();
+  if (!name) { toast('Team name required', true); return; }
+  t.name = name;
+  t.coach = document.getElementById('editCoach_' + teamId).value.trim();
+  t.coachEmail = document.getElementById('editEmail_' + teamId).value.trim();
+  t.isIGN = document.getElementById('editIGN_' + teamId).checked;
+  window._editingTeamId = null;
+  save();
+  toast('Team updated');
+  render();
+}
 function removeTeam(divId, idx) {
   if (!confirm('Remove this team? This will also clear matchups.')) return;
   state.teams[divId].splice(idx, 1);
@@ -572,8 +795,7 @@ function removeTeam(divId, idx) {
   toast('Team removed');
   render();
 }
-
-// âââ MATCHUP GENERATION âââ
+// ─── MATCHUP GENERATION ───
 function generateMatchups(divId) {
   const teams = state.teams[divId] || [];
   if (teams.length < 2) { toast('Need at least 2 teams', true); return; }
@@ -594,21 +816,28 @@ function generateMatchups(divId) {
   }
   matchups = matchups.slice(0, totalGameSlots);
   state.matchups[divId] = matchups;
+  // Clear stale schedule entries that reference old matchup IDs for this division
+  for (const [schedKey, slots] of Object.entries(state.schedule)) {
+    for (const [cell, entry] of Object.entries(slots)) {
+      if (entry.divId === divId && entry.type === 'regular') {
+        delete slots[cell];
+      }
+    }
+  }
+  // Clear scores for this division since matchup IDs changed
+  if (state.scores[divId]) delete state.scores[divId];
   save();
   toast(`Generated ${matchups.length} matchups`);
   render();
 }
-
-// âââ SCHEDULE PAGE âââ
+// ─── SCHEDULE PAGE ───
 function adminSchedule() {
   const nightDivs = state.divisions.filter(d => d.night === schedNight);
   const schedKey = `${schedNight}-${schedWeek}`;
   if (!state.schedule[schedKey]) state.schedule[schedKey] = {};
   const sched = state.schedule[schedKey];
-
   let gridHTML = `<div class="sched-grid" id="schedGrid">
-    <div class="hdr">Time</div>${COURTS.map(c=>`<div class="hdr">Court ${c}</div>`).join('')}`;
-
+    <div class="hdr">Time</div>${COURTS.map(c=>`<div class="hdr">Goal ${c}</div>`).join('')}`;
   for (const slot of TIME_SLOTS) {
     gridHTML += `<div class="time-label">${slot}</div>`;
     for (const court of COURTS) {
@@ -617,40 +846,44 @@ function adminSchedule() {
       let content = '';
       if (entry) {
         const matchup = findMatchup(entry.matchupId, entry.divId);
+        if (!matchup) { delete sched[key]; }
         const div = state.divisions.find(d=>d.id===entry.divId);
         if (matchup) {
           const t1 = getTeamName(entry.divId, matchup.t1);
           const t2 = getTeamName(entry.divId, matchup.t2);
           const isBracket = entry.type === 'bracket';
-          content = `<div class="game-chip ${isBracket?'bracket-chip':''}" draggable="true" ondragstart="dragFromGrid(event,'${schedKey}','${key}')">
+          const gridSelected = selectedChip && selectedChip.source==='grid' && selectedChip.cellKey===key;
+          content = `<div class="game-chip ${isBracket?'bracket-chip':''}${gridSelected?' selected':''}" draggable="true" ondragstart="dragFromGrid(event,'${schedKey}','${key}')" onclick="event.stopPropagation();selectChip('grid','${entry.divId}','${entry.matchupId}',null,'${schedKey}','${key}')">
             <div class="div-tag" style="color:${div?.color||'var(--orange)'}">${div?.name||''}</div>
             <div style="font-weight:600">${t1}</div><div style="color:var(--text3);font-size:.6rem">vs</div><div style="font-weight:600">${t2}</div>
             ${isBracket?'<div style="font-size:.58rem;color:var(--orange);font-weight:700">BRACKET</div>':''}
-            <button class="remove-btn" onclick="removeFromSchedule('${schedKey}','${key}')">Ã</button>
+            <button class="remove-btn" onclick="event.stopPropagation();removeFromSchedule('${schedKey}','${key}')">×</button>
           </div>`;
         }
       }
-      gridHTML += `<div class="cell" data-key="${key}" ondragover="dragOver(event)" ondragleave="dragLeave(event)" ondrop="dropOnGrid(event,'${schedKey}','${key}')">${content}</div>`;
+      const isEmpty = !content;
+      const isTarget = selectedChip && isEmpty;
+      gridHTML += `<div class="cell${isTarget?' click-target':''}" data-key="${key}" ondragover="dragOver(event)" ondragleave="dragLeave(event)" ondrop="dropOnGrid(event,'${schedKey}','${key}')" onclick="clickCell('${schedKey}','${key}')">${content}</div>`;
     }
   }
   gridHTML += '</div>';
-
   let poolHTML = '';
   for (const div of nightDivs) {
     const matchups = state.matchups[div.id] || [];
     const teams = state.teams[div.id] || [];
     if (teams.length < 2) {
-      poolHTML += `<div style="margin-bottom:.8rem"><div style="display:flex;align-items:center;gap:.4rem;margin-bottom:.3rem">
+      poolHTML += `<details class="pool-dropdown"><summary>
         <span class="division-color-dot" style="background:${div.color}"></span>
-        <strong style="font-size:.82rem">${div.name}</strong></div>
-        <div class="empty-state" style="padding:.5rem;font-size:.75rem">Add teams first</div></div>`;
+        ${div.name} <span style="font-size:.72rem;color:var(--text3);font-weight:400">— Add teams first</span>
+      </summary><div style="padding:.5rem"><div class="empty-state" style="padding:.5rem;font-size:.75rem">Add teams first</div></div></details>`;
       continue;
     }
     if (matchups.length === 0) {
-      poolHTML += `<div style="margin-bottom:.8rem"><div style="display:flex;align-items:center;gap:.4rem;margin-bottom:.3rem">
+      poolHTML += `<details class="pool-dropdown"><summary>
         <span class="division-color-dot" style="background:${div.color}"></span>
-        <strong style="font-size:.82rem">${div.name}</strong></div>
-        <button class="btn btn-primary btn-sm" onclick="generateMatchups('${div.id}')">Generate Matchups</button></div>`;
+        ${div.name} <span style="font-size:.72rem;color:var(--text3);font-weight:400">— No matchups</span>
+      </summary><div style="padding:.5rem">
+        <button class="btn btn-primary btn-sm" onclick="generateMatchups('${div.id}')">Generate Matchups</button></div></details>`;
       continue;
     }
     const scheduled = getScheduledMatchupIds(div.id);
@@ -658,17 +891,19 @@ function adminSchedule() {
       const t1 = getTeamName(div.id, m.t1);
       const t2 = getTeamName(div.id, m.t2);
       const isSched = scheduled.has(m.id);
-      return `<div class="chip ${isSched?'scheduled':''}" draggable="${!isSched}" ondragstart="dragFromPool(event,'${div.id}','${m.id}')" title="${t1} vs ${t2}">${t1} vs ${t2}</div>`;
+      const isSelected = selectedChip && selectedChip.source==='pool' && selectedChip.matchupId===m.id;
+      const clickHandler = isSched ? '' : `onclick="selectChip('pool','${div.id}','${m.id}')"`;
+      return `<div class="chip ${isSched?'scheduled':''}${isSelected?' selected':''}" draggable="${!isSched}" ondragstart="dragFromPool(event,'${div.id}','${m.id}')" ${clickHandler} title="${t1} vs ${t2}">${t1} vs ${t2}</div>`;
     }).join('');
     const unschedCount = matchups.filter(m => !scheduled.has(m.id)).length;
-    poolHTML += `<div style="margin-bottom:.8rem"><div style="display:flex;align-items:center;gap:.4rem;margin-bottom:.3rem">
+    const isOpen = window._openPools && window._openPools.has(div.id) ? ' open' : '';
+    poolHTML += `<details class="pool-dropdown"${isOpen} ontoggle="trackPoolToggle('${div.id}',this.open)"><summary>
       <span class="division-color-dot" style="background:${div.color}"></span>
-      <strong style="font-size:.82rem">${div.name}</strong>
-      <span style="font-size:.72rem;color:var(--text3)">${unschedCount} unscheduled</span>
-      <button class="btn btn-secondary btn-sm" style="margin-left:auto" onclick="if(confirm('Regenerate matchups for ${div.name}?')){generateMatchups('${div.id}')}">Regen</button>
-    </div><div class="matchup-pool">${chips}</div></div>`;
+      ${div.name}
+      <span style="font-size:.72rem;color:${unschedCount>0?'var(--orange)':'var(--green)'};font-weight:400">${unschedCount} unscheduled</span>
+      <button class="btn btn-secondary btn-sm" style="margin-left:auto" onclick="event.stopPropagation();if(confirm('Regenerate matchups for ${div.name}?')){generateMatchups('${div.id}')}">Regen</button>
+    </summary><div class="matchup-pool">${chips}</div></details>`;
   }
-
   let bracketPoolHTML = '';
   for (const div of nightDivs) {
     const bracket = state.brackets[div.id];
@@ -679,7 +914,7 @@ function adminSchedule() {
     if (unschedGames.length === 0) continue;
     bracketPoolHTML += `<div style="margin-bottom:.8rem"><div style="display:flex;align-items:center;gap:.4rem;margin-bottom:.3rem">
       <span class="division-color-dot" style="background:${div.color}"></span>
-      <strong style="font-size:.82rem">${div.name} â Bracket Games</strong></div><div class="matchup-pool">`;
+      <strong style="font-size:.82rem">${div.name} — Bracket Games</strong></div><div class="matchup-pool">`;
     for (const g of unschedGames) {
       const t1 = g.t1 ? getTeamName(div.id, g.t1) : `Seed #${g.seed1}`;
       const t2 = g.t2 ? getTeamName(div.id, g.t2) : `Seed #${g.seed2}`;
@@ -687,7 +922,6 @@ function adminSchedule() {
     }
     bracketPoolHTML += '</div></div>';
   }
-
   return `<div class="card"><div class="card-header"><div class="accent"></div>Schedule Grid</div>
     <div class="form-row" style="margin-bottom:1rem">
       <div class="form-group" style="max-width:160px">
@@ -706,20 +940,70 @@ function adminSchedule() {
     </div>
     ${gridHTML}
   </div>
-  <div class="card"><div class="card-header"><div class="accent"></div>Matchup Pool â Drag into Grid</div>
+  <div class="card"><div class="card-header"><div class="accent"></div>Matchup Pool — Drag into Grid</div>
     <p style="color:var(--text2);font-size:.78rem;margin-bottom:.8rem">Drag matchups onto the schedule grid above. Grayed out chips are already scheduled.</p>
     ${poolHTML}
     ${bracketPoolHTML ? '<div style="margin-top:.5rem;padding-top:.5rem;border-top:1px solid var(--border)"><div style="font-family:var(--font-display);font-weight:700;color:var(--orange);font-size:.9rem;text-transform:uppercase;margin-bottom:.5rem">Bracket Games</div>' + bracketPoolHTML + '</div>' : ''}
   </div>`;
 }
+// ─── DRAG & DROP ───
+window._openPools = window._openPools || new Set();
+function trackPoolToggle(divId, isOpen) {
+  if (isOpen) window._openPools.add(divId); else window._openPools.delete(divId);
+}
+// ─── CLICK-TO-PLACE ───
+let selectedChip = null; // { source: 'pool'|'bracket'|'grid', divId, matchupId, gameId, schedKey, cellKey }
 
-// âââ DRAG & DROP âââ
+function selectChip(source, divId, matchupId, gameId, schedKey, cellKey) {
+  // Toggle off if clicking the same chip
+  if (selectedChip && selectedChip.matchupId === (matchupId || gameId) && selectedChip.source === source) {
+    selectedChip = null;
+    render();
+    return;
+  }
+  selectedChip = { source, divId, matchupId, gameId, schedKey, cellKey };
+  render();
+}
+
+function clickCell(schedKey, cellKey) {
+  if (!selectedChip) return;
+  if (!state.schedule[schedKey]) state.schedule[schedKey] = {};
+  // Auto-clear stale entries
+  const existing = state.schedule[schedKey][cellKey];
+  if (existing) {
+    const stillExists = findMatchup(existing.matchupId, existing.divId);
+    if (!stillExists) {
+      delete state.schedule[schedKey][cellKey];
+    } else {
+      toast('Slot occupied — remove first', true); return;
+    }
+  }
+  if (selectedChip.source === 'pool') {
+    const conflict = checkCoachConflict(schedKey, cellKey, selectedChip.divId, selectedChip.matchupId);
+    if (conflict) { toast(`Coach conflict: ${conflict}`, true); return; }
+    state.schedule[schedKey][cellKey] = { matchupId: selectedChip.matchupId, divId: selectedChip.divId, type: 'regular' };
+  } else if (selectedChip.source === 'grid') {
+    const old = state.schedule[selectedChip.schedKey][selectedChip.cellKey];
+    if (old) {
+      const conflict = checkCoachConflict(schedKey, cellKey, old.divId, old.matchupId, selectedChip.cellKey);
+      if (conflict) { toast(`Coach conflict: ${conflict}`, true); return; }
+      state.schedule[schedKey][cellKey] = old;
+      delete state.schedule[selectedChip.schedKey][selectedChip.cellKey];
+    }
+  } else if (selectedChip.source === 'bracket') {
+    state.schedule[schedKey][cellKey] = { matchupId: selectedChip.gameId, divId: selectedChip.divId, type: 'bracket', bracketGameId: selectedChip.gameId };
+  }
+  selectedChip = null;
+  save(); render();
+}
 function dragFromPool(e, divId, matchupId) {
+  selectedChip = null;
   dragData = { source: 'pool', divId, matchupId };
   e.dataTransfer.effectAllowed = 'move';
   e.dataTransfer.setData('text/plain', matchupId);
 }
 function dragFromGrid(e, schedKey, cellKey) {
+  selectedChip = null;
   dragData = { source: 'grid', schedKey, cellKey };
   e.dataTransfer.effectAllowed = 'move';
   e.dataTransfer.setData('text/plain', cellKey);
@@ -736,7 +1020,16 @@ function dropOnGrid(e, schedKey, cellKey) {
   e.currentTarget.classList.remove('drop-hover');
   if (!dragData) return;
   if (!state.schedule[schedKey]) state.schedule[schedKey] = {};
-  if (state.schedule[schedKey][cellKey]) { toast('Slot occupied â remove first', true); dragData = null; return; }
+  // Auto-clear stale entries whose matchup no longer exists
+  const existing = state.schedule[schedKey][cellKey];
+  if (existing) {
+    const stillExists = findMatchup(existing.matchupId, existing.divId);
+    if (!stillExists) {
+      delete state.schedule[schedKey][cellKey];
+    } else {
+      toast('Slot occupied — remove first', true); dragData = null; return;
+    }
+  }
   if (dragData.source === 'pool') {
     const conflict = checkCoachConflict(schedKey, cellKey, dragData.divId, dragData.matchupId);
     if (conflict) { toast(`Coach conflict: ${conflict}`, true); dragData = null; return; }
@@ -761,7 +1054,6 @@ function removeFromSchedule(schedKey, cellKey) {
   if (state.schedule[schedKey]) { delete state.schedule[schedKey][cellKey]; save(); render(); }
 }
 function attachScheduleDragDrop() {}
-
 function checkCoachConflict(schedKey, targetCellKey, divId, matchupId, excludeCellKey) {
   const sched = state.schedule[schedKey] || {};
   const matchup = findMatchup(matchupId, divId);
@@ -785,11 +1077,170 @@ function getCoachesForMatchup(divId, matchup) {
   const t2 = teams.find(t => t.id === matchup.t2);
   return [t1?.coach, t2?.coach].filter(Boolean);
 }
+// ─── COACH SCHEDULES ───
+function adminCoachSchedules() {
+  // Gather coaches from IGN teams only
+  const coachMap = {}; // coachName -> { divId, teamId, teamName, divName, night }[]
+  for (const div of state.divisions) {
+    const teams = state.teams[div.id] || [];
+    for (const t of teams) {
+      if (!t.coach || !t.isIGN) continue;
+      if (!coachMap[t.coach]) coachMap[t.coach] = [];
+      coachMap[t.coach].push({ divId: div.id, teamId: t.id, teamName: t.name, divName: div.name, night: div.night, color: div.color });
+    }
+  }
+  const coachNames = Object.keys(coachMap).sort();
+  if (coachNames.length === 0) {
+    return `<div class="card"><div class="card-header"><div class="accent"></div>Coach Schedules <span style="font-size:.75rem;color:var(--text3);font-weight:400">(IGN Teams Only)</span></div>
+      <div class="empty-state">No IGN team coaches found. Mark teams as IGN in the Teams page.</div></div>`;
+  }
 
-// âââ SCORE ENTRY âââ
+  // Build schedule lookup: for each schedule key + cell, what's scheduled
+  let html = `<div class="card"><div class="card-header"><div class="accent"></div>Coach Schedules <span style="font-size:.75rem;color:var(--orange);font-weight:400">IGN Teams Only</span></div>
+    <p style="color:var(--text2);font-size:.85rem;margin-bottom:1.2rem">Showing schedules for coaches of teams marked as IGN Academy teams.</p>`;
+
+  for (const coach of coachNames) {
+    const info = coachMap[coach];
+    const teamList = info.map(i => `<span style="color:${i.color};font-weight:600;font-size:.75rem">${i.teamName}</span>`).join(', ');
+    html += `<details class="pool-dropdown" style="margin-bottom:.6rem">
+      <summary><strong>${coach}</strong><span style="margin-left:.5rem;font-size:.75rem;color:var(--text3);font-weight:400">${teamList}</span></summary>
+      <div style="padding:.6rem;overflow-x:auto">`;
+
+    // For each night this coach is active
+    const nights = [...new Set(info.map(i => i.night))];
+    for (const night of nights) {
+      html += `<div style="font-weight:700;font-size:.8rem;margin-bottom:.4rem;color:var(--orange)">${night} Night</div>`;
+      html += `<table class="standings-table" style="margin-bottom:.8rem;font-size:.78rem">
+        <thead><tr><th>Week</th><th>Time</th><th>Goal</th><th>Matchup</th><th>Division</th></tr></thead><tbody>`;
+
+      let hasGames = false;
+      for (const week of WEEKS) {
+        const schedKey = `${night}-${week}`;
+        const sched = state.schedule[schedKey] || {};
+        for (const [cellKey, entry] of Object.entries(sched)) {
+          const matchup = findMatchup(entry.matchupId, entry.divId);
+          if (!matchup) continue;
+          const teams = state.teams[entry.divId] || [];
+          const t1 = teams.find(t => t.id === matchup.t1);
+          const t2 = teams.find(t => t.id === matchup.t2);
+          if (!t1 || !t2) continue;
+          if (t1.coach !== coach && t2.coach !== coach) continue;
+          hasGames = true;
+          const parts = cellKey.split('-');
+          const court = parts.pop();
+          const time = parts.join('-');
+          const div = state.divisions.find(d => d.id === entry.divId);
+          const isBracket = entry.type === 'bracket';
+          html += `<tr>
+            <td>Wk ${week}${isBracket?' ★':''}</td>
+            <td>${time}</td>
+            <td>Goal ${court}</td>
+            <td style="font-weight:600">${t1.name} vs ${t2.name}</td>
+            <td><span style="color:${div?.color||'var(--text)'};font-size:.72rem">${div?.name||''}</span></td>
+          </tr>`;
+        }
+      }
+      if (!hasGames) html += `<tr><td colspan="5" style="color:var(--text3);text-align:center">No games scheduled</td></tr>`;
+      html += '</tbody></table>';
+    }
+    html += '</div></details>';
+  }
+  html += '</div>';
+  return html;
+}
+
+// ─── TEAM SCHEDULES ───
+function adminTeamSchedules() {
+  let divOpts = state.divisions.map(d => `<option value="${d.id}" ${d.id===selectedDivision?'selected':''}>${d.name} (${d.night})</option>`).join('');
+  const div = state.divisions.find(d => d.id === selectedDivision);
+  if (!div) return '<div class="card"><div class="empty-state">No divisions</div></div>';
+  const teams = state.teams[div.id] || [];
+
+  let html = `<div class="card"><div class="card-header"><div class="accent"></div>Team Schedules</div>
+    <p style="color:var(--text2);font-size:.85rem;margin-bottom:1rem">View each team's full schedule across all weeks.</p>
+    <div class="form-group" style="max-width:280px;margin-bottom:1.2rem">
+      <label>Division</label>
+      <select onchange="selectedDivision=this.value;render()">${divOpts}</select>
+    </div>`;
+
+  if (teams.length === 0) {
+    html += '<div class="empty-state">No teams in this division</div></div>';
+    return html;
+  }
+
+  // Build schedule data for each team
+  for (const team of teams) {
+    let gameRows = '';
+    let gameCount = 0;
+    for (const week of WEEKS) {
+      const schedKey = `${div.night}-${week}`;
+      const sched = state.schedule[schedKey] || {};
+      for (const [cellKey, entry] of Object.entries(sched)) {
+        if (entry.divId !== div.id) continue;
+        const matchup = findMatchup(entry.matchupId, entry.divId);
+        if (!matchup) continue;
+        if (matchup.t1 !== team.id && matchup.t2 !== team.id) continue;
+        gameCount++;
+        const opponent = matchup.t1 === team.id ? matchup.t2 : matchup.t1;
+        const oppName = getTeamName(div.id, opponent);
+        const parts = cellKey.split('-');
+        const court = parts.pop();
+        const time = parts.join('-');
+        const isBracket = entry.type === 'bracket';
+        // Check for score
+        let result = '';
+        if (isBracket) {
+          const bracket = state.brackets[div.id];
+          const bScore = bracket?.bracketScores?.[entry.matchupId];
+          if (bScore) {
+            const isT1 = matchup.t1 === team.id;
+            const myScore = isT1 ? bScore.s1 : bScore.s2;
+            const oppScore = isT1 ? bScore.s2 : bScore.s1;
+            const won = myScore > oppScore;
+            result = `<span style="color:${won?'var(--green)':'var(--red)'};font-weight:700">${won?'W':'L'} ${myScore}-${oppScore}</span>`;
+          }
+        } else {
+          const scores = state.scores[div.id] || {};
+          const sc = scores[entry.matchupId];
+          if (sc) {
+            const isT1 = matchup.t1 === team.id;
+            const myScore = isT1 ? sc.s1 : sc.s2;
+            const oppScore = isT1 ? sc.s2 : sc.s1;
+            const won = myScore > oppScore;
+            result = `<span style="color:${won?'var(--green)':'var(--red)'};font-weight:700">${won?'W':'L'} ${myScore}-${oppScore}</span>`;
+          }
+        }
+        gameRows += `<tr>
+          <td>Wk ${week}${isBracket?' ★':''}</td>
+          <td>${time}</td>
+          <td>Goal ${court}</td>
+          <td style="font-weight:600">vs ${oppName}</td>
+          <td>${result || '<span style="color:var(--text3)">—</span>'}</td>
+        </tr>`;
+      }
+    }
+    const coachInfo = team.coach ? ` <span style="font-size:.72rem;color:var(--text3);font-weight:400">Coach: ${team.coach}</span>` : '';
+    html += `<details class="pool-dropdown" style="margin-bottom:.6rem">
+      <summary><span class="division-color-dot" style="background:${div.color}"></span><strong>${team.name}</strong>${coachInfo}
+        <span style="font-size:.72rem;color:var(--text2);font-weight:400;margin-left:.4rem">${gameCount} game${gameCount!==1?'s':''} scheduled</span>
+      </summary>
+      <div style="padding:.6rem;overflow-x:auto">`;
+    if (gameCount === 0) {
+      html += '<div style="color:var(--text3);font-size:.8rem;padding:.3rem">No games scheduled yet</div>';
+    } else {
+      html += `<table class="standings-table" style="font-size:.78rem">
+        <thead><tr><th>Week</th><th>Time</th><th>Goal</th><th>Opponent</th><th>Result</th></tr></thead>
+        <tbody>${gameRows}</tbody></table>`;
+    }
+    html += '</div></details>';
+  }
+  html += '</div>';
+  return html;
+}
+
+// ─── SCORE ENTRY ───
 function adminScores() {
   const div = state.divisions.find(d=>d.id===selectedDivision) || state.divisions[0];
-  const matchups = state.matchups[div.id] || [];
   const weekGames = {};
   for (const [schedKey, slots] of Object.entries(state.schedule)) {
     for (const [cellKey, entry] of Object.entries(slots)) {
@@ -828,9 +1279,9 @@ function adminScores() {
       const score = state.scores[m.id];
       scoresHTML += `<div class="score-row">
         <div class="teams"><strong>${t1}</strong> <span class="vs">vs</span> <strong>${t2}</strong></div>
-        <input type="number" min="0" id="s1_${m.id}" value="${score?.s1??''}" placeholder="â">
-        <span class="vs">â</span>
-        <input type="number" min="0" id="s2_${m.id}" value="${score?.s2??''}" placeholder="â">
+        <input type="number" min="0" id="s1_${m.id}" value="${score?.s1??''}" placeholder="—">
+        <span class="vs">—</span>
+        <input type="number" min="0" id="s2_${m.id}" value="${score?.s2??''}" placeholder="—">
         <button class="btn btn-primary btn-sm" onclick="saveScore('${m.id}','${div.id}',false)">Save</button>
         ${score ? '<span class="result-badge saved">Saved</span>' : ''}
       </div>`;
@@ -842,9 +1293,9 @@ function adminScores() {
       const bScore = bracket?.bracketScores?.[g.id];
       scoresHTML += `<div class="score-row" style="border-left:3px solid var(--orange);margin-left:.3rem">
         <div class="teams"><strong>${t1}</strong> <span class="vs">vs</span> <strong>${t2}</strong> <span style="font-size:.68rem;color:var(--orange);font-weight:700">[${g.label}]</span></div>
-        <input type="number" min="0" id="bs1_${g.id}" value="${bScore?.s1??''}" placeholder="â">
-        <span class="vs">â</span>
-        <input type="number" min="0" id="bs2_${g.id}" value="${bScore?.s2??''}" placeholder="â">
+        <input type="number" min="0" id="bs1_${g.id}" value="${bScore?.s1??''}" placeholder="—">
+        <span class="vs">—</span>
+        <input type="number" min="0" id="bs2_${g.id}" value="${bScore?.s2??''}" placeholder="—">
         <button class="btn btn-primary btn-sm" onclick="saveBracketScore('${g.id}','${div.id}')">Save</button>
         ${bScore ? '<span class="result-badge saved">Saved</span>' : ''}
       </div>`;
@@ -865,7 +1316,6 @@ function adminScores() {
     ${scoresHTML}
   </div>`;
 }
-
 function saveScore(matchupId, divId, isBracket) {
   const s1 = parseInt(document.getElementById('s1_' + matchupId)?.value);
   const s2 = parseInt(document.getElementById('s2_' + matchupId)?.value);
@@ -873,7 +1323,6 @@ function saveScore(matchupId, divId, isBracket) {
   state.scores[matchupId] = { s1, s2 };
   save(); toast('Score saved'); render();
 }
-
 function saveBracketScore(gameId, divId) {
   const s1 = parseInt(document.getElementById('bs1_' + gameId)?.value);
   const s2 = parseInt(document.getElementById('bs2_' + gameId)?.value);
@@ -885,7 +1334,6 @@ function saveBracketScore(gameId, divId) {
   advanceBracketWinner(divId, gameId, s1, s2);
   save(); toast('Bracket score saved'); render();
 }
-
 function advanceBracketWinner(divId, gameId, s1, s2) {
   const bracket = state.brackets[divId];
   const allArrays = [bracket.winners, bracket.consolation, bracket.ninthPlace];
@@ -903,8 +1351,7 @@ function advanceBracketWinner(divId, gameId, s1, s2) {
     }
   }
 }
-
-// âââ STANDINGS âââ
+// ─── STANDINGS ───
 function getStandings(divId) {
   const teams = state.teams[divId] || [];
   const matchups = state.matchups[divId] || [];
@@ -924,8 +1371,7 @@ function getStandings(divId) {
     return (b.pf - b.pa) - (a.pf - a.pa);
   });
 }
-
-// âââ BRACKETS ADMIN âââ
+// ─── BRACKETS ADMIN ───
 function adminBrackets() {
   const div = state.divisions.find(d=>d.id===selectedDivision) || state.divisions[0];
   const standings = getStandings(div.id);
@@ -933,7 +1379,7 @@ function adminBrackets() {
   let standingsPreview = '';
   if (standings.length > 0) {
     standingsPreview = `<table class="standings-table" style="margin-bottom:1rem">
-      <thead><tr><th>Seed</th><th>Team</th><th>Record</th><th>+/â</th></tr></thead><tbody>`;
+      <thead><tr><th>Seed</th><th>Team</th><th>Record</th><th>+/−</th></tr></thead><tbody>`;
     standings.forEach((s, i) => {
       standingsPreview += `<tr><td class="rank">${i+1}</td><td>${s.name}</td><td>${s.w}-${s.l}</td><td>${s.pf - s.pa > 0 ? '+' : ''}${s.pf - s.pa}</td></tr>`;
     });
@@ -942,7 +1388,7 @@ function adminBrackets() {
   let bracketHTML = '';
   if (bracket && bracket.generated) {
     bracketHTML = `<div style="margin-top:1rem">
-      <div style="font-family:var(--font-display);font-weight:800;color:var(--green);margin-bottom:.5rem;font-size:1rem;text-transform:uppercase">â Bracket Generated</div>
+      <div style="font-family:var(--font-display);font-weight:800;color:var(--green);margin-bottom:.5rem;font-size:1rem;text-transform:uppercase">✓ Bracket Generated</div>
       ${renderBracketVisual(div.id)}
       <button class="btn btn-danger btn-sm" style="margin-top:.5rem" onclick="if(confirm('Reset bracket?')){delete state.brackets['${div.id}'];save();render()}">Reset Bracket</button>
     </div>`;
@@ -959,11 +1405,10 @@ function adminBrackets() {
     <div style="font-family:var(--font-display);font-weight:700;font-size:.9rem;text-transform:uppercase;margin-bottom:.5rem">Seed Preview</div>
     ${standingsPreview || '<div class="empty-state">No standings yet</div>'}
     ${standings.length >= 4 && (!bracket || !bracket.generated) ?
-      `<button class="btn btn-primary" onclick="generateBracket('${div.id}')">Generate Bracket from Standings â</button>` : ''}
+      `<button class="btn btn-primary" onclick="generateBracket('${div.id}')">Generate Bracket from Standings →</button>` : ''}
     ${bracketHTML}
   </div>`;
 }
-
 function generateBracket(divId) {
   const standings = getStandings(divId);
   if (standings.length < 4) { toast('Need at least 4 teams', true); return; }
@@ -995,7 +1440,6 @@ function generateBracket(divId) {
   state.brackets[divId] = { generated: true, seeds, winners, consolation, ninthPlace, bracketScores: {} };
   save(); toast('Bracket generated'); render();
 }
-
 function renderBracketVisual(divId) {
   const bracket = state.brackets[divId];
   if (!bracket) return '';
@@ -1017,7 +1461,6 @@ function renderBracketVisual(divId) {
   }
   return html;
 }
-
 function renderBracketRounds(divId, games, scores) {
   const rounds = {};
   for (const g of games) { if (!rounds[g.round]) rounds[g.round] = []; rounds[g.round].push(g); }
@@ -1046,17 +1489,15 @@ function renderBracketRounds(divId, games, scores) {
   html += '</div>';
   return html;
 }
-
-// ââââââââââââââââââââââââââââââââââââââââââââââââââââââââââ
+// ══════════════════════════════════════════════════════════
 // PUBLIC VIEW
-// ââââââââââââââââââââââââââââââââââââââââââââââââââââââââââ
-
+// ══════════════════════════════════════════════════════════
 function renderPublic() {
   document.getElementById('sidebar').innerHTML = `
     <div class="section-label">View</div>
     <a href="#" class="${publicPage==='schedule'?'active':''}" onclick="publicPage='schedule';render();return false">&#9632; Schedule</a>
     <a href="#" class="${publicPage==='standings'?'active':''}" onclick="publicPage='standings';render();return false">&#9632; Standings</a>
-    <a href="#" class="${publicPage==='brackets'?'active':''}" onclick="publicPage='coaches';render();return false">&#9632; Coaches</a>
+    <a href="#" class="${publicPage==='coaches'?'active':''}" onclick="publicPage='coaches';render();return false">&#9632; Coaches</a>
     <a href="#" class="${publicPage==='teamSched'?'active':''}" onclick="publicPage='teamSched';render();return false">&#9632; Team Schedules</a>
     <a href="#" class="${publicPage==='brackets'?'active':''}" onclick="publicPage='brackets';render();return false">&#9632; Brackets</a>
   `;
@@ -1066,7 +1507,6 @@ function renderPublic() {
     <p>Schedule, standings, and playoff brackets</p>
   </div>
   <div style="padding:1.5rem 0 0">`;
-
   switch (publicPage) {
     case 'schedule': html += publicSchedule(); break;
     case 'standings': html += publicStandings(); break;
@@ -1077,7 +1517,6 @@ function renderPublic() {
   html += '</div>';
   main.innerHTML = html;
 }
-
 // ─── PUBLIC COACH SCHEDULES ───
 function publicCoachSchedules() {
   const coachMap = {};
@@ -1244,18 +1683,19 @@ function publicTeamSchedules() {
 function publicSchedule() {
   let divOpts = state.divisions.map(d => `<option value="${d.id}" ${d.id===selectedDivision?'selected':''}>${d.name} (${d.night})</option>`).join('');
   const div = state.divisions.find(d=>d.id===selectedDivision);
-  let weekTabs = WEEKS.map(w => `<button class="${schedWeek===w?'active':''}" onclick="schedWeek=${w};render()">Week ${w}${w >= state.settings.bracketStartWeek ? ' â' : ''}</button>`).join('');
+  let weekTabs = WEEKS.map(w => `<button class="${schedWeek===w?'active':''}" onclick="schedWeek=${w};render()">Week ${w}${w >= state.settings.bracketStartWeek ? ' ★' : ''}</button>`).join('');
   const night = div?.night || 'Monday';
   const schedKey = `${night}-${schedWeek}`;
   const sched = state.schedule[schedKey] || {};
   let gridHTML = `<div class="sched-grid">
-    <div class="hdr">Time</div>${COURTS.map(c=>`<div class="hdr">Court ${c}</div>`).join('')}`;
+    <div class="hdr">Time</div>${COURTS.map(c=>`<div class="hdr">Goal ${c}</div>`).join('')}`;
   for (const slot of TIME_SLOTS) {
     gridHTML += `<div class="time-label">${slot}</div>`;
     for (const court of COURTS) {
       const key = `${slot}-${court}`;
       const entry = sched[key];
       let content = '';
+      if (entry && !findMatchup(entry.matchupId, entry.divId)) { delete sched[key]; }
       if (entry && entry.divId === selectedDivision) {
         let t1, t2, result = '';
         if (entry.type === 'bracket') {
@@ -1305,10 +1745,9 @@ function publicSchedule() {
     ${gridHTML}
   </div>`;
 }
-
 function publicStandings() {
   let html = '<div class="card"><div class="card-header"><div class="accent"></div>League Standings</div>';
-  html += `<p style="color:var(--text2);font-size:.82rem;margin-bottom:1rem">Tiebreaker: Record, then Point Differential (PF â PA)</p>`;
+  html += `<p style="color:var(--text2);font-size:.82rem;margin-bottom:1rem">Tiebreaker: Record, then Point Differential (PF − PA)</p>`;
   html += '<div class="tabs" style="margin-bottom:1rem">' +
     state.divisions.map(d => `<button class="${selectedDivision===d.id?'active':''}" onclick="selectedDivision='${d.id}';render()">${d.name}</button>`).join('') + '</div>';
   const div = state.divisions.find(d=>d.id===selectedDivision);
@@ -1321,7 +1760,7 @@ function publicStandings() {
       <span class="badge ${div?.night==='Monday'?'badge-mon':'badge-tue'}" style="margin-left:.5rem">${div?.night}</span>
     </div>`;
     html += `<table class="standings-table"><thead><tr>
-      <th style="width:40px">Rank</th><th>Team</th><th>W</th><th>L</th><th>PF</th><th>PA</th><th>+/â</th>
+      <th style="width:40px">Rank</th><th>Team</th><th>W</th><th>L</th><th>PF</th><th>PA</th><th>+/−</th>
     </tr></thead><tbody>`;
     standings.forEach((s, i) => {
       const diff = s.pf - s.pa;
@@ -1339,7 +1778,6 @@ function publicStandings() {
   html += '</div>';
   return html;
 }
-
 function publicBrackets() {
   let html = '<div class="card"><div class="card-header"><div class="accent"></div>Playoff Brackets</div>';
   html += '<div class="tabs" style="margin-bottom:1rem">' +
@@ -1353,8 +1791,7 @@ function publicBrackets() {
   html += '</div>';
   return html;
 }
-
-// âââ HELPERS âââ
+// ─── HELPERS ───
 function getTeamName(divId, teamId) {
   const teams = state.teams[divId] || [];
   const t = teams.find(t => t.id === teamId);
@@ -1376,7 +1813,13 @@ function getScheduledMatchupIds(divId) {
   const ids = new Set();
   for (const [key, slots] of Object.entries(state.schedule)) {
     for (const [cell, entry] of Object.entries(slots)) {
-      if (entry.divId === divId && entry.type === 'regular') ids.add(entry.matchupId);
+      if (entry.divId === divId && entry.type === 'regular') {
+        if (findMatchup(entry.matchupId, entry.divId)) {
+          ids.add(entry.matchupId);
+        } else {
+          delete slots[cell]; // clean up stale entry
+        }
+      }
     }
   }
   return ids;
@@ -1397,8 +1840,11 @@ function exportData() {
   a.download = 'ign-league-data.json';
   a.click();
 }
-
-// âââ INIT âââ
+// ─── INIT ───
+// Start in public mode unless already authenticated
+document.querySelectorAll('.mode-toggle button').forEach(b => b.classList.toggle('active', b.textContent.trim().toLowerCase() === mode));
+updateLogoutBtn();
+// Render immediately from localStorage cache, Firebase listener will re-render when data arrives
 render();
 </script>
 </body>
