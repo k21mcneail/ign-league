@@ -547,10 +547,10 @@ label{font-size:.75rem;color:var(--text2);font-weight:600;display:block;margin-b
     ACADEMY
     <span class="league-tag">3v3 League</span>
   </div>
-  <div style="display:flex;align-items:center;gap:.5rem">
-    <div class="mode-toggle">
-      <button class="active" onclick="setMode('admin')">Admin</button>
-      <button onclick="setMode('public')">Public</button>
+  <div style="display:flex;align-items:center;gap:.5rem" id="topAdminArea">
+    <div class="mode-toggle" id="topModeToggle" style="display:none">
+      <button onclick="setMode('admin')">Admin</button>
+      <button class="active" onclick="setMode('public')">Public</button>
     </div>
     <button class="btn btn-secondary btn-sm" id="logoutBtn" style="display:none" onclick="adminLogout()">Logout</button>
   </div>
@@ -652,6 +652,8 @@ function requireAdmin(){
 function updateLogoutBtn(){
   const btn = document.getElementById('logoutBtn');
   if(btn) btn.style.display = isAdminAuthed ? 'inline-flex' : 'none';
+  const toggle = document.getElementById('topModeToggle');
+  if(toggle) toggle.style.display = isAdminAuthed ? 'flex' : 'none';
 }
 
 function defaultState() {
@@ -684,7 +686,7 @@ let state = loadStateLocal();
 let mode = isAdminAuthed ? 'admin' : 'public';
 let adminPage = 'divisions';
 let publicPage = 'home';
-let selectedDivision = state.divisions[0]?.id || 'd1';
+let selectedDivision = isAdminAuthed ? (state.divisions[0]?.id || 'd1') : '';
 let schedNight = 'Monday';
 let schedWeek = 1;
 let dragData = null;
@@ -765,6 +767,9 @@ function render() {
 function setMode(m) {
   if (m === 'admin' && !requireAdmin()) return;
   mode = m;
+  if (m === 'admin' && !selectedDivision && state.divisions.length) {
+    selectedDivision = state.divisions[0].id;
+  }
   document.querySelectorAll('.mode-toggle button').forEach(b => b.classList.toggle('active', b.textContent.trim().toLowerCase() === m));
   updateLogoutBtn();
   render();
@@ -1671,28 +1676,36 @@ function renderPublic() {
   // Hide sidebar in public mode, show pub-nav instead
   document.getElementById('sidebar').innerHTML = '';
   document.getElementById('sidebar').style.display = 'none';
-  if (!selectedDivision && state.divisions.length > 0) {
+  const needsDivision = publicPage !== 'home';
+  if (needsDivision && !selectedDivision && state.divisions.length > 0) {
     selectedDivision = state.divisions[0].id;
   }
   const div = state.divisions.find(d => d.id === selectedDivision);
-  const divOpts = state.divisions.map(d => `<option value="${d.id}" ${d.id===selectedDivision?'selected':''}>${d.name}</option>`).join('');
+  const divOpts = '<option value="" disabled ' + (!selectedDivision ? 'selected' : '') + '>Select Division</option>' +
+    state.divisions.map(d => `<option value="${d.id}" ${d.id===selectedDivision?'selected':''}>${d.name}</option>`).join('');
   const pubPages = [['home','Home'],['schedule','Schedule'],['standings','Standings'],['teams','Teams'],['brackets','Brackets']];
   const tabsHTML = pubPages.map(([k,l]) =>
     `<button class="${publicPage===k?'active':''}" onclick="publicPage='${k}';render()">${l}</button>`
   ).join('');
   const main = document.getElementById('main');
+  const showDivSelect = needsDivision;
+  let heroSub = 'Welcome to the league!';
+  if (needsDivision) {
+    heroSub = div ? div.name + ' \u2014 ' + div.night + ' Night' : 'Select a division to get started';
+  }
   let html = `<div class="pub-hero">
     <h1>IGN Academy 3v3 League</h1>
-    <p>${publicPage === 'home' ? 'Welcome to the league!' : (div ? div.name + ' \u2014 ' + div.night + ' Night' : 'Select a division to get started')}</p>
+    <p>${heroSub}</p>
   </div>
   <div class="pub-nav">
-    <select onchange="selectedDivision=this.value;render()">${divOpts}</select>
+    ${showDivSelect ? `<select onchange="selectedDivision=this.value;render()">${divOpts}</select>` : ''}
     <div class="pub-tabs">${tabsHTML}</div>
   </div>
   <div style="padding:1.5rem">`;
-  if (selectedDivision) {
+  if (publicPage === 'home') {
+    html += publicHome();
+  } else if (selectedDivision) {
     switch (publicPage) {
-      case 'home': html += publicHome(); break;
       case 'teams': html += publicTeamSchedules(); break;
       case 'schedule': html += publicScheduleCards(); break;
       case 'standings': html += publicStandings(); break;
@@ -1700,9 +1713,15 @@ function renderPublic() {
       default: html += publicHome(); break;
     }
   } else {
-    html += '<div class="card"><div class="empty-state">No divisions created yet</div></div>';
+    html += '<div class="card"><div class="empty-state" style="padding:3rem;text-align:center;font-size:1.1rem;color:var(--text2)"><div style="font-size:2.5rem;margin-bottom:.5rem">\u{1F3C0}</div>Select a division above to view ' + publicPage + '</div></div>';
   }
   html += '</div>';
+  // Subtle admin login at the very bottom
+  if (!isAdminAuthed) {
+    html += `<div style="text-align:center;padding:2rem 1rem .8rem;opacity:.25;transition:opacity .2s" onmouseenter="this.style.opacity='.6'" onmouseleave="this.style.opacity='.25'">
+      <button onclick="setMode('admin')" style="background:none;border:none;color:var(--text3);font-size:.7rem;cursor:pointer;font-family:var(--font-display);letter-spacing:.05em">ADMIN LOGIN</button>
+    </div>`;
+  }
   main.innerHTML = html;
 }
 // ─── PUBLIC COACH SCHEDULES ───
@@ -1901,7 +1920,7 @@ function publicHome() {
     if (w < currentWeek) cls = 'completed';
     else if (w === currentWeek) cls = 'current';
     if (w >= state.settings.bracketStartWeek) label += ' \u2605';
-    html += `<div class="week-pill ${cls}" onclick="schedWeek=${w};publicPage='schedule';render()">${label}</div>`;
+    html += `<div class="week-pill ${cls}" onclick="schedWeek=${w};if(!selectedDivision&&state.divisions.length)selectedDivision=state.divisions[0].id;publicPage='schedule';render()">${label}</div>`;
   }
   html += `</div>
     <p style="font-size:.78rem;color:var(--text3);margin-top:.4rem">\u2605 = Playoff weeks</p>
