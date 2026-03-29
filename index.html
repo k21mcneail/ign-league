@@ -2029,13 +2029,26 @@ function publicHome() {
       <div class="rules-group" onclick="this.classList.toggle('open')">
         <div class="rules-group-header">\u{1F3C6} Playoff Format <span class="chevron">\u25B6</span></div>
         <div class="rules-group-body">
+          <h4>Seeding</h4>
           <ul>
-            <li>Playoffs begin in <strong>Week ${state.settings.bracketStartWeek || 4}</strong> of the season.</li>
-            <li>Teams are seeded based on regular season <strong>win-loss record</strong>.</li>
+            <li>Weeks 1–4 are <strong>regular season (pool play)</strong>.</li>
+            <li>Teams are seeded by <strong>win-loss record</strong> at the end of Week 4.</li>
             <li>Tiebreakers: 1) Head-to-head record, 2) Point differential, 3) Coin flip.</li>
-            <li>Playoff games are <strong>single elimination</strong> \u2014 lose and you\u2019re out.</li>
-            <li>The bracket is set at the end of the regular season and posted on the Brackets tab.</li>
-            <li>Championship game is played on the <strong>final night</strong> of the season.</li>
+          </ul>
+          <h4>Week 5 — Playoff Bracket</h4>
+          <ul>
+            <li>The <strong>top 4 seeds</strong> in each division enter a single-elimination bracket.</li>
+            <li>Semifinals: <strong>#1 seed vs #4 seed</strong> and <strong>#2 seed vs #3 seed</strong>.</li>
+            <li>Winners play for the <strong>championship</strong>. Losers play for <strong>3rd place</strong>.</li>
+          </ul>
+          <h4>Consolation Games</h4>
+          <ul>
+            <li>Teams that don’t make the top 4 will still play on Week 5.</li>
+            <li>Consolation matchups ensure <strong>every team gets playing time</strong> to get reps and continue sharpening their skills.</li>
+          </ul>
+          <h4>Bracket Info</h4>
+          <ul>
+            <li>The full bracket is posted on the <strong>Brackets tab</strong> after Week 4.</li>
           </ul>
         </div>
       </div>
