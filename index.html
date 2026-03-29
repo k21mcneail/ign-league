@@ -430,6 +430,20 @@ label{font-size:.75rem;color:var(--text2);font-weight:600;display:block;margin-b
 .week-pill.completed::before{content:'\2713';font-weight:900}
 .week-pill.current::before{content:'\25B6';font-size:.6rem}
 .week-pill.upcoming{opacity:.5}
+.week-pill{cursor:pointer}
+.week-pill:hover{transform:translateY(-2px);box-shadow:0 3px 8px rgba(0,0,0,.15)}
+/* ─── EXPANDABLE RULES ─── */
+.rules-accordion{display:flex;flex-direction:column;gap:.5rem}
+.rules-group{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);overflow:hidden;box-shadow:var(--shadow)}
+.rules-group-header{display:flex;align-items:center;gap:.6rem;padding:.8rem 1rem;cursor:pointer;font-family:var(--font-display);font-weight:700;font-size:.95rem;color:var(--text);transition:background .15s}
+.rules-group-header:hover{background:var(--surface2)}
+.rules-group-header .chevron{margin-left:auto;transition:transform .25s;font-size:.7rem;color:var(--text3)}
+.rules-group.open .chevron{transform:rotate(90deg)}
+.rules-group-body{display:none;padding:0 1rem 1rem 2.8rem;font-size:.88rem;line-height:1.6;color:var(--text2)}
+.rules-group.open .rules-group-body{display:block}
+.rules-group-body ul{margin:.3rem 0;padding-left:1.2rem}
+.rules-group-body li{margin-bottom:.3rem}
+.rules-group-body h4{font-family:var(--font-display);font-size:.9rem;color:var(--text);margin:.6rem 0 .2rem}
 .rule-card{
   background:var(--surface);border:1px solid var(--border);
   border-radius:var(--radius);padding:1rem 1.2rem;
@@ -1887,7 +1901,7 @@ function publicHome() {
     if (w < currentWeek) cls = 'completed';
     else if (w === currentWeek) cls = 'current';
     if (w >= state.settings.bracketStartWeek) label += ' \u2605';
-    html += `<div class="week-pill ${cls}">${label}</div>`;
+    html += `<div class="week-pill ${cls}" onclick="schedWeek=${w};publicPage='schedule';render()">${label}</div>`;
   }
   html += `</div>
     <p style="font-size:.78rem;color:var(--text3);margin-top:.4rem">\u2605 = Playoff weeks</p>
@@ -1961,43 +1975,100 @@ function publicHome() {
     </div>
   </div>`;
 
-  // RULES & REMINDERS
+  // RULES & REMINDERS (expandable accordion)
   html += `<div class="home-section">
-    <div class="home-section-title"><span class="icon">\uD83D\uDCCB</span> Rules & Reminders</div>
-    <div class="rule-card">
-      <div class="rule-icon">\uD83D\uDC55</div>
-      <div class="rule-text">
-        <div class="rule-title">Jersey Pickup</div>
-        <div class="rule-desc">Pick up your team jersey at the front desk when you arrive. Please do not dig through jerseys for a specific number \u2014 just grab one that fits.</div>
+    <div class="home-section-title"><span class="icon">\u{1F4CB}</span> Rules & Info \u2014 Click to Expand</div>
+    <div class="rules-accordion">
+
+      <div class="rules-group" onclick="this.classList.toggle('open')">
+        <div class="rules-group-header">\u{1F455} Jersey Policy <span class="chevron">\u25B6</span></div>
+        <div class="rules-group-body">
+          <ul>
+            <li>Pick up your team jersey at the <strong>front desk</strong> when you arrive.</li>
+            <li>Please do not dig through jerseys for a specific number \u2014 just grab one that fits.</li>
+            <li>After your games are done for the night, <strong>return your jersey to the bin by the front door</strong> before you leave.</li>
+            <li>Lost or unreturned jerseys may result in a replacement fee.</li>
+          </ul>
+        </div>
       </div>
-    </div>
-    <div class="rule-card">
-      <div class="rule-icon">\uD83D\uDEAA</div>
-      <div class="rule-text">
-        <div class="rule-title">Jersey Return</div>
-        <div class="rule-desc">After your games are done for the night, return your jersey to the bin by the front door before you leave.</div>
+
+      <div class="rules-group" onclick="this.classList.toggle('open')">
+        <div class="rules-group-header">\u{1F3C0} 3v3 Game Rules <span class="chevron">\u25B6</span></div>
+        <div class="rules-group-body">
+          <h4>General</h4>
+          <ul>
+            <li>Games are played <strong>3-on-3 half court</strong> on a single basket.</li>
+            <li>Each team plays <strong>2 games per night</strong>, approximately 20\u201330 minutes each.</li>
+            <li>A coin flip or \u201Crock-paper-scissors\u201D determines first possession.</li>
+          </ul>
+          <h4>Scoring</h4>
+          <ul>
+            <li>Baskets made inside the arc count as <strong>1 point</strong>.</li>
+            <li>Baskets made beyond the arc count as <strong>2 points</strong>.</li>
+            <li>Free throws count as <strong>1 point</strong>.</li>
+          </ul>
+          <h4>Possession & Check Ball</h4>
+          <ul>
+            <li>After every made basket, the opposing team gets the ball.</li>
+            <li>The ball must be \u201Cchecked\u201D (passed to the defender at the top of the key) before play begins.</li>
+            <li>On defensive rebounds or steals, the ball must be taken back behind the arc before shooting.</li>
+          </ul>
+          <h4>Fouls</h4>
+          <ul>
+            <li>Fouls are called by the referee on duty.</li>
+            <li>On a shooting foul, the offensive team keeps possession (check ball) unless the basket is made.</li>
+            <li>After the team foul limit (7 per half), fouls result in <strong>free throws</strong>.</li>
+            <li>Flagrant or intentional fouls result in <strong>2 free throws and possession</strong>.</li>
+          </ul>
+          <h4>Substitutions & Timeouts</h4>
+          <ul>
+            <li>Substitutions can be made during any dead ball.</li>
+            <li>Each team gets <strong>1 timeout per game</strong> (30 seconds).</li>
+          </ul>
+        </div>
       </div>
-    </div>
-    <div class="rule-card">
-      <div class="rule-icon">\uD83C\uDFC0</div>
-      <div class="rule-text">
-        <div class="rule-title">Game Format</div>
-        <div class="rule-desc">All games are 3-on-3 half court. Each team plays 2 games per night, approximately 20\u201330 minutes each.</div>
+
+      <div class="rules-group" onclick="this.classList.toggle('open')">
+        <div class="rules-group-header">\u{1F3C6} Playoff Format <span class="chevron">\u25B6</span></div>
+        <div class="rules-group-body">
+          <ul>
+            <li>Playoffs begin in <strong>Week ${state.settings.bracketStartWeek || 4}</strong> of the season.</li>
+            <li>Teams are seeded based on regular season <strong>win-loss record</strong>.</li>
+            <li>Tiebreakers: 1) Head-to-head record, 2) Point differential, 3) Coin flip.</li>
+            <li>Playoff games are <strong>single elimination</strong> \u2014 lose and you\u2019re out.</li>
+            <li>The bracket is set at the end of the regular season and posted on the Brackets tab.</li>
+            <li>Championship game is played on the <strong>final night</strong> of the season.</li>
+          </ul>
+        </div>
       </div>
-    </div>
-    <div class="rule-card">
-      <div class="rule-icon">\uD83D\uDCB5</div>
-      <div class="rule-text">
-        <div class="rule-title">Admission</div>
-        <div class="rule-desc">Admission is $5 per person each game night. Kids 5 and under get in free.</div>
+
+      <div class="rules-group" onclick="this.classList.toggle('open')">
+        <div class="rules-group-header">\u{1F4B5} Admission & Venue <span class="chevron">\u25B6</span></div>
+        <div class="rules-group-body">
+          <ul>
+            <li>Admission is <strong>$5 per person</strong> each game night.</li>
+            <li>Kids <strong>5 and under get in free</strong>.</li>
+            <li>Games are held at <strong>IGN Academy</strong>, 1350 E W Martin Dr, Conway, AR.</li>
+            <li>Monday nights and Tuesday nights \u2014 check the schedule for your division\u2019s night.</li>
+            <li>Please arrive at least <strong>10 minutes before</strong> your first game.</li>
+          </ul>
+        </div>
       </div>
-    </div>
-    <div class="rule-card">
-      <div class="rule-icon">\uD83E\uDD1D</div>
-      <div class="rule-text">
-        <div class="rule-title">Sportsmanship</div>
-        <div class="rule-desc">Good sportsmanship is expected from all players, coaches, and fans. Respect the referees, opponents, and facility at all times.</div>
+
+      <div class="rules-group" onclick="this.classList.toggle('open')">
+        <div class="rules-group-header">\u{1F91D} Sportsmanship & Conduct <span class="chevron">\u25B6</span></div>
+        <div class="rules-group-body">
+          <ul>
+            <li>Good sportsmanship is expected from <strong>all players, coaches, and fans</strong>.</li>
+            <li>Respect the referees, opponents, and the facility at all times.</li>
+            <li>Trash talk, taunting, or unsportsmanlike behavior may result in a <strong>technical foul</strong> or ejection.</li>
+            <li>Any player ejected from a game will be <strong>suspended for the next game</strong>.</li>
+            <li>Parents and fans: cheer for your team, but please keep it positive!</li>
+            <li>The league reserves the right to remove anyone who disrupts the event.</li>
+          </ul>
+        </div>
       </div>
+
     </div>
   </div>`;
 
