@@ -601,7 +601,7 @@ function renderMobileNav() {
     const pages = [['divisions','Divisions'],['teams','Teams'],['schedule','Schedule'],['coaches','Coaches'],['teamSched','Team Sched'],['scores','Scores'],['brackets','Brackets']];
     nav.innerHTML = pages.map(([k,l]) => `<button class="${adminPage===k?'active':''}" onclick="adminPage='${k}';render()">${l}</button>`).join('');
   } else {
-    const pages = [['schedule','Schedule'],['standings','Standings'],['coaches','Coaches'],['teamSched','Teams'],['brackets','Brackets']];
+    const pages = [['teams','Teams'],['schedule','Schedule'],['standings','Standings'],['brackets','Brackets']];
     nav.innerHTML = pages.map(([k,l]) => `<button class="${publicPage===k?'active':''}" onclick="publicPage='${k}';render()">${l}</button>`).join('');
   }
 }
@@ -1493,26 +1493,38 @@ function renderBracketRounds(divId, games, scores) {
 // PUBLIC VIEW
 // ══════════════════════════════════════════════════════════
 function renderPublic() {
-  document.getElementById('sidebar').innerHTML = `
-    <div class="section-label">View</div>
-    <a href="#" class="${publicPage==='schedule'?'active':''}" onclick="publicPage='schedule';render();return false">&#9632; Schedule</a>
-    <a href="#" class="${publicPage==='standings'?'active':''}" onclick="publicPage='standings';render();return false">&#9632; Standings</a>
-    <a href="#" class="${publicPage==='coaches'?'active':''}" onclick="publicPage='coaches';render();return false">&#9632; Coaches</a>
-    <a href="#" class="${publicPage==='teamSched'?'active':''}" onclick="publicPage='teamSched';render();return false">&#9632; Team Schedules</a>
-    <a href="#" class="${publicPage==='brackets'?'active':''}" onclick="publicPage='brackets';render();return false">&#9632; Brackets</a>
-  `;
+  let sidebarHTML = `<div class="section-label">Divisions</div>`;
+  for (const d of state.divisions) {
+    sidebarHTML += `<a href="#" class="${selectedDivision===d.id?'active':''}" onclick="selectedDivision='${d.id}';render();return false"><span class="division-color-dot" style="background:${d.color}"></span> ${d.name}</a>`;
+  }
+  if (selectedDivision) {
+    sidebarHTML += `<div class="section-label" style="margin-top:1rem">View</div>`;
+    const pubPages = [['teams','Teams'],['schedule','Schedule'],['standings','Standings'],['brackets','Brackets']];
+    for (const [k, l] of pubPages) {
+      sidebarHTML += `<a href="#" class="${publicPage===k?'active':''}" onclick="publicPage='${k}';render();return false" style="padding-left:1.5rem">&#9632; ${l}</a>`;
+    }
+  }
+  document.getElementById('sidebar').innerHTML = sidebarHTML;
   const main = document.getElementById('main');
+  const div = state.divisions.find(d => d.id === selectedDivision);
   let html = `<div class="pub-hero">
     <h1>IGN Academy 3v3 League</h1>
-    <p>Schedule, standings, and playoff brackets</p>
+    <p>${div ? div.name + ' \u2014 ' + div.night + ' Night' : 'Select a division to get started'}</p>
   </div>
   <div style="padding:1.5rem 0 0">`;
-  switch (publicPage) {
-    case 'schedule': html += publicSchedule(); break;
-    case 'standings': html += publicStandings(); break;
-    case 'coaches': html += publicCoachSchedules(); break;
-    case 'teamSched': html += publicTeamSchedules(); break;
-    case 'brackets': html += publicBrackets(); break;
+  if (!selectedDivision && state.divisions.length > 0) {
+    selectedDivision = state.divisions[0].id;
+  }
+  if (selectedDivision) {
+    switch (publicPage) {
+      case 'teams': html += publicTeamSchedules(); break;
+      case 'schedule': html += publicSchedule(); break;
+      case 'standings': html += publicStandings(); break;
+      case 'brackets': html += publicBrackets(); break;
+      default: html += publicSchedule(); break;
+    }
+  } else {
+    html += '<div class="card"><div class="empty-state">No divisions created yet</div></div>';
   }
   html += '</div>';
   main.innerHTML = html;
