@@ -326,6 +326,81 @@ label{font-size:.75rem;color:var(--text2);font-weight:600;display:block;margin-b
 }
 .conflict-warn{color:var(--red);font-size:.72rem;font-weight:600;margin-top:.2rem}
 .division-color-dot{width:10px;height:10px;border-radius:50%;display:inline-block;margin-right:.3rem;flex-shrink:0}
+/* ─── PUBLIC NAV BAR ─── */
+.pub-nav{
+  display:flex;align-items:center;gap:1rem;padding:.8rem 1.2rem;
+  background:var(--surface);border-bottom:1px solid var(--border);
+  flex-wrap:wrap;
+}
+.pub-nav select{
+  font-family:var(--font-display);font-weight:700;font-size:.95rem;
+  padding:.4rem .8rem;border-radius:var(--radius);
+  border:2px solid var(--orange);color:var(--text);background:var(--surface);
+  cursor:pointer;text-transform:uppercase;letter-spacing:.02em;
+  min-width:160px;
+}
+.pub-nav select:focus{box-shadow:0 0 0 3px var(--orange-glow)}
+.pub-tabs{display:flex;gap:0;flex:1;justify-content:flex-start}
+.pub-tabs button{
+  font-family:var(--font-display);font-weight:700;font-size:.82rem;
+  padding:.5rem 1rem;border:none;cursor:pointer;
+  color:var(--text3);background:transparent;
+  text-transform:uppercase;letter-spacing:.04em;transition:all .12s;
+  white-space:nowrap;border-bottom:3px solid transparent;
+}
+.pub-tabs button.active{color:var(--orange);border-bottom-color:var(--orange)}
+.pub-tabs button:hover:not(.active){color:var(--text)}
+/* ─── GAME CARDS (public schedule) ─── */
+.game-date-header{
+  font-family:var(--font-display);font-weight:800;font-size:1.2rem;
+  color:var(--text);padding:.8rem 0 .4rem;margin-top:.5rem;
+  text-transform:uppercase;letter-spacing:.02em;
+}
+.game-date-header:first-child{margin-top:0}
+.game-card{
+  background:var(--surface);border:1px solid var(--border);
+  border-radius:var(--radius);overflow:hidden;
+  margin-bottom:.8rem;box-shadow:var(--shadow);
+}
+.game-card-header{
+  background:var(--surface2);
+  padding:.5rem .8rem;
+  font-family:var(--font-display);font-weight:700;font-size:.78rem;
+  color:var(--text2);text-transform:uppercase;letter-spacing:.02em;
+  border-bottom:1px solid var(--border);
+}
+.game-card-body{padding:0}
+.game-card-team{
+  display:flex;align-items:center;justify-content:space-between;
+  padding:.6rem .8rem;font-size:.9rem;
+  border-bottom:1px solid var(--border);
+}
+.game-card-team:last-of-type{border-bottom:none}
+.game-card-team .team-name{font-weight:500;color:var(--text);flex:1}
+.game-card-team .team-score{
+  font-family:var(--font-display);font-weight:800;font-size:1rem;
+  color:var(--text);min-width:30px;text-align:right;
+}
+.game-card-team.winner .team-name{font-weight:700;color:var(--text)}
+.game-card-team.winner .team-score{font-weight:900;color:var(--text)}
+.game-card-team.loser .team-name{color:var(--text2)}
+.game-card-team.loser .team-score{color:var(--text2)}
+.game-card-footer{
+  display:flex;align-items:center;justify-content:space-between;
+  padding:.4rem .8rem;background:var(--surface2);
+  font-size:.72rem;color:var(--text2);font-weight:500;
+  border-top:1px solid var(--border);
+}
+.game-card-footer .final-badge{
+  background:var(--text);color:#fff;
+  padding:.15rem .5rem;border-radius:4px;
+  font-family:var(--font-display);font-weight:700;font-size:.68rem;
+  text-transform:uppercase;letter-spacing:.03em;
+}
+.game-card-footer .playoff-tag{
+  color:var(--orange);font-weight:700;font-family:var(--font-display);
+  text-transform:uppercase;font-size:.72rem;
+}
 .toast{
   position:fixed;bottom:1.5rem;right:1.5rem;
   background:var(--green);color:#fff;
@@ -356,12 +431,18 @@ label{font-size:.75rem;color:var(--text2);font-weight:600;display:block;margin-b
   .main{padding:1rem}
   .sched-grid{font-size:.7rem}
   .sched-grid .hdr,.sched-grid .time-label{font-size:.72rem;padding:.35rem .2rem}
+  .pub-nav{padding:.6rem .8rem;gap:.6rem}
+  .pub-nav select{font-size:.82rem;min-width:120px}
+  .pub-tabs button{padding:.4rem .7rem;font-size:.75rem}
 }
 @media(max-width:600px){
   .topbar{padding:.5rem .8rem}
   .pub-hero h1{font-size:1.8rem}
   .sched-grid{grid-template-columns:60px repeat(4,1fr)}
   .form-row{flex-direction:column}
+  .pub-nav{flex-direction:column;gap:.4rem;align-items:stretch}
+  .pub-nav select{width:100%}
+  .pub-tabs{overflow-x:auto}
 }
 </style>
 </head>
@@ -601,8 +682,8 @@ function renderMobileNav() {
     const pages = [['divisions','Divisions'],['teams','Teams'],['schedule','Schedule'],['coaches','Coaches'],['teamSched','Team Sched'],['scores','Scores'],['brackets','Brackets']];
     nav.innerHTML = pages.map(([k,l]) => `<button class="${adminPage===k?'active':''}" onclick="adminPage='${k}';render()">${l}</button>`).join('');
   } else {
-    const pages = [['teams','Teams'],['schedule','Schedule'],['standings','Standings'],['brackets','Brackets']];
-    nav.innerHTML = pages.map(([k,l]) => `<button class="${publicPage===k?'active':''}" onclick="publicPage='${k}';render()">${l}</button>`).join('');
+    // Public mode uses the inline pub-nav/pub-tabs, so hide mobile nav
+    nav.innerHTML = '';
   }
 }
 // ══════════════════════════════════════════════════════════
@@ -610,6 +691,7 @@ function renderMobileNav() {
 // ══════════════════════════════════════════════════════════
 function renderAdmin() {
   const sb = document.getElementById('sidebar');
+  sb.style.display = '';
   sb.innerHTML = `
     <div class="section-label">League Admin</div>
     <a href="#" class="${adminPage==='divisions'?'active':''}" onclick="adminPage='divisions';render();return false">&#9632; Divisions</a>
@@ -1493,35 +1575,35 @@ function renderBracketRounds(divId, games, scores) {
 // PUBLIC VIEW
 // ══════════════════════════════════════════════════════════
 function renderPublic() {
-  let sidebarHTML = `<div class="section-label">Divisions</div>`;
-  for (const d of state.divisions) {
-    sidebarHTML += `<a href="#" class="${selectedDivision===d.id?'active':''}" onclick="selectedDivision='${d.id}';render();return false"><span class="division-color-dot" style="background:${d.color}"></span> ${d.name}</a>`;
+  // Hide sidebar in public mode, show pub-nav instead
+  document.getElementById('sidebar').innerHTML = '';
+  document.getElementById('sidebar').style.display = 'none';
+  if (!selectedDivision && state.divisions.length > 0) {
+    selectedDivision = state.divisions[0].id;
   }
-  if (selectedDivision) {
-    sidebarHTML += `<div class="section-label" style="margin-top:1rem">View</div>`;
-    const pubPages = [['teams','Teams'],['schedule','Schedule'],['standings','Standings'],['brackets','Brackets']];
-    for (const [k, l] of pubPages) {
-      sidebarHTML += `<a href="#" class="${publicPage===k?'active':''}" onclick="publicPage='${k}';render();return false" style="padding-left:1.5rem">&#9632; ${l}</a>`;
-    }
-  }
-  document.getElementById('sidebar').innerHTML = sidebarHTML;
-  const main = document.getElementById('main');
   const div = state.divisions.find(d => d.id === selectedDivision);
+  const divOpts = state.divisions.map(d => `<option value="${d.id}" ${d.id===selectedDivision?'selected':''}>${d.name}</option>`).join('');
+  const pubPages = [['schedule','Schedule'],['standings','Standings'],['teams','Teams'],['brackets','Brackets']];
+  const tabsHTML = pubPages.map(([k,l]) =>
+    `<button class="${publicPage===k?'active':''}" onclick="publicPage='${k}';render()">${l}</button>`
+  ).join('');
+  const main = document.getElementById('main');
   let html = `<div class="pub-hero">
     <h1>IGN Academy 3v3 League</h1>
     <p>${div ? div.name + ' \u2014 ' + div.night + ' Night' : 'Select a division to get started'}</p>
   </div>
-  <div style="padding:1.5rem 0 0">`;
-  if (!selectedDivision && state.divisions.length > 0) {
-    selectedDivision = state.divisions[0].id;
-  }
+  <div class="pub-nav">
+    <select onchange="selectedDivision=this.value;render()">${divOpts}</select>
+    <div class="pub-tabs">${tabsHTML}</div>
+  </div>
+  <div style="padding:1.5rem">`;
   if (selectedDivision) {
     switch (publicPage) {
       case 'teams': html += publicTeamSchedules(); break;
-      case 'schedule': html += publicSchedule(); break;
+      case 'schedule': html += publicScheduleCards(); break;
       case 'standings': html += publicStandings(); break;
       case 'brackets': html += publicBrackets(); break;
-      default: html += publicSchedule(); break;
+      default: html += publicScheduleCards(); break;
     }
   } else {
     html += '<div class="card"><div class="empty-state">No divisions created yet</div></div>';
@@ -1756,6 +1838,75 @@ function publicSchedule() {
     <div class="tabs">${weekTabs}</div>
     ${gridHTML}
   </div>`;
+}
+function publicScheduleCards() {
+  const div = state.divisions.find(d=>d.id===selectedDivision);
+  if (!div) return '<div class="card"><div class="empty-state">Select a division</div></div>';
+  const night = div.night || 'Monday';
+  let weekTabs = WEEKS.map(w => `<button class="${schedWeek===w?'active':''}" onclick="schedWeek=${w};render()">Week ${w}${w >= state.settings.bracketStartWeek ? ' \u2605' : ''}</button>`).join('');
+  const schedKey = `${night}-${schedWeek}`;
+  const sched = state.schedule[schedKey] || {};
+  const games = [];
+  for (const slot of TIME_SLOTS) {
+    for (const court of COURTS) {
+      const key = `${slot}-${court}`;
+      const entry = sched[key];
+      if (!entry || entry.divId !== selectedDivision) continue;
+      let t1Name = '', t2Name = '', s1 = null, s2 = null, isPlayoff = false, poolLabel = '';
+      if (entry.type === 'bracket') {
+        isPlayoff = true;
+        const bracket = state.brackets[entry.divId];
+        const allGames = bracket ? [...(bracket.winners||[]),...(bracket.consolation||[]),...(bracket.ninthPlace||[])] : [];
+        const game = allGames.find(g => g.id === entry.bracketGameId);
+        if (!game) continue;
+        t1Name = game.t1 ? getTeamName(entry.divId, game.t1) : 'TBD';
+        t2Name = game.t2 ? getTeamName(entry.divId, game.t2) : 'TBD';
+        const bScore = bracket?.bracketScores?.[game.id];
+        if (bScore) { s1 = bScore.s1; s2 = bScore.s2; }
+        poolLabel = 'Playoff';
+      } else {
+        const matchup = findMatchup(entry.matchupId, entry.divId);
+        if (!matchup) continue;
+        t1Name = getTeamName(entry.divId, matchup.t1);
+        t2Name = getTeamName(entry.divId, matchup.t2);
+        const score = state.scores[matchup.id];
+        if (score) { s1 = score.s1; s2 = score.s2; }
+        poolLabel = '';
+      }
+      games.push({ slot, court, t1Name, t2Name, s1, s2, isPlayoff, poolLabel });
+    }
+  }
+  let html = `<div class="tabs" style="margin-bottom:1rem">${weekTabs}</div>`;
+  if (games.length === 0) {
+    html += '<div class="empty-state">No games scheduled for this week</div>';
+  } else {
+    html += `<div class="game-date-header">Week ${schedWeek} \u2014 ${night}</div>`;
+    for (const g of games) {
+      const hasScore = g.s1 !== null && g.s2 !== null;
+      const t1Win = hasScore && g.s1 > g.s2;
+      const t2Win = hasScore && g.s2 > g.s1;
+      const t1Class = hasScore ? (t1Win ? 'winner' : 'loser') : '';
+      const t2Class = hasScore ? (t2Win ? 'winner' : 'loser') : '';
+      html += `<div class="game-card">
+        <div class="game-card-header">${g.slot} \u2014 Court ${g.court}</div>
+        <div class="game-card-body">
+          <div class="game-card-team ${t1Class}">
+            <span class="team-name">${g.t1Name}</span>
+            ${hasScore ? `<span class="team-score">${g.s1}</span>` : ''}
+          </div>
+          <div class="game-card-team ${t2Class}">
+            <span class="team-name">${g.t2Name}</span>
+            ${hasScore ? `<span class="team-score">${g.s2}</span>` : ''}
+          </div>
+        </div>
+        <div class="game-card-footer">
+          <span>${g.isPlayoff ? '<span class="playoff-tag">Playoff</span>' : (div.name + (g.poolLabel ? ', ' + g.poolLabel : ''))}</span>
+          ${hasScore ? '<span class="final-badge">Final</span>' : ''}
+        </div>
+      </div>`;
+    }
+  }
+  return html;
 }
 function publicStandings() {
   let html = '<div class="card"><div class="card-header"><div class="accent"></div>League Standings</div>';
