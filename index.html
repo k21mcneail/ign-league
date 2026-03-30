@@ -1901,7 +1901,7 @@ function publicCoachView() {
   for (const div of state.divisions) {
     const teams = state.teams[div.id] || [];
     for (const t of teams) {
-      if (!t.coach) continue;
+      if (!t.coach || !t.isIGN) continue;
       if (!coachMap[t.coach]) coachMap[t.coach] = [];
       coachMap[t.coach].push({ divId: div.id, teamId: t.id, teamName: t.name, divName: div.name, night: div.night, color: div.color });
     }
