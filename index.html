@@ -606,9 +606,14 @@ const DEFAULT_DIVISIONS = [
   {id:'d7',name:'9th-12th Boys',night:'Tuesday',ageGroup:'9th-12th',gender:'Boys',color:DIV_COLORS[6]},
   {id:'d8',name:'9th-12th Girls',night:'Tuesday',ageGroup:'9th-12th',gender:'Girls',color:DIV_COLORS[7]},
 ];
-const TIME_SLOTS = ['5:30 PM','6:00 PM','6:30 PM','7:00 PM','7:30 PM','8:00 PM','8:30 PM'];
+const TIME_SLOTS = ['5:00 PM','5:30 PM','6:00 PM','6:30 PM','7:00 PM','7:30 PM','8:00 PM','8:30 PM'];
 const COURTS = ['A','B','C','D'];
 const WEEKS = [1,2,3,4,5];
+const WEEK_DATES = {
+  'Monday-1':'April 6','Monday-2':'April 13','Monday-3':'April 20','Monday-4':'April 27','Monday-5':'May 4',
+  'Tuesday-1':'April 7','Tuesday-2':'April 14','Tuesday-3':'April 21','Tuesday-4':'April 28','Tuesday-5':'May 5'
+};
+function weekDate(w, night) { return WEEK_DATES[(night||'Monday')+'-'+w] || ''; }
 // ─── STATE ───
 // ─── ADMIN AUTH ───
 function hashPass(p){let h=0;for(let i=0;i<p.length;i++){h=((h<<5)-h)+p.charCodeAt(i);h|=0;}return Math.abs(h).toString(16).padStart(8,'0').slice(0,16);}
@@ -1917,10 +1922,13 @@ function publicHome() {
   for (const w of WEEKS) {
     let cls = 'upcoming';
     let label = `Week ${w}`;
+    const monDate = weekDate(w,'Monday');
+    const tueDate = weekDate(w,'Tuesday');
+    const dateStr = monDate ? `<div style="font-size:.6rem;opacity:.75">${monDate} / ${tueDate}</div>` : '';
     if (w < currentWeek) cls = 'completed';
     else if (w === currentWeek) cls = 'current';
     if (w >= state.settings.bracketStartWeek) label += ' \u2605';
-    html += `<div class="week-pill ${cls}" onclick="schedWeek=${w};if(!selectedDivision&&state.divisions.length)selectedDivision=state.divisions[0].id;publicPage='schedule';render()">${label}</div>`;
+    html += `<div class="week-pill ${cls}" onclick="schedWeek=${w};if(!selectedDivision&&state.divisions.length)selectedDivision=state.divisions[0].id;publicPage='schedule';render()">${label}${dateStr}</div>`;
   }
   html += `</div>
     <p style="font-size:.78rem;color:var(--text3);margin-top:.4rem">\u2605 = Playoff weeks</p>
@@ -2107,11 +2115,17 @@ function publicHome() {
 function publicSchedule() {
   let divOpts = state.divisions.map(d => `<option value="${d.id}" ${d.id===selectedDivision?'selected':''}>${d.name} (${d.night})</option>`).join('');
   const div = state.divisions.find(d=>d.id===selectedDivision);
-  let weekTabs = WEEKS.map(w => `<button class="${schedWeek===w?'active':''}" onclick="schedWeek=${w};render()">Week ${w}${w >= state.settings.bracketStartWeek ? ' ★' : ''}</button>`).join('');
   const night = div?.night || 'Monday';
+  let weekTabs = WEEKS.map(w => {
+    const dt = weekDate(w, night);
+    const dtLabel = dt ? `<div style="font-size:.6rem;opacity:.7">${dt}</div>` : '';
+    return `<button class="${schedWeek===w?'active':''}" onclick="schedWeek=${w};render()">Week ${w}${w >= state.settings.bracketStartWeek ? ' ★' : ''}${dtLabel}</button>`;
+  }).join('');
   const schedKey = `${night}-${schedWeek}`;
   const sched = state.schedule[schedKey] || {};
-  let gridHTML = `<div class="sched-grid">
+  const schedDate = weekDate(schedWeek, night);
+  const dateHeader = schedDate ? `<div style="text-align:center;font-size:.85rem;font-weight:600;color:var(--orange);margin-bottom:.5rem">${night}, ${schedDate}, 2026</div>` : '';
+  let gridHTML = dateHeader + `<div class="sched-grid">
     <div class="hdr">Time</div>${COURTS.map(c=>`<div class="hdr">Goal ${c}</div>`).join('')}`;
   for (const slot of TIME_SLOTS) {
     gridHTML += `<div class="time-label">${slot}</div>`;
