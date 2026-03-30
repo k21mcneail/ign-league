@@ -691,6 +691,7 @@ let state = loadStateLocal();
 let mode = isAdminAuthed ? 'admin' : 'public';
 let adminPage = 'divisions';
 let publicPage = 'home';
+let selectedCoach = '';
 let selectedDivision = isAdminAuthed ? (state.divisions[0]?.id || 'd1') : '';
 let schedNight = 'Monday';
 let schedWeek = 1;
@@ -1681,14 +1682,14 @@ function renderPublic() {
   // Hide sidebar in public mode, show pub-nav instead
   document.getElementById('sidebar').innerHTML = '';
   document.getElementById('sidebar').style.display = 'none';
-  const needsDivision = publicPage !== 'home';
+  const needsDivision = publicPage !== 'home' && publicPage !== 'coaches';
   if (needsDivision && !selectedDivision && state.divisions.length > 0) {
     selectedDivision = state.divisions[0].id;
   }
   const div = state.divisions.find(d => d.id === selectedDivision);
   const divOpts = '<option value="" disabled ' + (!selectedDivision ? 'selected' : '') + '>Select Division</option>' +
     state.divisions.map(d => `<option value="${d.id}" ${d.id===selectedDivision?'selected':''}>${d.name}</option>`).join('');
-  const pubPages = [['home','Home'],['schedule','Schedule'],['standings','Standings'],['teams','Teams'],['brackets','Brackets']];
+  const pubPages = [['home','Home'],['schedule','Schedule'],['standings','Standings'],['teams','Teams'],['brackets','Brackets'],['coaches','Coach View']];
   const tabsHTML = pubPages.map(([k,l]) =>
     `<button class="${publicPage===k?'active':''}" onclick="publicPage='${k}';render()">${l}</button>`
   ).join('');
@@ -1709,6 +1710,8 @@ function renderPublic() {
   <div style="padding:1.5rem">`;
   if (publicPage === 'home') {
     html += publicHome();
+  } else if (publicPage === 'coaches') {
+    html += publicCoachView();
   } else if (selectedDivision) {
     switch (publicPage) {
       case 'teams': html += publicTeamSchedules(); break;
@@ -1888,6 +1891,76 @@ function publicTeamSchedules() {
         <tbody>${gameRows}</tbody></table>`;
     }
     html += '</div></details>';
+  }
+  html += '</div>';
+  return html;
+}
+function publicCoachView() {
+  const coachMap = {};
+  for (const div of state.divisions) {
+    const teams = state.teams[div.id] || [];
+    for (const t of teams) {
+      if (!t.coach) continue;
+      if (!coachMap[t.coach]) coachMap[t.coach] = [];
+      coachMap[t.coach].push({ divId: div.id, teamId: t.id, teamName: t.name, divName: div.name, night: div.night, color: div.color });
+    }
+  }
+  const coachNames = Object.keys(coachMap).sort();
+  if (coachNames.length === 0) {
+    return '<div class="card"><div class="empty-state" style="padding:3rem;text-align:center;font-size:1.1rem;color:var(--text2)"><div style="font-size:2.5rem;margin-bottom:.5rem">\u{1F3C0}</div>No coaches found yet.</div></div>';
+  }
+  let html = '<div class="card" style="margin-bottom:1rem">' +
+    '<div class="card-header"><div class="accent"></div>Coach Schedule Lookup</div>' +
+    '<p style="color:var(--text2);font-size:.85rem;margin-bottom:1rem">Select your name to see all your teams, game times, and courts.</p>' +
+    '<select id="coachSelect" onchange="selectedCoach=this.value;render()" style="width:100%;max-width:320px;padding:.5rem .7rem;font-size:.95rem;border:1px solid var(--border);border-radius:6px;background:var(--card);color:var(--text)">' +
+    '<option value="">\u2014 Select Coach \u2014</option>' +
+    coachNames.map(c => '<option value="' + c + '"' + (c===selectedCoach?' selected':'') + '>' + c + '</option>').join('') +
+    '</select></div>';
+  if (!selectedCoach || !coachMap[selectedCoach]) return html;
+  const info = coachMap[selectedCoach];
+  const teamList = info.map(i => '<span style="display:inline-block;padding:.15rem .5rem;border-radius:4px;background:' + i.color + '22;color:' + i.color + ';font-weight:600;font-size:.8rem;margin:.15rem .2rem">' + i.teamName + ' <span style="opacity:.7;font-weight:400">(' + i.divName + ')</span></span>').join(' ');
+  html += '<div class="card" style="margin-bottom:1rem"><div class="card-header"><div class="accent"></div>Coach ' + selectedCoach + '</div><div style="margin-bottom:.8rem">' + teamList + '</div>';
+  const nights = [...new Set(info.map(i => i.night))];
+  for (const night of nights) {
+    html += '<div style="font-weight:700;font-size:.9rem;margin:1rem 0 .5rem;color:var(--orange)">' + night + ' Night</div>';
+    html += '<div style="overflow-x:auto"><table class="standings-table" style="font-size:.82rem;margin-bottom:.5rem"><thead><tr><th>Week</th><th>Date</th><th>Time</th><th>Court</th><th>Matchup</th><th>Division</th><th>Result</th></tr></thead><tbody>';
+    let hasGames = false;
+    for (const week of WEEKS) {
+      const schedKey = night + '-' + week;
+      const sched = state.schedule[schedKey] || {};
+      for (const [cellKey, entry] of Object.entries(sched)) {
+        const matchup = findMatchup(entry.matchupId, entry.divId);
+        if (!matchup) continue;
+        const teamsList = state.teams[entry.divId] || [];
+        const t1 = teamsList.find(t => t.id === matchup.t1);
+        const t2 = teamsList.find(t => t.id === matchup.t2);
+        if (!t1 || !t2) continue;
+        if (t1.coach !== selectedCoach && t2.coach !== selectedCoach) continue;
+        hasGames = true;
+        const parts = cellKey.split('-');
+        const court = parts.pop();
+        const time = parts.join('-');
+        const div = state.divisions.find(d => d.id === entry.divId);
+        const isBracket = entry.type === 'bracket';
+        const dt = weekDate(week, night);
+        const dateStr = dt ? night + ', ' + dt : '';
+        let result = '';
+        if (isBracket) {
+          const bracket = state.brackets[entry.divId];
+          const bScore = bracket && bracket.bracketScores && bracket.bracketScores[entry.bracketGameId];
+          if (bScore) { const winner = bScore.s1 > bScore.s2 ? t1.name : t2.name; result = '<span style="color:var(--green);font-weight:700">' + winner + ' W ' + bScore.s1 + '-' + bScore.s2 + '</span>'; }
+        } else {
+          const score = state.scores[matchup.id];
+          if (score) { const winner = score.s1 > score.s2 ? t1.name : t2.name; result = '<span style="color:var(--green);font-weight:700">' + winner + ' W ' + score.s1 + '-' + score.s2 + '</span>'; }
+        }
+        const coachTeams = info.map(i => i.teamId);
+        const t1Style = coachTeams.includes(t1.id) ? 'font-weight:700;color:var(--orange)' : '';
+        const t2Style = coachTeams.includes(t2.id) ? 'font-weight:700;color:var(--orange)' : '';
+        html += '<tr><td>Wk ' + week + (isBracket?' \u2605':'') + '</td><td style="white-space:nowrap">' + dateStr + '</td><td>' + time + '</td><td>Court ' + court + '</td><td><span style="' + t1Style + '">' + t1.name + '</span> vs <span style="' + t2Style + '">' + t2.name + '</span></td><td><span style="color:' + (div?div.color:'var(--text)') + ';font-size:.78rem">' + (div?div.name:'') + '</span></td><td>' + (result || '<span style="color:var(--text3)">\u2014</span>') + '</td></tr>';
+      }
+    }
+    if (!hasGames) html += '<tr><td colspan="7" style="color:var(--text3);text-align:center;padding:.8rem">No games scheduled</td></tr>';
+    html += '</tbody></table></div>';
   }
   html += '</div>';
   return html;
