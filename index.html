@@ -2187,7 +2187,11 @@ function publicScheduleCards() {
   const div = state.divisions.find(d=>d.id===selectedDivision);
   if (!div) return '<div class="card"><div class="empty-state">Select a division</div></div>';
   const night = div.night || 'Monday';
-  let weekTabs = WEEKS.map(w => `<button class="${schedWeek===w?'active':''}" onclick="schedWeek=${w};render()">Week ${w}${w >= state.settings.bracketStartWeek ? ' \u2605' : ''}</button>`).join('');
+  let weekTabs = WEEKS.map(w => {
+    const dt = weekDate(w, night);
+    const dtLabel = dt ? `<div style="font-size:.6rem;opacity:.7">${dt}</div>` : '';
+    return `<button class="${schedWeek===w?'active':''}" onclick="schedWeek=${w};render()">Week ${w}${w >= state.settings.bracketStartWeek ? ' ★' : ''}${dtLabel}</button>`;
+  }).join('');
   const schedKey = `${night}-${schedWeek}`;
   const sched = state.schedule[schedKey] || {};
   const games = [];
@@ -2224,7 +2228,9 @@ function publicScheduleCards() {
   if (games.length === 0) {
     html += '<div class="empty-state">No games scheduled for this week</div>';
   } else {
-    html += `<div class="game-date-header">Week ${schedWeek} \u2014 ${night}</div>`;
+    const schedDate = weekDate(schedWeek, night);
+    const dateLine = schedDate ? `${night}, ${schedDate}, 2026` : `Week ${schedWeek} \u2014 ${night}`;
+    html += `<div class="game-date-header">${dateLine}</div>`;
     for (const g of games) {
       const hasScore = g.s1 !== null && g.s2 !== null;
       const t1Win = hasScore && g.s1 > g.s2;
