@@ -692,6 +692,7 @@ let mode = isAdminAuthed ? 'admin' : 'public';
 let adminPage = 'divisions';
 let publicPage = 'home';
 let selectedCoach = '';
+(function(){var p=new URLSearchParams(window.location.search);if(p.get('page')==='coaches'){publicPage='coaches';mode='public';}})();
 let selectedDivision = isAdminAuthed ? (state.divisions[0]?.id || 'd1') : '';
 let schedNight = 'Monday';
 let schedWeek = 1;
@@ -1689,7 +1690,7 @@ function renderPublic() {
   const div = state.divisions.find(d => d.id === selectedDivision);
   const divOpts = '<option value="" disabled ' + (!selectedDivision ? 'selected' : '') + '>Select Division</option>' +
     state.divisions.map(d => `<option value="${d.id}" ${d.id===selectedDivision?'selected':''}>${d.name}</option>`).join('');
-  const pubPages = [['home','Home'],['schedule','Schedule'],['standings','Standings'],['teams','Teams'],['brackets','Brackets'],['coaches','Coach View']];
+  const pubPages = [['home','Home'],['schedule','Schedule'],['standings','Standings'],['teams','Teams'],['brackets','Brackets']];
   const tabsHTML = pubPages.map(([k,l]) =>
     `<button class="${publicPage===k?'active':''}" onclick="publicPage='${k}';render()">${l}</button>`
   ).join('');
