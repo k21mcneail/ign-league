@@ -1,0 +1,865 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Register â Happy Hoopers | IGN Academy</title>
+
+<!-- âââ STRIPE âââ -->
+<script src="https://js.stripe.com/v3/"></script>
+
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@400;600;700;800;900&family=Inter:wght@400;500;600;700;800&display=swap');
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  :root {
+    --orange: #F97316;
+    --orange-dark: #EA580C;
+    --gray-50: #F8F9FA;
+    --gray-100: #F1F5F9;
+    --gray-200: #E5E7EB;
+    --gray-300: #D1D5DB;
+    --gray-400: #9CA3AF;
+    --gray-500: #6B7280;
+    --gray-600: #4B5563;
+    --gray-900: #111827;
+    --green: #16A34A;
+    --red: #EF4444;
+    --white: #FFFFFF;
+  }
+
+  body {
+    font-family: 'Inter', system-ui, sans-serif;
+    background: var(--gray-50);
+    color: var(--gray-900);
+    min-height: 100vh;
+  }
+
+  /* ââ HEADER BAR ââ */
+  .site-header {
+    background: var(--white);
+    padding: 12px 24px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.08), 0 1px 2px rgba(0,0,0,0.05);
+    position: relative;
+    z-index: 10;
+  }
+  .logo {
+    font-family: 'Barlow Condensed', Impact, sans-serif;
+    display: flex;
+    align-items: baseline;
+    gap: 4px;
+  }
+  .logo-academy {
+    font-size: .65rem;
+    font-weight: 700;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    color: var(--gray-400);
+  }
+  .logo-ign {
+    font-size: 1.4rem;
+    font-weight: 900;
+    color: var(--orange);
+    letter-spacing: -0.5px;
+  }
+  .logo-sub {
+    font-family: 'Barlow Condensed', Impact, sans-serif;
+    font-size: .85rem;
+    font-weight: 600;
+    color: var(--gray-400);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+  }
+  .back-link {
+    margin-left: auto;
+    font-family: 'Barlow Condensed', Impact, sans-serif;
+    font-size: .85rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: .5px;
+    color: var(--orange);
+    text-decoration: none;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    transition: opacity .15s;
+  }
+  .back-link:hover { opacity: .75; }
+
+  /* ââ PAGE CONTENT ââ */
+  .page {
+    max-width: 560px;
+    margin: 0 auto;
+    padding: 32px 20px 60px;
+  }
+
+  .page-title {
+    font-family: 'Barlow Condensed', Impact, sans-serif;
+    font-size: 1.8rem;
+    font-weight: 900;
+    text-transform: uppercase;
+    color: var(--gray-900);
+    text-align: center;
+    margin-bottom: 4px;
+  }
+  .page-title .accent { color: var(--orange); }
+
+  .page-sub {
+    text-align: center;
+    font-size: .9rem;
+    color: var(--gray-500);
+    margin-bottom: 28px;
+  }
+
+  /* ââ FORM CARD ââ */
+  .form-card {
+    background: var(--white);
+    border-radius: 12px;
+    padding: 32px 28px;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.08), 0 1px 2px rgba(0,0,0,0.05);
+  }
+
+  .form-section-title {
+    font-family: 'Barlow Condensed', Impact, sans-serif;
+    font-size: 1rem;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    color: var(--gray-900);
+    margin-bottom: 16px;
+    padding-bottom: 8px;
+    border-bottom: 2px solid var(--gray-100);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .form-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 14px;
+    margin-bottom: 14px;
+  }
+  .form-row.full { grid-template-columns: 1fr; }
+
+  @media (max-width: 480px) {
+    .form-row { grid-template-columns: 1fr; }
+  }
+
+  .field {
+    display: flex;
+    flex-direction: column;
+  }
+  .field label {
+    font-size: .78rem;
+    font-weight: 700;
+    color: var(--gray-600);
+    text-transform: uppercase;
+    letter-spacing: .5px;
+    margin-bottom: 5px;
+  }
+  .field label .req { color: var(--red); }
+
+  .field input,
+  .field select,
+  .field textarea {
+    font-family: 'Inter', system-ui, sans-serif;
+    font-size: .9rem;
+    padding: 10px 12px;
+    border: 1px solid var(--gray-300);
+    border-radius: 8px;
+    background: var(--white);
+    color: var(--gray-900);
+    transition: border-color .15s, box-shadow .15s;
+    outline: none;
+  }
+  .field input:focus,
+  .field select:focus,
+  .field textarea:focus {
+    border-color: var(--orange);
+    box-shadow: 0 0 0 3px rgba(249,115,22,0.1);
+  }
+  .field input::placeholder { color: var(--gray-400); }
+  .field textarea { resize: vertical; min-height: 70px; }
+  .field select { cursor: pointer; }
+
+  /* ââ PACKAGE SELECTOR ââ */
+  .package-options {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+    margin-bottom: 14px;
+  }
+  @media (max-width: 480px) {
+    .package-options { grid-template-columns: 1fr; }
+  }
+  .pkg-option {
+    position: relative;
+    border: 2px solid var(--gray-200);
+    border-radius: 10px;
+    padding: 18px 16px;
+    cursor: pointer;
+    transition: border-color .15s, background .15s, box-shadow .15s;
+  }
+  .pkg-option:hover {
+    border-color: var(--gray-300);
+    background: var(--gray-50);
+  }
+  .pkg-option.selected {
+    border-color: var(--orange);
+    background: #FFF7ED;
+    box-shadow: 0 0 0 3px rgba(249,115,22,0.1);
+  }
+  .pkg-option input[type="radio"] {
+    position: absolute;
+    opacity: 0;
+    pointer-events: none;
+  }
+  .pkg-check {
+    position: absolute;
+    top: 12px;
+    right: 12px;
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    border: 2px solid var(--gray-300);
+    transition: all .15s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .pkg-option.selected .pkg-check {
+    border-color: var(--orange);
+    background: var(--orange);
+  }
+  .pkg-check::after {
+    content: '';
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: var(--white);
+    opacity: 0;
+    transition: opacity .15s;
+  }
+  .pkg-option.selected .pkg-check::after { opacity: 1; }
+
+  .pkg-name {
+    font-family: 'Barlow Condensed', Impact, sans-serif;
+    font-size: .85rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: .5px;
+    color: var(--gray-900);
+    margin-bottom: 2px;
+  }
+  .pkg-price {
+    font-family: 'Barlow Condensed', Impact, sans-serif;
+    font-size: 1.6rem;
+    font-weight: 900;
+    color: var(--orange);
+    line-height: 1.1;
+  }
+  .pkg-desc {
+    font-size: .78rem;
+    color: var(--gray-500);
+    margin-top: 4px;
+    line-height: 1.4;
+  }
+  .pkg-badge {
+    display: inline-block;
+    background: var(--orange);
+    color: var(--white);
+    font-family: 'Barlow Condensed', Impact, sans-serif;
+    font-size: .6rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    padding: 2px 8px;
+    border-radius: 3px;
+    margin-bottom: 6px;
+  }
+
+  /* ââ T-SHIRT SIZE (conditional) ââ */
+  .tshirt-size {
+    margin-bottom: 14px;
+    overflow: hidden;
+    max-height: 0;
+    opacity: 0;
+    transition: max-height .3s ease, opacity .3s ease, margin .3s ease;
+  }
+  .tshirt-size.visible {
+    max-height: 120px;
+    opacity: 1;
+  }
+
+  /* ââ DIVIDER ââ */
+  .form-divider {
+    height: 1px;
+    background: var(--gray-100);
+    margin: 24px 0;
+  }
+
+  /* ââ SUBMIT ââ */
+  .submit-section {
+    margin-top: 28px;
+    text-align: center;
+  }
+
+  .submit-btn {
+    display: inline-block;
+    width: 100%;
+    background: var(--orange);
+    color: var(--white);
+    font-family: 'Barlow Condensed', Impact, sans-serif;
+    font-size: 1.2rem;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    padding: 16px 32px;
+    border-radius: 8px;
+    border: none;
+    cursor: pointer;
+    box-shadow: 0 4px 6px -1px rgba(249,115,22,0.3), 0 2px 4px -1px rgba(249,115,22,0.2);
+    transition: transform .12s, box-shadow .12s, background .12s;
+  }
+  .submit-btn:hover {
+    transform: translateY(-2px);
+    background: var(--orange-dark);
+    box-shadow: 0 8px 15px -3px rgba(249,115,22,0.35), 0 4px 6px -2px rgba(249,115,22,0.2);
+  }
+  .submit-btn:active { transform: translateY(0); }
+  .submit-btn:disabled {
+    opacity: .6;
+    cursor: not-allowed;
+    transform: none;
+  }
+
+  .submit-note {
+    margin-top: 10px;
+    font-size: .78rem;
+    color: var(--gray-400);
+  }
+
+  /* ââ SPINNER ââ */
+  .spinner {
+    display: inline-block;
+    width: 18px;
+    height: 18px;
+    border: 3px solid rgba(255,255,255,0.3);
+    border-top-color: #fff;
+    border-radius: 50%;
+    animation: spin .6s linear infinite;
+    vertical-align: middle;
+    margin-right: 8px;
+  }
+  @keyframes spin { to { transform: rotate(360deg); } }
+
+  /* ââ ORDER SUMMARY ââ */
+  .order-summary {
+    background: var(--gray-100);
+    border-radius: 8px;
+    padding: 16px 18px;
+    margin-top: 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  .order-label {
+    font-size: .85rem;
+    font-weight: 600;
+    color: var(--gray-600);
+  }
+  .order-total {
+    font-family: 'Barlow Condensed', Impact, sans-serif;
+    font-size: 1.5rem;
+    font-weight: 900;
+    color: var(--gray-900);
+  }
+
+  /* ââ ERROR BANNER ââ */
+  .error-banner {
+    display: none;
+    background: #FEF2F2;
+    border: 1px solid #FECACA;
+    border-radius: 8px;
+    padding: 12px 16px;
+    margin-bottom: 20px;
+    font-size: .85rem;
+    color: #991B1B;
+    text-align: center;
+  }
+  .error-banner.show { display: block; }
+
+  /* ââ SUCCESS OVERLAY ââ */
+  .success-overlay {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.5);
+    z-index: 100;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+  }
+  .success-overlay.show { display: flex; }
+
+  .success-card {
+    background: var(--white);
+    border-radius: 12px;
+    padding: 40px 32px;
+    text-align: center;
+    max-width: 420px;
+    width: 100%;
+    box-shadow: 0 20px 60px rgba(0,0,0,0.15);
+    animation: popIn .3s ease;
+  }
+  @keyframes popIn {
+    0% { transform: scale(.9); opacity: 0; }
+    100% { transform: scale(1); opacity: 1; }
+  }
+  .success-icon {
+    width: 64px;
+    height: 64px;
+    border-radius: 50%;
+    background: var(--green);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 16px;
+    font-size: 2rem;
+  }
+  .success-title {
+    font-family: 'Barlow Condensed', Impact, sans-serif;
+    font-size: 1.5rem;
+    font-weight: 900;
+    text-transform: uppercase;
+    color: var(--gray-900);
+    margin-bottom: 8px;
+  }
+  .success-msg {
+    font-size: .9rem;
+    color: var(--gray-600);
+    line-height: 1.55;
+    margin-bottom: 20px;
+  }
+  .success-btn {
+    display: inline-block;
+    background: var(--orange);
+    color: var(--white);
+    font-family: 'Barlow Condensed', Impact, sans-serif;
+    font-size: 1rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: .5px;
+    padding: 12px 32px;
+    border-radius: 8px;
+    text-decoration: none;
+    border: none;
+    cursor: pointer;
+    transition: background .15s;
+  }
+  .success-btn:hover { background: var(--orange-dark); }
+
+  /* ââ FOOTER ââ */
+  .footer {
+    text-align: center;
+    padding: 24px 20px 20px;
+    border-top: 1px solid var(--gray-200);
+    margin-top: 40px;
+  }
+  .footer-brand {
+    font-family: 'Barlow Condensed', Impact, sans-serif;
+    font-size: 1rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    color: var(--gray-900);
+    letter-spacing: .5px;
+  }
+  .footer-brand .accent { color: var(--orange); }
+  .footer p {
+    font-size: .78rem;
+    color: var(--gray-400);
+    margin-top: 4px;
+  }
+</style>
+</head>
+<body>
+
+<!-- ââââââââ HEADER ââââââââ -->
+<header class="site-header">
+  <div class="logo">
+    <div style="display:flex;flex-direction:column;align-items:center;line-height:1;">
+      <span class="logo-academy">ACADEMY</span>
+      <span class="logo-ign">IGN</span>
+    </div>
+  </div>
+  <span class="logo-sub">/ Happy Hoopers</span>
+  <a href="happy-hoopers.html" class="back-link">&larr; Back</a>
+</header>
+
+<!-- ââââââââ FORM PAGE ââââââââ -->
+<div class="page">
+  <h1 class="page-title">&#127936; <span class="accent">Register</span> Your Hooper</h1>
+  <p class="page-sub">Fill out the form below to sign up for Happy Hoopers. Spots are limited!</p>
+
+  <!-- Error banner -->
+  <div class="error-banner" id="errorBanner"></div>
+
+  <form class="form-card" id="registerForm" novalidate>
+
+    <!-- PARENT / GUARDIAN -->
+    <div class="form-section-title">&#128100; Parent / Guardian</div>
+
+    <div class="form-row">
+      <div class="field">
+        <label>First Name <span class="req">*</span></label>
+        <input type="text" name="parentFirst" placeholder="Your first name" required>
+      </div>
+      <div class="field">
+        <label>Last Name <span class="req">*</span></label>
+        <input type="text" name="parentLast" placeholder="Your last name" required>
+      </div>
+    </div>
+
+    <div class="form-row">
+      <div class="field">
+        <label>Email <span class="req">*</span></label>
+        <input type="email" name="email" placeholder="you@email.com" required>
+      </div>
+      <div class="field">
+        <label>Phone <span class="req">*</span></label>
+        <input type="tel" name="phone" placeholder="(555) 123-4567" required>
+      </div>
+    </div>
+
+    <div class="form-divider"></div>
+
+    <!-- CHILD INFO -->
+    <div class="form-section-title">&#127936; Child Info</div>
+
+    <div class="form-row">
+      <div class="field">
+        <label>Child's First Name <span class="req">*</span></label>
+        <input type="text" name="childFirst" placeholder="Child's first name" required>
+      </div>
+      <div class="field">
+        <label>Child's Last Name <span class="req">*</span></label>
+        <input type="text" name="childLast" placeholder="Child's last name" required>
+      </div>
+    </div>
+
+    <div class="form-row">
+      <div class="field">
+        <label>Child's Age <span class="req">*</span></label>
+        <select name="childAge" required>
+          <option value="" disabled selected>Select age</option>
+          <option value="3">3 years old</option>
+          <option value="4">4 years old</option>
+          <option value="5">5 years old</option>
+        </select>
+      </div>
+      <div class="field">
+        <label>Child's Gender</label>
+        <select name="childGender">
+          <option value="" disabled selected>Select</option>
+          <option value="Boy">Boy</option>
+          <option value="Girl">Girl</option>
+          <option value="Prefer not to say">Prefer not to say</option>
+        </select>
+      </div>
+    </div>
+
+    <div class="form-divider"></div>
+
+    <!-- PACKAGE -->
+    <div class="form-section-title">&#128176; Choose Your Package</div>
+
+    <div class="package-options">
+      <label class="pkg-option selected" data-price="40" data-stripe-price="PRICE_BASIC_ID_HERE" id="pkgBasic">
+        <input type="radio" name="package" value="Basic â $40" checked>
+        <div class="pkg-check"></div>
+        <div class="pkg-name">Basic Package</div>
+        <div class="pkg-price">$40</div>
+        <div class="pkg-desc">All 4 Friday sessions with Coach Kenyon</div>
+      </label>
+      <label class="pkg-option" data-price="55" data-stripe-price="PRICE_TSHIRT_ID_HERE" id="pkgTshirt">
+        <input type="radio" name="package" value="T-Shirt Package â $55" checked>
+        <div class="pkg-check"></div>
+        <div class="pkg-badge">&#11088; Best Value</div>
+        <div class="pkg-name">T-Shirt Package</div>
+        <div class="pkg-price">$55</div>
+        <div class="pkg-desc">4 sessions + exclusive Happy Hoopers tee</div>
+      </label>
+    </div>
+
+    <!-- T-Shirt Size (conditional) -->
+    <div class="tshirt-size" id="tshirtSize">
+      <div class="form-row full">
+        <div class="field">
+          <label>T-Shirt Size <span class="req">*</span></label>
+          <select name="tshirtSize" id="tshirtSelect">
+            <option value="" disabled selected>Select child's size</option>
+            <option value="2T">2T</option>
+            <option value="3T">3T</option>
+            <option value="4T">4T</option>
+            <option value="5T">5T</option>
+            <option value="YXS">Youth XS</option>
+            <option value="YS">Youth S</option>
+          </select>
+        </div>
+      </div>
+    </div>
+
+    <!-- Order Summary -->
+    <div class="order-summary">
+      <span class="order-label">Total Due</span>
+      <span class="order-total" id="orderTotal">$40</span>
+    </div>
+
+    <div class="form-divider"></div>
+
+    <!-- ADDITIONAL NOTES -->
+    <div class="form-section-title">&#128221; Anything Else?</div>
+    <div class="form-row full">
+      <div class="field">
+        <label>Notes or Special Needs</label>
+        <textarea name="notes" placeholder="Allergies, special accommodations, questions..."></textarea>
+      </div>
+    </div>
+
+    <!-- SUBMIT -->
+    <div class="submit-section">
+      <button type="submit" class="submit-btn" id="submitBtn">&#127936; Proceed to Payment</button>
+      <p class="submit-note">You'll be redirected to Stripe to complete your secure payment.</p>
+    </div>
+
+  </form>
+</div>
+
+<!-- ââââââââ SUCCESS OVERLAY (shown on return from Stripe) ââââââââ -->
+<div class="success-overlay" id="successOverlay">
+  <div class="success-card">
+    <div class="success-icon">&#9989;</div>
+    <div class="success-title">You're Registered!</div>
+    <p class="success-msg" id="successMsg">
+      Payment received! Your little hooper is officially signed up. You'll receive a confirmation email shortly with all the details.
+    </p>
+    <a href="happy-hoopers.html" class="success-btn">&larr; Back to Happy Hoopers</a>
+  </div>
+</div>
+
+<!-- ââââââââ FOOTER ââââââââ -->
+<footer class="footer">
+  <div class="footer-brand">&#127936; <span class="accent">Happy Hoopers</span> by I Got Next Academy</div>
+  <p>Building ballers, one bounce at a time.</p>
+</footer>
+
+<script>
+/*
+ * âââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââ
+ * â  CONFIGURATION â Paste your keys / URLs here                â
+ * âââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââ
+ */
+
+// 1. Your Stripe PUBLISHABLE key (starts with pk_live_ or pk_test_)
+const STRIPE_PK = 'pk_live_51LMxnpKujXq6VVcKyi0BPneP5zEiqfwxi4kAaV2E8AUIjgB1OkgBXhVSdK2y8rZh6FILDkytuEC2rAzhfx51yGXg00zT2rLltr';
+
+// 2. Your two Stripe Price IDs (created in Stripe dashboard)
+const STRIPE_PRICE_BASIC  = 'price_1THJ8tKujXq6VVcKipEuEy5k';   // $40 Basic
+const STRIPE_PRICE_TSHIRT = 'price_1THJ9JKujXq6VVcKYH7ZCa9O';   // $55 T-Shirt
+
+// 3. Your Google Apps Script Web App URL (the one that ends in /exec)
+const GOOGLE_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycby_0kEqY3M1VIvJnTnaBlfTZB14piZDhK8UvfCLcPnpDUEGVo-japqVuMUF8Q9VLfAS/exec';
+
+/*
+ * âââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââ
+ * â  DO NOT EDIT BELOW unless you know what you're doing         â
+ * âââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââ
+ */
+
+const stripe = Stripe(STRIPE_PK);
+
+// ââ Package selection ââ
+const pkgOptions = document.querySelectorAll('.pkg-option');
+const tshirtSize = document.getElementById('tshirtSize');
+const orderTotal = document.getElementById('orderTotal');
+
+pkgOptions.forEach(opt => {
+  opt.addEventListener('click', () => {
+    pkgOptions.forEach(o => o.classList.remove('selected'));
+    opt.classList.add('selected');
+    opt.querySelector('input[type="radio"]').checked = true;
+    orderTotal.textContent = '$' + opt.dataset.price;
+
+    if (opt.id === 'pkgTshirt') {
+      tshirtSize.classList.add('visible');
+    } else {
+      tshirtSize.classList.remove('visible');
+    }
+  });
+});
+
+// ââ Clear validation on input ââ
+const form = document.getElementById('registerForm');
+form.querySelectorAll('input, select, textarea').forEach(el => {
+  el.addEventListener('input', () => { el.style.borderColor = ''; });
+  el.addEventListener('change', () => { el.style.borderColor = ''; });
+});
+
+// ââ Form submit â Save to session â Stripe Checkout ââ
+const submitBtn = document.getElementById('submitBtn');
+const errorBanner = document.getElementById('errorBanner');
+
+form.addEventListener('submit', async function(e) {
+  e.preventDefault();
+  errorBanner.classList.remove('show');
+
+  // Validate required fields
+  const required = form.querySelectorAll('[required]');
+  let valid = true;
+  required.forEach(field => {
+    if (!field.value.trim()) {
+      field.style.borderColor = '#EF4444';
+      valid = false;
+    } else {
+      field.style.borderColor = '';
+    }
+  });
+
+  // Validate t-shirt size if tshirt package
+  const selectedPkg = document.querySelector('.pkg-option.selected');
+  if (selectedPkg.id === 'pkgTshirt') {
+    const sizeSelect = document.getElementById('tshirtSelect');
+    if (!sizeSelect.value) {
+      sizeSelect.style.borderColor = '#EF4444';
+      valid = false;
+    }
+  }
+
+  if (!valid) {
+    errorBanner.textContent = 'Please fill in all required fields.';
+    errorBanner.classList.add('show');
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+    return;
+  }
+
+  // Collect form data
+  const formData = {
+    parentFirst:  form.querySelector('[name="parentFirst"]').value.trim(),
+    parentLast:   form.querySelector('[name="parentLast"]').value.trim(),
+    email:        form.querySelector('[name="email"]').value.trim(),
+    phone:        form.querySelector('[name="phone"]').value.trim(),
+    childFirst:   form.querySelector('[name="childFirst"]').value.trim(),
+    childLast:    form.querySelector('[name="childLast"]').value.trim(),
+    childAge:     form.querySelector('[name="childAge"]').value,
+    childGender:  form.querySelector('[name="childGender"]').value || '',
+    package:      form.querySelector('input[name="package"]:checked').value,
+    tshirtSize:   selectedPkg.id === 'pkgTshirt' ? document.getElementById('tshirtSelect').value : 'N/A',
+    amount:       selectedPkg.dataset.price,
+    notes:        form.querySelector('[name="notes"]').value.trim() || 'None',
+  };
+
+  // Save form data to sessionStorage so we can send to Google Sheet after payment
+  sessionStorage.setItem('happyHoopersReg', JSON.stringify(formData));
+
+  // Determine which Stripe price to use
+  const priceId = selectedPkg.id === 'pkgTshirt' ? STRIPE_PRICE_TSHIRT : STRIPE_PRICE_BASIC;
+
+  // Show loading state
+  submitBtn.disabled = true;
+  submitBtn.innerHTML = '<span class="spinner"></span> Redirecting to payment...';
+
+  try {
+    // Redirect to Stripe Checkout
+    const { error } = await stripe.redirectToCheckout({
+      lineItems: [{ price: priceId, quantity: 1 }],
+      mode: 'payment',
+      customerEmail: formData.email,
+      successUrl: window.location.href + '?payment=success',
+      cancelUrl:  window.location.href + '?payment=cancelled',
+    });
+
+    if (error) {
+      throw error;
+    }
+  } catch (err) {
+    submitBtn.disabled = false;
+    submitBtn.innerHTML = '&#127936; Proceed to Payment';
+    errorBanner.textContent = 'Payment redirect failed: ' + (err.message || 'Please try again.');
+    errorBanner.classList.add('show');
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+});
+
+
+// ââ On return from Stripe: send data to Google Sheet ââ
+(async function checkPaymentReturn() {
+  const params = new URLSearchParams(window.location.search);
+
+  if (params.get('payment') === 'success') {
+    // Get saved form data
+    const savedData = sessionStorage.getItem('happyHoopersReg');
+    if (!savedData) {
+      // No data in session â still show success (they paid)
+      document.getElementById('successOverlay').classList.add('show');
+      return;
+    }
+
+    const formData = JSON.parse(savedData);
+
+    // Send to Google Apps Script â "Happy Hoopers" sheet
+    try {
+      await fetch(GOOGLE_SCRIPT_URL, {
+        method: 'POST',
+        mode: 'no-cors',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          sheet: 'Happy Hoopers',        // <-- Ensures it goes to the right sheet!
+          timestamp:    new Date().toLocaleString(),
+          parentFirst:  formData.parentFirst,
+          parentLast:   formData.parentLast,
+          email:        formData.email,
+          phone:        formData.phone,
+          childFirst:   formData.childFirst,
+          childLast:    formData.childLast,
+          childAge:     formData.childAge,
+          childGender:  formData.childGender,
+          package:      formData.package,
+          tshirtSize:   formData.tshirtSize,
+          amount:       '$' + formData.amount,
+          notes:        formData.notes,
+          paymentStatus: 'Paid via Stripe'
+        })
+      });
+    } catch (err) {
+      console.error('Google Sheet logging failed:', err);
+      // Payment already succeeded â we'll still show success
+    }
+
+    // Clear session data
+    sessionStorage.removeItem('happyHoopersReg');
+
+    // Show success
+    const overlay = document.getElementById('successOverlay');
+    const successMsg = document.getElementById('successMsg');
+    successMsg.innerHTML = '<strong>' + formData.childFirst + '</strong> is officially a Happy Hooper! Payment received â you\'re all set. Check your email at <strong>' + formData.email + '</strong> for confirmation details.';
+    overlay.classList.add('show');
+
+    // Clean URL
+    window.history.replaceState({}, '', window.location.pathname);
+  }
+
+  if (params.get('payment') === 'cancelled') {
+    errorBanner.textContent = 'Payment was cancelled. Your info is still filled in â try again when you\'re ready!';
+    errorBanner.classList.add('show');
+    window.history.replaceState({}, '', window.location.pathname);
+  }
+})();
+</script>
+
+</body>
+</html>
