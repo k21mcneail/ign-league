@@ -1073,7 +1073,8 @@ function adminSchedule() {
         <button class="btn btn-primary btn-sm" onclick="generateMatchups('${div.id}')">Generate Matchups</button></div></details>`;
       continue;
     }
-    const scheduled = getScheduledMatchupIds(div.id);
+    const currentSchedKey = `${schedNight}-${schedWeek}`;
+    const scheduled = getScheduledMatchupIds(div.id, currentSchedKey);
     const chips = matchups.map((m, i) => {
       const t1 = getTeamName(div.id, m.t1);
       const t2 = getTeamName(div.id, m.t2);
@@ -1238,7 +1239,13 @@ function dropOnGrid(e, schedKey, cellKey) {
   save(); dragData = null; render();
 }
 function removeFromSchedule(schedKey, cellKey) {
-  if (state.schedule[schedKey]) { delete state.schedule[schedKey][cellKey]; save(); render(); }
+  if (state.schedule[schedKey] && state.schedule[schedKey][cellKey]) {
+    if (!confirm('Remove this game from the schedule? It will return to the matchup pool.')) return;
+    delete state.schedule[schedKey][cellKey];
+    save(); render();
+    toast('Game moved back to matchup pool');
+  }
+}
 }
 function attachScheduleDragDrop() {}
 function checkCoachConflict(schedKey, targetCellKey, divId, matchupId, excludeCellKey) {
@@ -2396,15 +2403,18 @@ function findMatchup(matchupId, divId) {
   }
   return null;
 }
-function getScheduledMatchupIds(divId) {
+function getScheduledMatchupIds(divId, forSchedKey) {
   const ids = new Set();
-  for (const [key, slots] of Object.entries(state.schedule)) {
+  const keysToCheck = forSchedKey ? [forSchedKey] : Object.keys(state.schedule);
+  for (const key of keysToCheck) {
+    const slots = state.schedule[key];
+    if (!slots) continue;
     for (const [cell, entry] of Object.entries(slots)) {
       if (entry.divId === divId && entry.type === 'regular') {
         if (findMatchup(entry.matchupId, entry.divId)) {
           ids.add(entry.matchupId);
         } else {
-          delete slots[cell]; // clean up stale entry
+          delete slots[cell];
         }
       }
     }
