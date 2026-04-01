@@ -1,0 +1,766 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Happy Hoopers â IGN Academy</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@400;600;700;800;900&family=Inter:wght@400;500;600;700;800&display=swap');
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  :root {
+    --orange: #F97316;
+    --orange-dark: #EA580C;
+    --orange-light: #F1F5F9;
+    --gray-50: #F8F9FA;
+    --gray-100: #F1F5F9;
+    --gray-200: #E5E7EB;
+    --gray-400: #9CA3AF;
+    --gray-600: #4B5563;
+    --gray-900: #111827;
+    --blue: #1D4ED8;
+    --purple: #7C3AED;
+    --green: #16A34A;
+    --white: #FFFFFF;
+  }
+
+  body {
+    font-family: 'Inter', system-ui, sans-serif;
+    background: var(--gray-50);
+    color: var(--gray-900);
+    overflow-x: hidden;
+  }
+
+  /* ââ HEADER BAR (matches IGN site) ââ */
+  .site-header {
+    background: var(--white);
+    padding: 12px 24px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.08), 0 1px 2px rgba(0,0,0,0.05);
+    position: relative;
+    z-index: 10;
+  }
+  .logo {
+    font-family: 'Barlow Condensed', Impact, sans-serif;
+    display: flex;
+    align-items: baseline;
+    gap: 4px;
+  }
+  .logo-academy {
+    font-size: .65rem;
+    font-weight: 700;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    color: var(--gray-400);
+  }
+  .logo-ign {
+    font-size: 1.4rem;
+    font-weight: 900;
+    color: var(--orange);
+    letter-spacing: -0.5px;
+  }
+  .logo-sub {
+    font-family: 'Barlow Condensed', Impact, sans-serif;
+    font-size: .85rem;
+    font-weight: 600;
+    color: var(--gray-400);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+  }
+
+  /* ââ HERO ââ */
+  .hero {
+    position: relative;
+    text-align: center;
+    padding: 56px 24px 48px;
+    background: var(--white);
+    border-bottom: 3px solid var(--orange);
+    overflow: hidden;
+  }
+  .hero::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background:
+      radial-gradient(circle at 15% 80%, rgba(249,115,22,0.06) 0%, transparent 50%),
+      radial-gradient(circle at 85% 20%, rgba(124,58,237,0.05) 0%, transparent 50%),
+      radial-gradient(circle at 50% 50%, rgba(249,115,22,0.03) 0%, transparent 70%);
+    pointer-events: none;
+  }
+
+  .hero-tag {
+    display: inline-block;
+    background: var(--orange);
+    color: var(--white);
+    font-family: 'Barlow Condensed', Impact, sans-serif;
+    font-size: .75rem;
+    font-weight: 700;
+    padding: 4px 16px;
+    border-radius: 4px;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    margin-bottom: 20px;
+  }
+
+  .hero h1 {
+    font-family: 'Barlow Condensed', Impact, sans-serif;
+    font-size: clamp(2.4rem, 6vw, 3.6rem);
+    font-weight: 900;
+    text-transform: uppercase;
+    color: var(--gray-900);
+    line-height: 1.05;
+    margin-bottom: 8px;
+    position: relative;
+  }
+  .hero h1 .accent { color: var(--orange); }
+
+  .hero-ages {
+    font-family: 'Barlow Condensed', Impact, sans-serif;
+    font-size: clamp(1.2rem, 3vw, 1.6rem);
+    font-weight: 700;
+    color: var(--purple);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    margin-bottom: 16px;
+  }
+
+  .hero-sub {
+    font-size: 1.05rem;
+    color: var(--gray-600);
+    font-weight: 500;
+    max-width: 440px;
+    margin: 0 auto;
+    line-height: 1.5;
+  }
+
+  /* bouncing basketballs */
+  .bball-row {
+    display: flex;
+    justify-content: center;
+    gap: 16px;
+    margin-top: 24px;
+  }
+  .bounce-ball {
+    animation: bounce 1.8s ease-in-out infinite;
+  }
+  .bounce-ball:nth-child(2) { animation-delay: .3s; }
+  .bounce-ball:nth-child(3) { animation-delay: .6s; }
+  @keyframes bounce {
+    0%,100%{ transform:translateY(0); }
+    40%{ transform:translateY(-18px); }
+    60%{ transform:translateY(-8px); }
+  }
+
+  /* ââ CONTENT AREA ââ */
+  .content {
+    max-width: 680px;
+    margin: 0 auto;
+    padding: 0 20px;
+  }
+
+  /* ââ SECTION TITLES ââ */
+  .section-title {
+    font-family: 'Barlow Condensed', Impact, sans-serif;
+    font-size: 1.35rem;
+    font-weight: 800;
+    text-transform: uppercase;
+    color: var(--gray-900);
+    letter-spacing: .5px;
+    margin-bottom: 16px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  .section-title::after {
+    content: '';
+    flex: 1;
+    height: 2px;
+    background: var(--gray-200);
+    border-radius: 1px;
+  }
+  .section-title .icon { font-size: 1.1rem; }
+
+  /* ââ SCHEDULE CARD ââ */
+  .card {
+    background: var(--white);
+    border-radius: 12px;
+    padding: 28px 24px;
+    margin: 28px 0;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.08), 0 1px 2px rgba(0,0,0,0.05);
+  }
+
+  .schedule-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 10px;
+    margin-bottom: 18px;
+  }
+  @media (max-width: 500px) {
+    .schedule-grid { grid-template-columns: repeat(2, 1fr); }
+  }
+  .sched-item {
+    background: var(--orange-light);
+    border-radius: 8px;
+    padding: 14px 10px;
+    text-align: center;
+    border-left: 3px solid var(--orange);
+  }
+  .sched-item .day {
+    font-family: 'Barlow Condensed', Impact, sans-serif;
+    font-size: .7rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 1.5px;
+    color: var(--orange-dark);
+  }
+  .sched-item .date {
+    font-family: 'Barlow Condensed', Impact, sans-serif;
+    font-size: 1.15rem;
+    font-weight: 800;
+    color: var(--gray-900);
+    margin-top: 2px;
+  }
+
+  .time-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    background: var(--orange);
+    color: var(--white);
+    font-family: 'Barlow Condensed', Impact, sans-serif;
+    font-weight: 700;
+    font-size: .9rem;
+    padding: 8px 20px;
+    border-radius: 6px;
+    text-transform: uppercase;
+    letter-spacing: .5px;
+  }
+  .card-center { text-align: center; }
+
+  /* ââ TRAINER ââ */
+  .trainer-row {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    padding: 8px 0;
+  }
+  @media (max-width: 500px) {
+    .trainer-row { flex-direction: column; text-align: center; }
+  }
+  .trainer-avatar {
+    width: 90px;
+    height: 90px;
+    border-radius: 50%;
+    background: var(--orange);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 2.4rem;
+    flex-shrink: 0;
+    box-shadow: 0 4px 6px -1px rgba(0,0,0,0.07), 0 2px 4px -1px rgba(0,0,0,0.05);
+    border: 3px solid var(--white);
+    outline: 2px solid var(--orange);
+  }
+  .trainer-info { flex: 1; }
+  .trainer-name {
+    font-family: 'Barlow Condensed', Impact, sans-serif;
+    font-size: 1.4rem;
+    font-weight: 800;
+    text-transform: uppercase;
+    color: var(--gray-900);
+  }
+  .trainer-role {
+    font-family: 'Barlow Condensed', Impact, sans-serif;
+    font-size: .8rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    color: var(--orange);
+    margin-top: 2px;
+  }
+  .trainer-note {
+    margin-top: 8px;
+    font-size: .92rem;
+    color: var(--gray-600);
+    line-height: 1.55;
+  }
+
+  /* ââ PARENT CALLOUT ââ */
+  .callout {
+    background: var(--orange-light);
+    border-radius: 12px;
+    padding: 24px;
+    margin: 28px 0;
+    border: 1px solid var(--gray-200);
+    display: flex;
+    gap: 16px;
+    align-items: flex-start;
+  }
+  @media (max-width: 500px) {
+    .callout { flex-direction: column; text-align: center; align-items: center; }
+  }
+  .callout-icon {
+    font-size: 2rem;
+    flex-shrink: 0;
+    width: 56px;
+    height: 56px;
+    background: var(--orange);
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .callout-body { flex: 1; }
+  .callout h3 {
+    font-family: 'Barlow Condensed', Impact, sans-serif;
+    font-size: 1.15rem;
+    font-weight: 800;
+    text-transform: uppercase;
+    color: var(--gray-900);
+    margin-bottom: 4px;
+  }
+  .callout p {
+    font-size: .9rem;
+    color: var(--gray-600);
+    line-height: 1.55;
+  }
+  .callout strong { color: var(--orange-dark); }
+
+  /* ââ HIGHLIGHTS ââ */
+  .highlights {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 12px;
+    margin: 28px 0;
+  }
+  @media (max-width: 560px) {
+    .highlights { grid-template-columns: repeat(2, 1fr); }
+  }
+  .hl-item {
+    background: var(--white);
+    border-radius: 8px;
+    padding: 20px 12px;
+    text-align: center;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.08), 0 1px 2px rgba(0,0,0,0.05);
+    transition: transform .15s, box-shadow .15s;
+  }
+  .hl-item:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 6px -1px rgba(0,0,0,0.07), 0 2px 4px -1px rgba(0,0,0,0.05);
+  }
+  .hl-icon { font-size: 1.6rem; margin-bottom: 8px; }
+  .hl-text {
+    font-family: 'Barlow Condensed', Impact, sans-serif;
+    font-weight: 700;
+    font-size: .8rem;
+    text-transform: uppercase;
+    letter-spacing: .5px;
+    color: var(--gray-900);
+    line-height: 1.3;
+  }
+
+  /* ââ PRICING ââ */
+  .pricing {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+    margin: 28px 0;
+  }
+  @media (max-width: 500px) {
+    .pricing { grid-template-columns: 1fr; }
+  }
+  .price-card {
+    border-radius: 12px;
+    padding: 28px 20px;
+    text-align: center;
+    position: relative;
+    transition: transform .15s, box-shadow .15s;
+  }
+  .price-card:hover {
+    transform: translateY(-2px);
+  }
+
+  .price-basic {
+    background: var(--white);
+    box-shadow: 0 1px 3px rgba(0,0,0,0.08), 0 1px 2px rgba(0,0,0,0.05);
+    border: 1px solid var(--gray-200);
+  }
+  .price-upsell {
+    background: var(--gray-900);
+    color: var(--white);
+    box-shadow: 0 4px 6px -1px rgba(0,0,0,0.07), 0 2px 4px -1px rgba(0,0,0,0.05);
+    border: 2px solid var(--orange);
+  }
+
+  .best-value {
+    position: absolute;
+    top: -11px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: var(--orange);
+    color: var(--white);
+    font-family: 'Barlow Condensed', Impact, sans-serif;
+    font-size: .7rem;
+    font-weight: 700;
+    padding: 3px 14px;
+    border-radius: 4px;
+    text-transform: uppercase;
+    letter-spacing: 1.5px;
+    white-space: nowrap;
+  }
+
+  .price-label {
+    font-family: 'Barlow Condensed', Impact, sans-serif;
+    font-size: 1rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    margin-bottom: 8px;
+  }
+  .price-basic .price-label { color: var(--gray-600); }
+  .price-upsell .price-label { color: var(--orange); }
+
+  .price-amount {
+    font-family: 'Barlow Condensed', Impact, sans-serif;
+    font-size: 3rem;
+    font-weight: 900;
+    line-height: 1;
+    margin: 4px 0 6px;
+  }
+  .price-basic .price-amount { color: var(--gray-900); }
+  .price-upsell .price-amount { color: var(--white); }
+
+  .price-per {
+    font-size: .78rem;
+    font-weight: 600;
+    margin-bottom: 12px;
+  }
+  .price-basic .price-per { color: var(--gray-400); }
+  .price-upsell .price-per { color: var(--gray-400); }
+
+  .price-desc {
+    font-size: .85rem;
+    line-height: 1.5;
+  }
+  .price-basic .price-desc { color: var(--gray-600); }
+  .price-upsell .price-desc { color: rgba(255,255,255,.7); }
+  .price-upsell strong { color: var(--orange); }
+
+  .tshirt-icon { font-size: 1.5rem; margin-top: 10px; }
+
+  /* ââ CTA ââ */
+  .cta-section {
+    text-align: center;
+    margin: 36px 0 12px;
+  }
+  .cta-btn {
+    display: inline-block;
+    background: var(--orange);
+    color: var(--white);
+    font-family: 'Barlow Condensed', Impact, sans-serif;
+    font-size: 1.35rem;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    padding: 16px 48px;
+    border-radius: 8px;
+    text-decoration: none;
+    border: none;
+    cursor: pointer;
+    box-shadow: 0 4px 6px -1px rgba(249,115,22,0.3), 0 2px 4px -1px rgba(249,115,22,0.2);
+    transition: transform .12s, box-shadow .12s, background .12s;
+    animation: glow 3s ease-in-out infinite;
+  }
+  .cta-btn:hover {
+    transform: translateY(-2px);
+    background: var(--orange-dark);
+    box-shadow: 0 8px 15px -3px rgba(249,115,22,0.35), 0 4px 6px -2px rgba(249,115,22,0.2);
+  }
+  @keyframes glow {
+    0%,100%{ box-shadow: 0 4px 6px -1px rgba(249,115,22,0.3), 0 2px 4px -1px rgba(249,115,22,0.2); }
+    50%{ box-shadow: 0 4px 20px -1px rgba(249,115,22,0.45), 0 2px 8px -1px rgba(249,115,22,0.3); }
+  }
+
+  .cta-note {
+    margin-top: 10px;
+    font-size: .82rem;
+    color: var(--gray-400);
+    font-weight: 600;
+  }
+
+  /* ââ FOOTER ââ */
+  .footer {
+    text-align: center;
+    padding: 32px 20px 28px;
+    margin-top: 36px;
+    border-top: 1px solid var(--gray-200);
+  }
+  .footer-brand {
+    font-family: 'Barlow Condensed', Impact, sans-serif;
+    font-size: 1rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    color: var(--gray-900);
+    letter-spacing: .5px;
+  }
+  .footer-brand .accent { color: var(--orange); }
+  .footer p {
+    font-size: .78rem;
+    color: var(--gray-400);
+    margin-top: 4px;
+  }
+
+  /* ââ confetti canvas ââ */
+  #confetti {
+    position: fixed;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+    pointer-events: none;
+    z-index: 9999;
+  }
+
+  /* ââ subtle floating basketballs in background ââ */
+  .bg-ball {
+    position: fixed;
+    opacity: .04;
+    pointer-events: none;
+    z-index: 0;
+    font-size: 80px;
+    animation: float 8s ease-in-out infinite;
+  }
+  .bg-ball:nth-child(1) { top: 20%; left: 5%; animation-delay: 0s; }
+  .bg-ball:nth-child(2) { top: 55%; right: 4%; animation-delay: 2s; font-size: 60px; }
+  .bg-ball:nth-child(3) { top: 80%; left: 8%; animation-delay: 4s; font-size: 50px; }
+  @keyframes float {
+    0%,100% { transform: translateY(0); }
+    50% { transform: translateY(-20px); }
+  }
+</style>
+</head>
+<body>
+
+<!-- subtle background basketballs -->
+<div class="bg-ball">&#127936;</div>
+<div class="bg-ball">&#127936;</div>
+<div class="bg-ball">&#127936;</div>
+
+<!-- ââââââââ HEADER BAR ââââââââ -->
+<header class="site-header">
+  <div class="logo">
+    <div style="display:flex;flex-direction:column;align-items:center;line-height:1;">
+      <span class="logo-academy">ACADEMY</span>
+      <span class="logo-ign">IGN</span>
+    </div>
+  </div>
+  <span class="logo-sub">/ Happy Hoopers</span>
+</header>
+
+<!-- ââââââââ HERO ââââââââ -->
+<section class="hero">
+  <div class="hero-tag">I Got Next Academy Presents</div>
+  <h1>
+    <span class="accent">Happy</span> Hoopers
+  </h1>
+  <div class="hero-ages">Intro to Basketball &middot; Ages 3&ndash;5</div>
+  <p class="hero-sub">Where little ballers find their love for the game â one dribble, one laugh, one high-five at a time.</p>
+
+  <div class="bball-row">
+    <svg class="bounce-ball" width="44" height="44" viewBox="0 0 52 52"><circle cx="26" cy="26" r="25" fill="#F97316"/><path d="M6 26c10-10 30-10 40 0M26 1v50M1 26h50" stroke="#C2410C" stroke-width="2" fill="none" opacity=".35"/><circle cx="26" cy="26" r="25" fill="none" stroke="#C2410C" stroke-width="1.5" opacity=".2"/></svg>
+    <svg class="bounce-ball" width="44" height="44" viewBox="0 0 52 52"><circle cx="26" cy="26" r="25" fill="#F97316"/><path d="M6 26c10-10 30-10 40 0M26 1v50M1 26h50" stroke="#C2410C" stroke-width="2" fill="none" opacity=".35"/><circle cx="26" cy="26" r="25" fill="none" stroke="#C2410C" stroke-width="1.5" opacity=".2"/></svg>
+    <svg class="bounce-ball" width="44" height="44" viewBox="0 0 52 52"><circle cx="26" cy="26" r="25" fill="#F97316"/><path d="M6 26c10-10 30-10 40 0M26 1v50M1 26h50" stroke="#C2410C" stroke-width="2" fill="none" opacity=".35"/><circle cx="26" cy="26" r="25" fill="none" stroke="#C2410C" stroke-width="1.5" opacity=".2"/></svg>
+  </div>
+</section>
+
+<!-- ââââââââ MAIN CONTENT ââââââââ -->
+<main class="content">
+
+  <!-- SCHEDULE -->
+  <div class="card" style="margin-top:32px;">
+    <div class="section-title"><span class="icon">&#128197;</span> Program Schedule</div>
+    <div class="schedule-grid">
+      <div class="sched-item">
+        <div class="day">Friday</div>
+        <div class="date">May 8</div>
+      </div>
+      <div class="sched-item">
+        <div class="day">Friday</div>
+        <div class="date">May 15</div>
+      </div>
+      <div class="sched-item">
+        <div class="day">Friday</div>
+        <div class="date">May 22</div>
+      </div>
+      <div class="sched-item">
+        <div class="day">Friday</div>
+        <div class="date">May 29</div>
+      </div>
+    </div>
+    <div class="card-center">
+      <span class="time-badge">&#128336; Every Friday at 6:00 PM</span>
+    </div>
+  </div>
+
+  <!-- TRAINER -->
+  <div class="card">
+    <div class="section-title"><span class="icon">&#127942;</span> Lead Trainer</div>
+    <div class="trainer-row">
+      <div class="trainer-avatar">&#127936;</div>
+      <div class="trainer-info">
+        <div class="trainer-name">Kenyon</div>
+        <div class="trainer-role">Lead Trainer</div>
+        <p class="trainer-note">
+          Coach Kenyon brings the energy, patience, and passion to help your little one fall in love with basketball â one dribble at a time!
+        </p>
+      </div>
+    </div>
+  </div>
+
+  <!-- PARENT CALLOUT -->
+  <div class="callout">
+    <div class="callout-icon">&#128106;</div>
+    <div class="callout-body">
+      <h3>Parents Play Too!</h3>
+      <p>
+        This isn't a drop-off program â it's a <strong>bonding experience!</strong>
+        Mom, Dad, or any caregiver joins their child on the court for every session.
+        Lace up your sneakers and make memories together!
+      </p>
+    </div>
+  </div>
+
+  <!-- HIGHLIGHTS -->
+  <div class="section-title" style="margin-top:32px;"><span class="icon">&#11088;</span> What They'll Learn</div>
+  <div class="highlights">
+    <div class="hl-item">
+      <div class="hl-icon">&#127936;</div>
+      <div class="hl-text">Ball Handling<br>Basics</div>
+    </div>
+    <div class="hl-item">
+      <div class="hl-icon">&#129351;</div>
+      <div class="hl-text">Teamwork<br>&amp; Sharing</div>
+    </div>
+    <div class="hl-item">
+      <div class="hl-icon">&#127881;</div>
+      <div class="hl-text">Fun Games<br>&amp; Drills</div>
+    </div>
+    <div class="hl-item">
+      <div class="hl-icon">&#128170;</div>
+      <div class="hl-text">Coordination<br>&amp; Confidence</div>
+    </div>
+  </div>
+
+  <!-- PRICING -->
+  <div class="section-title" style="margin-top:32px;"><span class="icon">&#128176;</span> Pricing</div>
+  <div class="pricing">
+    <div class="price-card price-basic">
+      <div class="price-label">Basic Package</div>
+      <div class="price-amount">$40</div>
+      <div class="price-per">4-week program</div>
+      <div class="price-desc">
+        All four Friday sessions with Coach Kenyon. Dribbling, passing, shooting &amp; tons of fun!
+      </div>
+    </div>
+    <div class="price-card price-upsell">
+      <div class="best-value">&#11088; Best Value</div>
+      <div class="price-label">T-Shirt Package</div>
+      <div class="price-amount">$55</div>
+      <div class="price-per">4-week program + exclusive tee</div>
+      <div class="price-desc">
+        Everything in Basic <strong>plus</strong> an awesome Happy Hoopers T-shirt your little baller will love!
+      </div>
+      <div class="tshirt-icon">&#128085;</div>
+    </div>
+  </div>
+
+  <!-- CTA -->
+  <div class="cta-section">
+    <a href="register.html" class="cta-btn" id="registerBtn">&#127936; Register Now</a>
+    <p class="cta-note">Spots are limited â secure your little hooper's place today!</p>
+  </div>
+
+</main>
+
+<!-- ââââââââ FOOTER ââââââââ -->
+<footer class="footer">
+  <div class="footer-brand">&#127936; <span class="accent">Happy Hoopers</span> by I Got Next Academy</div>
+  <p>Building ballers, one bounce at a time.</p>
+</footer>
+
+<!-- confetti on CTA click -->
+<canvas id="confetti"></canvas>
+
+<script>
+(function() {
+  const canvas = document.getElementById('confetti');
+  const ctx = canvas.getContext('2d');
+  let particles = [];
+  let running = false;
+
+  function resize() { canvas.width = window.innerWidth; canvas.height = window.innerHeight; }
+  window.addEventListener('resize', resize);
+  resize();
+
+  const colors = ['#F97316','#1D4ED8','#7C3AED','#16A34A','#EF4444','#F59E0B','#EC4899'];
+
+  function spawn(x, y) {
+    for (let i = 0; i < 80; i++) {
+      const angle = Math.random() * Math.PI * 2;
+      const speed = 3 + Math.random() * 6;
+      particles.push({
+        x, y,
+        vx: Math.cos(angle) * speed,
+        vy: Math.sin(angle) * speed - 3,
+        size: 4 + Math.random() * 6,
+        color: colors[Math.floor(Math.random() * colors.length)],
+        life: 1,
+        decay: .012 + Math.random() * .015,
+        shape: Math.random() > .5 ? 'circle' : 'rect',
+        rot: Math.random() * Math.PI * 2,
+        rv: (Math.random() - .5) * .2
+      });
+    }
+    if (!running) { running = true; loop(); }
+  }
+
+  function loop() {
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    particles.forEach(p => {
+      p.x += p.vx;
+      p.y += p.vy;
+      p.vy += .12;
+      p.life -= p.decay;
+      p.rot += p.rv;
+      if (p.life <= 0) return;
+      ctx.save();
+      ctx.globalAlpha = p.life;
+      ctx.translate(p.x, p.y);
+      ctx.rotate(p.rot);
+      ctx.fillStyle = p.color;
+      if (p.shape === 'circle') {
+        ctx.beginPath();
+        ctx.arc(0, 0, p.size / 2, 0, Math.PI * 2);
+        ctx.fill();
+      } else {
+        ctx.fillRect(-p.size / 2, -p.size / 2, p.size, p.size);
+      }
+      ctx.restore();
+    });
+    particles = particles.filter(p => p.life > 0);
+    if (particles.length) requestAnimationFrame(loop);
+    else { running = false; ctx.clearRect(0, 0, canvas.width, canvas.height); }
+  }
+
+  document.getElementById('registerBtn').addEventListener('click', function(e) {
+    e.preventDefault();
+    const rect = this.getBoundingClientRect();
+    spawn(rect.left + rect.width / 2, rect.top + rect.height / 2);
+    setTimeout(() => { window.location.href = 'register.html'; }, 600);
+  });
+})();
+</script>
+
+</body>
+</html>
