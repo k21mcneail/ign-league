@@ -692,7 +692,9 @@ let mode = isAdminAuthed ? 'admin' : 'public';
 let adminPage = 'divisions';
 let publicPage = 'home';
 let selectedCoach = '';
-(function(){var p=new URLSearchParams(window.location.search);if(p.get('page')==='coaches'){publicPage='coaches';mode='public';}})();
+let selectedCourt = '';
+let scorekeeperNight = 'Monday';
+(function(){var p=new URLSearchParams(window.location.search);if(p.get('page')==='coaches'){publicPage='coaches';mode='public';}if(p.get('page')==='scorekeepers'){publicPage='scorekeepers';mode='public';}})();
 let selectedDivision = isAdminAuthed ? (state.divisions[0]?.id || 'd1') : '';
 let schedNight = 'Monday';
 let schedWeek = 1;
@@ -1689,7 +1691,7 @@ function renderPublic() {
   // Hide sidebar in public mode, show pub-nav instead
   document.getElementById('sidebar').innerHTML = '';
   document.getElementById('sidebar').style.display = 'none';
-  const needsDivision = publicPage !== 'home' && publicPage !== 'coaches';
+  const needsDivision = publicPage !== 'home' && publicPage !== 'coaches' && publicPage !== 'scorekeepers';
   if (needsDivision && !selectedDivision && state.divisions.length > 0) {
     selectedDivision = state.divisions[0].id;
   }
@@ -1719,6 +1721,8 @@ function renderPublic() {
     html += publicHome();
   } else if (publicPage === 'coaches') {
     html += publicCoachView();
+  } else if (publicPage === 'scorekeepers') {
+    html += publicScorekeeperView();
   } else if (selectedDivision) {
     switch (publicPage) {
       case 'teams': html += publicTeamSchedules(); break;
@@ -1972,6 +1976,69 @@ function publicCoachView() {
   html += '</div>';
   return html;
 }
+// âââ PUBLIC SCOREKEEPER VIEW âââ
+function publicScorekeeperView() {
+  let html = '';
+  const nights = ['Monday', 'Tuesday'];
+  html += `<div class="card" style="margin-bottom:1rem">
+    <div class="card-header"><div class="accent"></div>Scorekeeper View</div>
+    <p style="color:var(--text2);font-size:.85rem;margin-bottom:1rem">Select your night and court to see all your games.</p>
+    <div style="display:flex;gap:.5rem;margin-bottom:1rem;flex-wrap:wrap">
+      ${nights.map(n => `<button onclick="scorekeeperNight='${n}';render()" style="padding:.45rem 1.2rem;border-radius:6px;font-family:var(--font-display);font-weight:700;font-size:.85rem;letter-spacing:.04em;text-transform:uppercase;cursor:pointer;border:2px solid ${scorekeeperNight===n?'var(--orange)':'var(--border)'};background:${scorekeeperNight===n?'var(--orange)':'var(--surface)'};color:${scorekeeperNight===n?'#fff':'var(--text2)'};transition:all .15s">${n}</button>`).join('')}
+    </div>
+    <div style="display:flex;gap:.5rem;flex-wrap:wrap">
+      ${COURTS.map(c => `<button onclick="selectedCourt='${c}';render()" style="padding:.6rem 1.5rem;border-radius:8px;font-family:var(--font-display);font-weight:800;font-size:1.1rem;letter-spacing:.04em;cursor:pointer;border:2px solid ${selectedCourt===c?'var(--orange)':'var(--border)'};background:${selectedCourt===c?'var(--orange)':'var(--surface)'};color:${selectedCourt===c?'#fff':'var(--text2)'};transition:all .15s;min-width:70px;text-align:center">Court ${c}</button>`).join('')}
+    </div>
+  </div>`;
+  if (!selectedCourt) return html;
+  html += `<div class="card">
+    <div class="card-header"><div class="accent"></div>Court ${selectedCourt} â ${scorekeeperNight} Night</div>`;
+  for (const week of WEEKS) {
+    const schedKey = `${scorekeeperNight}-${week}`;
+    const sched = state.schedule[schedKey] || {};
+    const dt = weekDate(week, scorekeeperNight);
+    const dateStr = dt ? ` â ${scorekeeperNight}, ${dt}` : '';
+    const courtGames = [];
+    for (const [cellKey, entry] of Object.entries(sched)) {
+      const parts = cellKey.split('-');
+      const court = parts.pop();
+      const time = parts.join('-');
+      if (court !== selectedCourt) continue;
+      const matchup = findMatchup(entry.matchupId, entry.divId);
+      if (!matchup) continue;
+      const teamsList = state.teams[entry.divId] || [];
+      const t1 = teamsList.find(t => t.id === matchup.t1);
+      const t2 = teamsList.find(t => t.id === matchup.t2);
+      if (!t1 || !t2) continue;
+      const div = state.divisions.find(d => d.id === entry.divId);
+      const slotIdx = TIME_SLOTS.indexOf(time);
+      courtGames.push({ time, slotIdx, t1: t1.name, t2: t2.name, divName: div?.name || '', divColor: div?.color || 'var(--text)', isBracket: entry.type === 'bracket' });
+    }
+    courtGames.sort((a, b) => a.slotIdx - b.slotIdx);
+    html += `<div style="margin-bottom:1.2rem">
+      <div style="font-weight:700;font-size:.95rem;margin-bottom:.5rem;color:var(--orange);display:flex;align-items:center;gap:.5rem">
+        Week ${week}${dateStr}
+      </div>`;
+    if (courtGames.length === 0) {
+      html += `<div style="color:var(--text3);font-size:.85rem;padding:.4rem 0">No games on this court</div>`;
+    } else {
+      html += `<table class="standings-table" style="font-size:.85rem;margin-bottom:.3rem">
+        <thead><tr><th>Time</th><th>Matchup</th><th>Division</th></tr></thead><tbody>`;
+      for (const g of courtGames) {
+        html += `<tr>
+          <td style="white-space:nowrap;font-weight:600">${g.time}</td>
+          <td><strong>${g.t1}</strong> vs <strong>${g.t2}</strong>${g.isBracket?' <span style="color:var(--orange);font-size:.75rem">â Bracket</span>':''}</td>
+          <td><span style="color:${g.divColor};font-weight:600;font-size:.8rem">${g.divName}</span></td>
+        </tr>`;
+      }
+      html += '</tbody></table>';
+    }
+    html += '</div>';
+  }
+  html += '</div>';
+  return html;
+}
+
 function publicHome() {
   // Determine current week based on scores
   let currentWeek = 1;
