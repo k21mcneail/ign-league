@@ -1992,12 +1992,12 @@ function publicScorekeeperView() {
   </div>`;
   if (!selectedCourt) return html;
   html += `<div class="card">
-    <div class="card-header"><div class="accent"></div>Court ${selectedCourt} — ${scorekeeperNight} Night</div>`;
+    <div class="card-header"><div class="accent"></div>Court ${selectedCourt}  -  ${scorekeeperNight} Night</div>`;
   for (const week of WEEKS) {
     const schedKey = `${scorekeeperNight}-${week}`;
     const sched = state.schedule[schedKey] || {};
     const dt = weekDate(week, scorekeeperNight);
-    const dateStr = dt ? ` — ${scorekeeperNight}, ${dt}` : '';
+    const dateStr = dt ? `  -  ${scorekeeperNight}, ${dt}` : '';
     const courtGames = [];
     for (const [cellKey, entry] of Object.entries(sched)) {
       const parts = cellKey.split('-');
@@ -2027,7 +2027,7 @@ function publicScorekeeperView() {
       for (const g of courtGames) {
         html += `<tr>
           <td style="white-space:nowrap;font-weight:600">${g.time}</td>
-          <td><strong>${g.t1}</strong> vs <strong>${g.t2}</strong>${g.isBracket?' <span style="color:var(--orange);font-size:.75rem">★ Bracket</span>':''}</td>
+          <td><strong>${g.t1}</strong> vs <strong>${g.t2}</strong>${g.isBracket?' <span style="color:var(--orange);font-size:.75rem">* Bracket</span>':''}</td>
           <td><span style="color:${g.divColor};font-weight:600;font-size:.8rem">${g.divName}</span></td>
         </tr>`;
       }
