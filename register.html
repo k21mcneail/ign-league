@@ -10,7 +10,6 @@
   <meta property="og:type" content="website">
 
 <!-- ====== STRIPE ====== -->
-<script src="https://js.stripe.com/v3/"></script>
 
 <style>
   @import url('https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@400;600;700;800;900&family=Inter:wght@400;500;600;700;800&display=swap');
@@ -670,11 +669,9 @@
  */
 
 // 1. Your Stripe PUBLISHABLE key (starts with pk_live_ or pk_test_)
-const STRIPE_PK = 'pk_live_51LMxnpKujXq6VVcKyi0BPneP5zEiqfwxi4kAaV2E8AUIjgB1OkgBXhVSdK2y8rZh6FILDkytuEC2rAzhfx51yGXg00zT2rLltr';
+    const PAYMENT_LINK = 'https://buy.stripe.com/3cIdRa5JvfG2gHI2oI9IQ07';
 
 // 2. Your two Stripe Price IDs (created in Stripe dashboard)
-const STRIPE_PRICE_BASIC  = 'price_1THJ8tKujXq6VVcKipEuEy5k';   // $40 Basic
-const STRIPE_PRICE_TSHIRT = 'price_1THJ9JKujXq6VVcKYH7ZCa9O';   // $55 T-Shirt
 
 // 3. Your Google Apps Script Web App URL (the one that ends in /exec)
 const GOOGLE_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycby_0kEqY3M1VIvJnTnaBlfTZB14piZDhK8UvfCLcPnpDUEGVo-japqVuMUF8Q9VLfAS/exec';
@@ -685,7 +682,6 @@ const GOOGLE_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycby_0kEqY3M1VI
  * â==============================================================================================================================â
  */
 
-const stripe = Stripe(STRIPE_PK);
 
 // ---- Package selection ----
 const pkgOptions = document.querySelectorAll('.pkg-option');
@@ -771,32 +767,8 @@ form.addEventListener('submit', async function(e) {
   sessionStorage.setItem('happyHoopersReg', JSON.stringify(formData));
 
   // Determine which Stripe price to use
-  const priceId = selectedPkg.id === 'pkgTshirt' ? STRIPE_PRICE_TSHIRT : STRIPE_PRICE_BASIC;
-
-  // Show loading state
-  submitBtn.disabled = true;
-  submitBtn.innerHTML = '<span class="spinner"></span> Redirecting to payment...';
-
-  try {
-    // Redirect to Stripe Checkout
-    const { error } = await stripe.redirectToCheckout({
-      lineItems: [{ price: priceId, quantity: 1 }],
-      mode: 'payment',
-      customerEmail: formData.email,
-      successUrl: window.location.href + '?payment=success',
-      cancelUrl:  window.location.href + '?payment=cancelled',
-    });
-
-    if (error) {
-      throw error;
-    }
-  } catch (err) {
-    submitBtn.disabled = false;
-    submitBtn.innerHTML = '&#127936; Proceed to Payment';
-    errorBanner.textContent = 'Payment redirect failed: ' + (err.message || 'Please try again.');
-    errorBanner.classList.add('show');
-    window.scrollTo({ top: 0, behavior: 'smooth' });
-  }
+  const       // Redirect to Stripe Payment Link
+      window.location.href = PAYMENT_LINK;
 });
 
 
