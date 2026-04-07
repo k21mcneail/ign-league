@@ -152,25 +152,7 @@
     object-fit: cover;
   }
 
-  /* bouncing basketballs */
-  .bball-row {
-    display: flex;
-    justify-content: center;
-    gap: 16px;
-    margin-top: 24px;
-  }
-  .bounce-ball {
-    animation: bounce 1.8s ease-in-out infinite;
-  }
-  .bounce-ball:nth-child(2) { animation-delay: .3s; }
-  .bounce-ball:nth-child(3) { animation-delay: .6s; }
-  @keyframes bounce {
-    0%,100%{ transform:translateY(0); }
-    40%{ transform:translateY(-18px); }
-    60%{ transform:translateY(-8px); }
-  }
-
-  /* ---- CONTENT AREA ---- */
+/* ---- CONTENT AREA ---- */
   .content {
     max-width: 680px;
     margin: 0 auto;
@@ -585,11 +567,6 @@
 
   <img src="happyhooper.jpg" alt="Young kids playing basketball in IGN jerseys" class="hero-img">
 
-  <div class="bball-row">
-    <svg class="bounce-ball" width="44" height="44" viewBox="0 0 52 52"><circle cx="26" cy="26" r="25" fill="#F97316"/><path d="M6 26c10-10 30-10 40 0M26 1v50M1 26h50" stroke="#C2410C" stroke-width="2" fill="none" opacity=".35"/><circle cx="26" cy="26" r="25" fill="none" stroke="#C2410C" stroke-width="1.5" opacity=".2"/></svg>
-    <svg class="bounce-ball" width="44" height="44" viewBox="0 0 52 52"><circle cx="26" cy="26" r="25" fill="#F97316"/><path d="M6 26c10-10 30-10 40 0M26 1v50M1 26h50" stroke="#C2410C" stroke-width="2" fill="none" opacity=".35"/><circle cx="26" cy="26" r="25" fill="none" stroke="#C2410C" stroke-width="1.5" opacity=".2"/></svg>
-    <svg class="bounce-ball" width="44" height="44" viewBox="0 0 52 52"><circle cx="26" cy="26" r="25" fill="#F97316"/><path d="M6 26c10-10 30-10 40 0M26 1v50M1 26h50" stroke="#C2410C" stroke-width="2" fill="none" opacity=".35"/><circle cx="26" cy="26" r="25" fill="none" stroke="#C2410C" stroke-width="1.5" opacity=".2"/></svg>
-  </div>
 </section>
 
 <!-- ================ MAIN CONTENT ================ -->
