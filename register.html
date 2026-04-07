@@ -3,9 +3,13 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Register â Happy Hoopers | IGN Academy</title>
+<title>Register &mdash; Happy Hoopers | IGN Academy</title>
+  <meta name="description" content="Register for Happy Hoopers - Intro to Basketball for ages 3-5 at IGN Academy. Sign up and pay securely online.">
+  <meta property="og:title" content="Register - Happy Hoopers | IGN Academy">
+  <meta property="og:description" content="Sign up your little hooper for our 4-week Friday basketball program for ages 3-5.">
+  <meta property="og:type" content="website">
 
-<!-- âââ STRIPE âââ -->
+<!-- ====== STRIPE ====== -->
 <script src="https://js.stripe.com/v3/"></script>
 
 <style>
@@ -36,7 +40,7 @@
     min-height: 100vh;
   }
 
-  /* ââ HEADER BAR ââ */
+  /* ---- HEADER BAR ---- */
   .site-header {
     background: var(--white);
     padding: 12px 24px;
@@ -90,7 +94,7 @@
   }
   .back-link:hover { opacity: .75; }
 
-  /* ââ PAGE CONTENT ââ */
+  /* ---- PAGE CONTENT ---- */
   .page {
     max-width: 560px;
     margin: 0 auto;
@@ -115,7 +119,7 @@
     margin-bottom: 28px;
   }
 
-  /* ââ FORM CARD ââ */
+  /* ---- FORM CARD ---- */
   .form-card {
     background: var(--white);
     border-radius: 12px;
@@ -187,7 +191,7 @@
   .field textarea { resize: vertical; min-height: 70px; }
   .field select { cursor: pointer; }
 
-  /* ââ PACKAGE SELECTOR ââ */
+  /* ---- PACKAGE SELECTOR ---- */
   .package-options {
     display: grid;
     grid-template-columns: 1fr 1fr;
@@ -283,7 +287,7 @@
     margin-bottom: 6px;
   }
 
-  /* ââ T-SHIRT SIZE (conditional) ââ */
+  /* ---- T-SHIRT SIZE (conditional) ---- */
   .tshirt-size {
     margin-bottom: 14px;
     overflow: hidden;
@@ -296,14 +300,14 @@
     opacity: 1;
   }
 
-  /* ââ DIVIDER ââ */
+  /* ---- DIVIDER ---- */
   .form-divider {
     height: 1px;
     background: var(--gray-100);
     margin: 24px 0;
   }
 
-  /* ââ SUBMIT ââ */
+  /* ---- SUBMIT ---- */
   .submit-section {
     margin-top: 28px;
     text-align: center;
@@ -344,7 +348,7 @@
     color: var(--gray-400);
   }
 
-  /* ââ SPINNER ââ */
+  /* ---- SPINNER ---- */
   .spinner {
     display: inline-block;
     width: 18px;
@@ -358,7 +362,7 @@
   }
   @keyframes spin { to { transform: rotate(360deg); } }
 
-  /* ââ ORDER SUMMARY ââ */
+  /* ---- ORDER SUMMARY ---- */
   .order-summary {
     background: var(--gray-100);
     border-radius: 8px;
@@ -380,7 +384,7 @@
     color: var(--gray-900);
   }
 
-  /* ââ ERROR BANNER ââ */
+  /* ---- ERROR BANNER ---- */
   .error-banner {
     display: none;
     background: #FEF2F2;
@@ -394,7 +398,7 @@
   }
   .error-banner.show { display: block; }
 
-  /* ââ SUCCESS OVERLAY ââ */
+  /* ---- SUCCESS OVERLAY ---- */
   .success-overlay {
     display: none;
     position: fixed;
@@ -464,7 +468,7 @@
   }
   .success-btn:hover { background: var(--orange-dark); }
 
-  /* ââ FOOTER ââ */
+  /* ---- FOOTER ---- */
   .footer {
     text-align: center;
     padding: 24px 20px 20px;
@@ -489,7 +493,7 @@
 </head>
 <body>
 
-<!-- ââââââââ HEADER ââââââââ -->
+<!-- ================ HEADER ================ -->
 <header class="site-header">
   <div class="logo">
     <div style="display:flex;flex-direction:column;align-items:center;line-height:1;">
@@ -501,7 +505,7 @@
   <a href="happy-hoopers.html" class="back-link">&larr; Back</a>
 </header>
 
-<!-- ââââââââ FORM PAGE ââââââââ -->
+<!-- ================ FORM PAGE ================ -->
 <div class="page">
   <h1 class="page-title">&#127936; <span class="accent">Register</span> Your Hooper</h1>
   <p class="page-sub">Fill out the form below to sign up for Happy Hoopers. Spots are limited!</p>
@@ -580,14 +584,14 @@
 
     <div class="package-options">
       <label class="pkg-option selected" data-price="40" data-stripe-price="PRICE_BASIC_ID_HERE" id="pkgBasic">
-        <input type="radio" name="package" value="Basic â $40" checked>
+        <input type="radio" name="package" value="Basic &mdash; $40" checked>
         <div class="pkg-check"></div>
         <div class="pkg-name">Basic Package</div>
         <div class="pkg-price">$40</div>
         <div class="pkg-desc">All 4 Friday sessions with Coach Kenyon</div>
       </label>
       <label class="pkg-option" data-price="55" data-stripe-price="PRICE_TSHIRT_ID_HERE" id="pkgTshirt">
-        <input type="radio" name="package" value="T-Shirt Package â $55" checked>
+        <input type="radio" name="package" value="T-Shirt Package &mdash; $55" checked>
         <div class="pkg-check"></div>
         <div class="pkg-badge">&#11088; Best Value</div>
         <div class="pkg-name">T-Shirt Package</div>
@@ -640,7 +644,7 @@
   </form>
 </div>
 
-<!-- ââââââââ SUCCESS OVERLAY (shown on return from Stripe) ââââââââ -->
+<!-- ================ SUCCESS OVERLAY (shown on return from Stripe) ================ -->
 <div class="success-overlay" id="successOverlay">
   <div class="success-card">
     <div class="success-icon">&#9989;</div>
@@ -652,7 +656,7 @@
   </div>
 </div>
 
-<!-- ââââââââ FOOTER ââââââââ -->
+<!-- ================ FOOTER ================ -->
 <footer class="footer">
   <div class="footer-brand">&#127936; <span class="accent">Happy Hoopers</span> by I Got Next Academy</div>
   <p>Building ballers, one bounce at a time.</p>
@@ -660,9 +664,9 @@
 
 <script>
 /*
- * âââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââ
- * â  CONFIGURATION â Paste your keys / URLs here                â
- * âââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââ
+ * â==============================================================================================================================â
+ * â  CONFIGURATION &mdash; Paste your keys / URLs here                â
+ * â==============================================================================================================================â
  */
 
 // 1. Your Stripe PUBLISHABLE key (starts with pk_live_ or pk_test_)
@@ -676,14 +680,14 @@ const STRIPE_PRICE_TSHIRT = 'price_1THJ9JKujXq6VVcKYH7ZCa9O';   // $55 T-Shirt
 const GOOGLE_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycby_0kEqY3M1VIvJnTnaBlfTZB14piZDhK8UvfCLcPnpDUEGVo-japqVuMUF8Q9VLfAS/exec';
 
 /*
- * âââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââ
+ * â==============================================================================================================================â
  * â  DO NOT EDIT BELOW unless you know what you're doing         â
- * âââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââ
+ * â==============================================================================================================================â
  */
 
 const stripe = Stripe(STRIPE_PK);
 
-// ââ Package selection ââ
+// ---- Package selection ----
 const pkgOptions = document.querySelectorAll('.pkg-option');
 const tshirtSize = document.getElementById('tshirtSize');
 const orderTotal = document.getElementById('orderTotal');
@@ -703,14 +707,14 @@ pkgOptions.forEach(opt => {
   });
 });
 
-// ââ Clear validation on input ââ
+// ---- Clear validation on input ----
 const form = document.getElementById('registerForm');
 form.querySelectorAll('input, select, textarea').forEach(el => {
   el.addEventListener('input', () => { el.style.borderColor = ''; });
   el.addEventListener('change', () => { el.style.borderColor = ''; });
 });
 
-// ââ Form submit â Save to session â Stripe Checkout ââ
+// ---- Form submit â Save to session â Stripe Checkout ----
 const submitBtn = document.getElementById('submitBtn');
 const errorBanner = document.getElementById('errorBanner');
 
@@ -796,7 +800,7 @@ form.addEventListener('submit', async function(e) {
 });
 
 
-// ââ On return from Stripe: send data to Google Sheet ââ
+// ---- On return from Stripe: send data to Google Sheet ----
 (async function checkPaymentReturn() {
   const params = new URLSearchParams(window.location.search);
 
@@ -804,7 +808,7 @@ form.addEventListener('submit', async function(e) {
     // Get saved form data
     const savedData = sessionStorage.getItem('happyHoopersReg');
     if (!savedData) {
-      // No data in session â still show success (they paid)
+      // No data in session &mdash; still show success (they paid)
       document.getElementById('successOverlay').classList.add('show');
       return;
     }
@@ -837,7 +841,7 @@ form.addEventListener('submit', async function(e) {
       });
     } catch (err) {
       console.error('Google Sheet logging failed:', err);
-      // Payment already succeeded â we'll still show success
+      // Payment already succeeded &mdash; we'll still show success
     }
 
     // Clear session data
@@ -846,7 +850,7 @@ form.addEventListener('submit', async function(e) {
     // Show success
     const overlay = document.getElementById('successOverlay');
     const successMsg = document.getElementById('successMsg');
-    successMsg.innerHTML = '<strong>' + formData.childFirst + '</strong> is officially a Happy Hooper! Payment received â you\'re all set. Check your email at <strong>' + formData.email + '</strong> for confirmation details.';
+    successMsg.innerHTML = '<strong>' + formData.childFirst + '</strong> is officially a Happy Hooper! Payment received &mdash; you\'re all set. Check your email at <strong>' + formData.email + '</strong> for confirmation details.';
     overlay.classList.add('show');
 
     // Clean URL
@@ -854,7 +858,7 @@ form.addEventListener('submit', async function(e) {
   }
 
   if (params.get('payment') === 'cancelled') {
-    errorBanner.textContent = 'Payment was cancelled. Your info is still filled in â try again when you\'re ready!';
+    errorBanner.textContent = 'Payment was cancelled. Your info is still filled in &mdash; try again when you\'re ready!';
     errorBanner.classList.add('show');
     window.history.replaceState({}, '', window.location.pathname);
   }
