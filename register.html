@@ -669,7 +669,8 @@
  */
 
 // 1. Your Stripe PUBLISHABLE key (starts with pk_live_ or pk_test_)
-    const PAYMENT_LINK = 'https://buy.stripe.com/3cIdRa5JvfG2gHI2oI9IQ07';
+        const PAYMENT_LINK_BASIC = 'https://buy.stripe.com/bJe8wQ9ZLgK61MO2oI9IQ08';
+    const PAYMENT_LINK_TSHIRT = 'https://buy.stripe.com/3cIdRa5JvfG2gHI2oI9IQ07';
 
 // 2. Your two Stripe Price IDs (created in Stripe dashboard)
 
@@ -768,7 +769,9 @@ form.addEventListener('submit', async function(e) {
 
   // Determine which Stripe price to use
         // Redirect to Stripe Payment Link
-      window.location.href = PAYMENT_LINK;
+      const selectedPkg = document.querySelector('.pkg-option.selected');
+      const isTshirt = selectedPkg && selectedPkg.id === 'pkgTshirt';
+      window.location.href = isTshirt ? PAYMENT_LINK_TSHIRT : PAYMENT_LINK_BASIC;
 });
 
 
