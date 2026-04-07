@@ -769,8 +769,8 @@ form.addEventListener('submit', async function(e) {
 
   // Determine which Stripe price to use
         // Redirect to Stripe Payment Link
-      const selectedPkg = document.querySelector('.pkg-option.selected');
-      const isTshirt = selectedPkg && selectedPkg.id === 'pkgTshirt';
+      const chosenPkg = document.querySelector('.pkg-option.selected');
+      const isTshirt = chosenPkg && chosenPkg.id === 'pkgTshirt';
       window.location.href = isTshirt ? PAYMENT_LINK_TSHIRT : PAYMENT_LINK_BASIC;
 });
 
