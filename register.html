@@ -768,7 +768,16 @@ form.addEventListener('submit', async function(e) {
   localStorage.setItem('happyHoopersReg', JSON.stringify(formData));
 
   // Determine which Stripe price to use
-        // Redirect to Stripe Payment Link
+        // Send registration data to Google Sheet before redirecting
+      fetch(GOOGLE_SCRIPT_URL, {
+        method: 'POST',
+        mode: 'no-cors',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(formData),
+        keepalive: true
+      });
+
+      // Redirect to Stripe Payment Link
       const chosenPkg = document.querySelector('.pkg-option.selected');
       const isTshirt = chosenPkg && chosenPkg.id === 'pkgTshirt';
       window.location.href = isTshirt ? PAYMENT_LINK_TSHIRT : PAYMENT_LINK_BASIC;
