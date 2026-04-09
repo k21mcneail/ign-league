@@ -764,8 +764,8 @@ form.addEventListener('submit', async function(e) {
     notes:        form.querySelector('[name="notes"]').value.trim() || 'None',
   };
 
-  // Save form data to sessionStorage so we can send to Google Sheet after payment
-  sessionStorage.setItem('happyHoopersReg', JSON.stringify(formData));
+  // Save form data to localStorage so we can send to Google Sheet after payment
+  localStorage.setItem('happyHoopersReg', JSON.stringify(formData));
 
   // Determine which Stripe price to use
         // Redirect to Stripe Payment Link
@@ -781,7 +781,7 @@ form.addEventListener('submit', async function(e) {
 
   if (params.get('payment') === 'success') {
     // Get saved form data
-    const savedData = sessionStorage.getItem('happyHoopersReg');
+    const savedData = localStorage.getItem('happyHoopersReg');
     if (!savedData) {
       // No data in session &mdash; still show success (they paid)
       document.getElementById('successOverlay').classList.add('show');
@@ -820,7 +820,7 @@ form.addEventListener('submit', async function(e) {
     }
 
     // Clear session data
-    sessionStorage.removeItem('happyHoopersReg');
+    localStorage.removeItem('happyHoopersReg');
 
     // Show success
     const overlay = document.getElementById('successOverlay');
