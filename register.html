@@ -583,14 +583,14 @@
 
     <div class="package-options">
       <label class="pkg-option selected" data-price="40" data-stripe-price="PRICE_BASIC_ID_HERE" id="pkgBasic">
-        <input type="radio" name="package" value="Basic &mdash; $40" checked>
+        <input type="radio" name="package" value="Basic" checked>
         <div class="pkg-check"></div>
         <div class="pkg-name">Basic Package</div>
         <div class="pkg-price">$40</div>
         <div class="pkg-desc">All 4 Friday sessions with Coach Kenyon</div>
       </label>
       <label class="pkg-option" data-price="55" data-stripe-price="PRICE_TSHIRT_ID_HERE" id="pkgTshirt">
-        <input type="radio" name="package" value="T-Shirt Package &mdash; $55" checked>
+        <input type="radio" name="package" value="T-Shirt Package">
         <div class="pkg-check"></div>
         <div class="pkg-badge">&#11088; Best Value</div>
         <div class="pkg-name">T-Shirt Package</div>
@@ -663,9 +663,9 @@
 
 <script>
 /*
- * â==============================================================================================================================â
- * â  CONFIGURATION &mdash; Paste your keys / URLs here                â
- * â==============================================================================================================================â
+ * Ã¢ÂÂ==============================================================================================================================Ã¢ÂÂ
+ * Ã¢ÂÂ  CONFIGURATION &mdash; Paste your keys / URLs here                Ã¢ÂÂ
+ * Ã¢ÂÂ==============================================================================================================================Ã¢ÂÂ
  */
 
 // 1. Your Stripe PUBLISHABLE key (starts with pk_live_ or pk_test_)
@@ -678,9 +678,9 @@
 const GOOGLE_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbzrKyrj80uwifDGBt0dgSIf1NEygGVXLVKoGmvp4itHMKR6-Z3RmBIc-mG7ObbpL10L/exec';
 
 /*
- * â==============================================================================================================================â
- * â  DO NOT EDIT BELOW unless you know what you're doing         â
- * â==============================================================================================================================â
+ * Ã¢ÂÂ==============================================================================================================================Ã¢ÂÂ
+ * Ã¢ÂÂ  DO NOT EDIT BELOW unless you know what you're doing         Ã¢ÂÂ
+ * Ã¢ÂÂ==============================================================================================================================Ã¢ÂÂ
  */
 
 
@@ -711,7 +711,7 @@ form.querySelectorAll('input, select, textarea').forEach(el => {
   el.addEventListener('change', () => { el.style.borderColor = ''; });
 });
 
-// ---- Form submit â Save to session â Stripe Checkout ----
+// ---- Form submit Ã¢ÂÂ Save to session Ã¢ÂÂ Stripe Checkout ----
 const submitBtn = document.getElementById('submitBtn');
 const errorBanner = document.getElementById('errorBanner');
 
@@ -799,7 +799,7 @@ form.addEventListener('submit', async function(e) {
 
     const formData = JSON.parse(savedData);
 
-    // Send to Google Apps Script â "Happy Hoopers" sheet
+    // Send to Google Apps Script Ã¢ÂÂ "Happy Hoopers" sheet
     try {
       await fetch(GOOGLE_SCRIPT_URL, {
         method: 'POST',
