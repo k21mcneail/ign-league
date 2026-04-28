@@ -1675,13 +1675,13 @@ function generateBracket(divId) {
     );
   } else if (nc === 6) {
     winners.push({ id: uid(), t1: null, t2: null, label: '3rd Place', round: 2, loserFrom1: wSemi1.id, loserFrom2: wSemi2.id });
-    const cR1a = { id: uid(), t1: cTeams[0].teamId, t2: cTeams[5].teamId, seed1: 5, seed2: 10, label: 'C Rd1 A (5v10)', round: 1 };
-    const cR1b = { id: uid(), t1: cTeams[1].teamId, t2: cTeams[4].teamId, seed1: 6, seed2: 9, label: 'C Rd1 B (6v9)', round: 1 };
-    const cR1c = { id: uid(), t1: cTeams[2].teamId, t2: cTeams[3].teamId, seed1: 7, seed2: 8, label: 'C Rd1 C (7v8)', round: 1 };
+    const cR1a = { id: uid(), t1: cTeams[0].teamId, t2: cTeams[3].teamId, seed1: 5, seed2: 8, label: 'C Rd1 (5v8)', round: 1 };
+    const cR1b = { id: uid(), t1: cTeams[1].teamId, t2: cTeams[2].teamId, seed1: 6, seed2: 7, label: 'C Rd1 (6v7)', round: 1 };
+    const cR1c = { id: uid(), t1: cTeams[4].teamId, t2: cTeams[5].teamId, seed1: 9, seed2: 10, label: 'C Rd1 (9v10)', round: 1 };
     consolation.push(cR1a, cR1b, cR1c,
-      { id: uid(), t1: null, t2: null, label: '5th Place', round: 2, from1: cR1a.id, from2: cR1c.id },
-      { id: uid(), t1: null, t2: null, label: '7th Place', round: 2, from1: cR1b.id, loserFrom2: cR1c.id },
-      { id: uid(), t1: null, t2: null, label: '9th Place', round: 2, loserFrom1: cR1a.id, loserFrom2: cR1b.id }
+      { id: uid(), t1: null, t2: null, label: '5th Place', round: 2, from1: cR1a.id, from2: cR1b.id },
+      { id: uid(), t1: null, t2: null, label: '7th Place', round: 2, loserFrom1: cR1a.id, loserFrom2: cR1b.id },
+      { id: uid(), t1: null, t2: null, t1: cTeams[4].teamId, t2: cTeams[5].teamId, seed1: 9, seed2: 10, label: '9th Place', round: 2 }
     );
   } else {
     winners.push({ id: uid(), t1: null, t2: null, label: '3rd Place', round: 2, loserFrom1: wSemi1.id, loserFrom2: wSemi2.id });
