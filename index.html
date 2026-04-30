@@ -1108,8 +1108,8 @@ function adminSchedule() {
       <span class="division-color-dot" style="background:${div.color}"></span>
       <strong style="font-size:.82rem">${div.name} — Bracket Games</strong></div><div class="matchup-pool">`;
     for (const g of unschedGames) {
-      const t1 = g.t1 ? getTeamName(div.id, g.t1) : `Seed #${g.seed1}`;
-      const t2 = g.t2 ? getTeamName(div.id, g.t2) : `Seed #${g.seed2}`;
+      const t1 = g.t1 ? getTeamName(div.id, g.t1) : resolveTBD(div.id, g, 1);
+      const t2 = g.t2 ? getTeamName(div.id, g.t2) : resolveTBD(div.id, g, 2);
       bracketPoolHTML += `<div class="chip" style="border-color:var(--orange)" draggable="true" ondragstart="dragBracketGame(event,'${div.id}','${g.id}')">${g.label}: ${t1} vs ${t2}</div>`;
     }
     bracketPoolHTML += '</div></div>';
@@ -1484,8 +1484,8 @@ function adminScores() {
       </div>`;
     }
     for (const g of bGames) {
-      const t1 = g.t1 ? getTeamName(div.id, g.t1) : 'TBD';
-      const t2 = g.t2 ? getTeamName(div.id, g.t2) : 'TBD';
+      const t1 = g.t1 ? getTeamName(div.id, g.t1) : resolveTBD(div.id, g, 1);
+      const t2 = g.t2 ? getTeamName(div.id, g.t2) : resolveTBD(div.id, g, 2);
       const bracket = state.brackets[div.id];
       const bScore = bracket?.bracketScores?.[g.id];
       scoresHTML += `<div class="score-row" style="border-left:3px solid var(--orange);margin-left:.3rem">
@@ -1693,6 +1693,22 @@ function generateBracket(divId) {
   state.brackets[divId] = { generated: true, seeds, winners, consolation, ninthPlace: [], bracketScores: {} };
   save(); toast('Bracket generated'); render();
 }
+function resolveTBD(divId, game, slot) {
+  const bracket = state.brackets[divId];
+  if (!bracket) return 'TBD';
+  const allGames = [...(bracket.winners||[]),...(bracket.consolation||[]),...(bracket.ninthPlace||[])];
+  const fromKey = slot === 1 ? 'from1' : 'from2';
+  const loserFromKey = slot === 1 ? 'loserFrom1' : 'loserFrom2';
+  if (game[fromKey]) {
+    const src = allGames.find(g => g.id === game[fromKey]);
+    return src ? '<span style="font-style:italic;color:var(--green);font-size:.72em">W of ' + src.label + '</span>' : 'TBD';
+  }
+  if (game[loserFromKey]) {
+    const src = allGames.find(g => g.id === game[loserFromKey]);
+    return src ? '<span style="font-style:italic;color:var(--text3);font-size:.72em">L of ' + src.label + '</span>' : 'TBD';
+  }
+  return 'TBD';
+}
 function renderBracketVisual(divId) {
   const bracket = state.brackets[divId];
   if (!bracket) return '';
@@ -1721,18 +1737,18 @@ function renderBracketRounds(divId, games, scores) {
   for (const round of Object.keys(rounds).sort()) {
     html += `<div class="bracket-round"><div class="round-title">Round ${round}</div>`;
     for (const g of rounds[round]) {
-      const t1 = g.t1 ? getTeamName(divId, g.t1) : 'TBD';
-      const t2 = g.t2 ? getTeamName(divId, g.t2) : 'TBD';
+      const t1 = g.t1 ? getTeamName(divId, g.t1) : resolveTBD(divId, g, 1);
+      const t2 = g.t2 ? getTeamName(divId, g.t2) : resolveTBD(divId, g, 2);
       const score = scores[g.id];
       const w = score ? (score.s1 > score.s2 ? 't1' : 't2') : null;
       html += `<div class="bracket-game">
         <div style="text-align:center;font-size:.65rem;color:var(--orange);padding:.25rem;font-weight:700;background:var(--surface2);text-transform:uppercase">${g.label}</div>
         <div class="team-row ${w==='t1'?'winner':''}">
-          <span>${g.seed1 ? '<span class="seed">#'+g.seed1+'</span>' : ''}${t1}</span>
+          <span>${g.seed1 && g.t1 ? '<span class="seed">#'+g.seed1+'</span>' : ''}${t1}</span>
           ${score ? '<span class="score">'+score.s1+'</span>' : ''}
         </div>
         <div class="team-row ${w==='t2'?'winner':''}">
-          <span>${g.seed2 ? '<span class="seed">#'+g.seed2+'</span>' : ''}${t2}</span>
+          <span>${g.seed2 && g.t2 ? '<span class="seed">#'+g.seed2+'</span>' : ''}${t2}</span>
           ${score ? '<span class="score">'+score.s2+'</span>' : ''}
         </div>
       </div>`;
@@ -2353,8 +2369,8 @@ function publicSchedule() {
           const allGames = bracket ? [...(bracket.winners||[]),...(bracket.consolation||[]),...(bracket.ninthPlace||[])] : [];
           const game = allGames.find(g => g.id === entry.bracketGameId);
           if (game) {
-            t1 = game.t1 ? getTeamName(entry.divId, game.t1) : 'TBD';
-            t2 = game.t2 ? getTeamName(entry.divId, game.t2) : 'TBD';
+            t1 = game.t1 ? getTeamName(entry.divId, game.t1) : resolveTBD(entry.divId, game, 1);
+            t2 = game.t2 ? getTeamName(entry.divId, game.t2) : resolveTBD(entry.divId, game, 2);
             const bScore = bracket?.bracketScores?.[game.id];
             if (bScore) result = `<div style="color:var(--green);font-weight:700;font-size:.65rem">${bScore.s1 > bScore.s2 ? t1 : t2}: W</div>`;
             content = `<div style="font-size:.72rem;line-height:1.35;text-align:center">
